@@ -2,7 +2,7 @@
 
 *An MkDoc plugin that helps you get add multilang support to your site / documentation.*
 
-The `mkdocs-static-i18n` plugin allows you to support multiple languages on your documentation by adding static translation files to your existing documentation pages. Multi language support is just **one .<lang>.md file away!**.
+The `mkdocs-static-i18n` plugin allows you to support multiple languages on your documentation by adding static translation files to your existing documentation pages. Multi language support is just **one `.<language>.md` file away!**.
 
 This plugin is made to be as simple as possible and will use any default page provided if there is no translation available for it!
 
