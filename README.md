@@ -1,14 +1,28 @@
-# MkDocs Static I18n Plugin
+# MkDocs static i18n plugin
 
 *An MkDoc plugin that helps you support multiple language versions of your site / documentation.*
 
-The `mkdocs-static-i18n` plugin allows you to support multiple languages on your documentation by adding static translation files to your existing documentation pages. Multi language support is just **one `.<language>.md` file away!**.
+The `mkdocs-static-i18n` plugin allows you to support multiple languages of your documentation by adding static translation files to your existing documentation pages.
 
-This plugin is made to be as simple as possible and will use any default page provided if there is no translation available for it!
+Multi language support is just **one `.<language>.md` file away**!
 
-When activated, you will get default version of your website using the `default_language` configured + one version available on `/<language>/` for every language configured in the `languages` parameter.
+If you want to see how it looks, [check out the demo documentation here](https://ultrabug.github.io/mkdocs-static-i18n/).
 
-For example, using the following configuration on the given structure:
+## Language detection logic
+
+This plugin is made to be as simple as possible and will generate a default version of your website + one per configured language on the `<language>/` path.
+
+- the `default` version will use any `.md` documentation file first and fallback to any `.<default_language>.md` file found
+- the `/<language>` language versions will use any `.<language>.md` documentation file first and fallback to any `.<default_language>.md` file before fallbacking to any default `.md` file found
+
+Since demonstrations are better than words, [check out the demo documentation here](https://ultrabug.github.io/mkdocs-static-i18n/) which showcases the logic.
+
+## Configuration
+
+All the parameters are mandatory:
+
+- **default_language**: string
+- **languages**: mapping of **language name**: **display value**
 
 ```
 plugins:
@@ -19,45 +33,53 @@ plugins:
         fr: français
 ```
 
+## Example output
+
+Using the configuration above on the following `docs/` structure will build the following `site/` (leaving out static files for readability):
+
 ```
-docs_i18n
-├── coconut
+docs
+├── index.fr.md
+├── index.md
+├── topic1
 │   ├── index.en.md
 │   └── index.fr.md
-├── index.fr.md
-└── index.md
+└── topic2
+    ├── index.en.md
+    └── index.md
 ```
-
-Will build the following site (leaving out static files for readability):
 
 ```
 site
-├── coconut
-│   └── index.html
 ├── en
-│   ├── coconut
+│   ├── index.html
+│   ├── topic1
 │   │   └── index.html
-│   └── index.html
+│   └── topic2
+│       └── index.html
 ├── fr
-│   ├── coconut
+│   ├── index.html
+│   ├── topic1
 │   │   └── index.html
-│   └── index.html
+│   └── topic2
+│       └── index.html
 ├── index.html
+├── topic1
+│   └── index.html
+└── topic2
+    └── index.html
 ```
 
-This plugin is compatible with the [MkDocs Awesome Pages Plugin](https://github.com/lukasgeiter/mkdocs-awesome-pages-plugin)!
+## Compatibility with other plugins
 
-## Configuration
+This plugin is compatible with the following mkdocs plugins:
 
-All the parameters are mandatory:
-
-- **default_language**: string
-- **languages**: mapping of **language name**: **display value**
+- [MkDocs Material](https://github.com/squidfunk/mkdocs-material): the `search` plugin text will be switched automatically to the right language depending on the version you're browsing
+- [MkDocs Awesome Pages Plugin](https://github.com/lukasgeiter/mkdocs-awesome-pages-plugin): the page ordering is preserved on the language specific versions of your site
 
 ## TODO
 
-- add docs folder + mkdocs.yml example
-- add mkdocs-material example with language switcher buttons
+- add mkdocs-material example with language switcher buttons, meanwhile [you can see how it looks on my website](https://ultrabug.fr).
 
 ## Contributions welcome!
 
