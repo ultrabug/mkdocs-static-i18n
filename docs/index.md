@@ -33,6 +33,6 @@ docs
     └── index.md
 ```
 
-- [Get to the DEFAULT version](/)
-- [Get to the EN version](/en)
-- [Get to the FR version](/fr)
+- [Get to the DEFAULT version](https://ultrabug.github.io/mkdocs-static-i18n/)
+- [Get to the EN version](https://ultrabug.github.io/mkdocs-static-i18n/en/)
+- [Get to the FR version](https://ultrabug.github.io/mkdocs-static-i18n/fr/)
