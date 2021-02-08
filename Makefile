@@ -6,3 +6,12 @@ clean:
 
 release: clean
 	python3 setup.py sdist && python3 -m twine upload dist/*
+
+serve:
+	mkdocs serve
+
+build:
+	mkdocs build
+
+deploy:
+	mkdocs gh-deploy
