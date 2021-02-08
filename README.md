@@ -2,7 +2,7 @@
 
 ![mkdocs-static-i18n pypi version](https://img.shields.io/pypi/v/mkdocs-static-i18n.svg)
 
-*An MkDoc plugin that helps you support multiple language versions of your site / documentation.*
+*An MkDocs plugin that helps you support multiple language versions of your site / documentation.*
 
 The `mkdocs-static-i18n` plugin allows you to support multiple languages of your documentation by adding static translation files to your existing documentation pages.
 
