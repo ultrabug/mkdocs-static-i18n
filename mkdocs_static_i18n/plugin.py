@@ -31,14 +31,16 @@ class I18n(BasePlugin):
         i18n_page = deepcopy(page)
 
         # there is a specific translation file for this lang
-        if self._is_translation_for(i18n_page.src_path, language):
-            translated_name = page.name.replace(f".{language}", "")
-            i18n_page.name = translated_name
-            i18n_page.dest_path = i18n_page.dest_path.replace(f"{page.name}/", "")
-            i18n_page.abs_dest_path = i18n_page.abs_dest_path.replace(
-                f"{page.name}/", ""
-            )
-            i18n_page.url = i18n_page.url.replace(f"{page.name}/", "") or "."
+        for lang in self.config["languages"]:
+            if self._is_translation_for(i18n_page.src_path, lang):
+                translated_name = page.name.replace(f".{lang}", "")
+                i18n_page.name = translated_name
+                i18n_page.dest_path = i18n_page.dest_path.replace(f"{page.name}/", "")
+                i18n_page.abs_dest_path = i18n_page.abs_dest_path.replace(
+                    f"{page.name}/", ""
+                )
+                i18n_page.url = i18n_page.url.replace(f"{page.name}/", "") or "."
+                break
 
         # setup and copy the file to the current language path
         i18n_page.dest_path = f"/{language}/{i18n_page.dest_path}"
@@ -125,6 +127,7 @@ class I18n(BasePlugin):
             for language in languages:
                 lang_expects = [
                     base_path.with_suffix(f".{language}.md"),
+                    base_path.with_suffix(f".{default_language}.md"),
                     base_path.with_suffix(".md"),
                 ]
                 lang_page = self._get_page_from_paths(lang_expects, files)
