@@ -17,6 +17,10 @@ This plugin is made to be as simple as possible and will generate a default vers
 
 Since demonstrations are better than words, [check out the demo documentation here](https://ultrabug.github.io/mkdocs-static-i18n/) which showcases the logic.
 
+## Installation
+
+Just `pip install mkdocs-static-i18n`!
+
 ## Configuration
 
 All the parameters are mandatory:
