@@ -4,7 +4,7 @@ qa:
 clean:
 	rm -rf dist
 
-release: clean
+release: clean qa test
 	python3 setup.py sdist && python3 -m twine upload dist/*
 
 serve:
@@ -13,5 +13,8 @@ serve:
 build:
 	mkdocs build
 
-deploy:
+deploy: qa test
 	mkdocs gh-deploy
+
+test:
+	pytest -xs

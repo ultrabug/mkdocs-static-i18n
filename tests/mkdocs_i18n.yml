@@ -1,0 +1,8 @@
+site_name: MkDocs static i18n plugin tests
+
+plugins:
+  - i18n:
+      default_language: en
+      languages:
+        en: english
+        fr: français
