@@ -5,6 +5,7 @@ from pathlib import Path
 
 from mkdocs.commands.build import _build_page, _populate_page
 from mkdocs.config.config_options import Type
+from mkdocs.localization import install_translations
 from mkdocs.plugins import BasePlugin
 from mkdocs.structure.files import Files
 from mkdocs.structure.nav import get_navigation
@@ -194,6 +195,12 @@ class I18n(BasePlugin):
             # This is useful to be compatible with nav order changing plugins
             # such as mkdocs-awesome-pages-plugin
             nav = config["plugins"].run_event("nav", nav, config=config, files=files)
+
+            # Localize the theme if possible
+            if "locale" in config["theme"]:
+                if config["theme"].name == "mkdocs":
+                    config["theme"]["locale"] = language
+                    install_translations(env, config)
 
             for file in files.documentation_pages():
                 _populate_page(file.page, config, files, dirty)
