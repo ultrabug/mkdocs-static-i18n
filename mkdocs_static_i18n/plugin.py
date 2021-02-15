@@ -174,6 +174,10 @@ class I18n(BasePlugin):
             return nav
         for language, files in self.i18n_files.items():
             self.i18n_navs[language] = get_navigation(files, config)
+            self.i18n_navs[language].homepage = deepcopy(nav.homepage)
+            self.i18n_navs[
+                language
+            ].homepage.file.url = f"{language}/{nav.homepage.file.url}"
         return nav
 
     def on_post_build(self, config):
