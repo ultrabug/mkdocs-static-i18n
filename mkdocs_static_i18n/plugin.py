@@ -4,6 +4,7 @@ from copy import deepcopy
 from pathlib import Path
 
 from mkdocs.commands.build import _build_page, _populate_page
+from mkdocs.config.base import ValidationError
 from mkdocs.config.config_options import Type
 from mkdocs.plugins import BasePlugin
 from mkdocs.structure.files import Files
@@ -12,11 +13,53 @@ from mkdocs.structure.nav import get_navigation
 log = logging.getLogger(__name__)
 
 
+class Locale(Type):
+    """
+    Locale Config Option
+
+    Validate the locale config option against a given Python type.
+    """
+
+    def __init__(self, type_, length=None, **kwargs):
+        super().__init__(type_, length=length, **kwargs)
+        self._type = type_
+        self.length = length
+
+    def run_validation(self, value):
+        value = super().run_validation(value)
+        # check that str of dict keys corresponding to languages we are lower case
+        # and have a minimal length
+        if isinstance(value, str):
+            if value.lower() != value:
+                raise ValidationError(
+                    f"Language values should be lower case, received '{value}' "
+                    f"expected '{value.lower()}'."
+                )
+            elif len(value) < 2:
+                raise ValidationError(
+                    f"Language values should be at least two characters long, "
+                    f"received '{value}' of length '{len(value)}'."
+                )
+        if isinstance(value, dict):
+            for key in value:
+                if key.lower() != key:
+                    raise ValidationError(
+                        f"Language values should be lower case, received '{key}' "
+                        f"expected '{key.lower()}'."
+                    )
+                elif len(key) < 2:
+                    raise ValidationError(
+                        f"Language values should be at least two characters long, "
+                        f"received '{key}' of length '{len(key)}'."
+                    )
+        return value
+
+
 class I18n(BasePlugin):
 
     config_scheme = (
-        ("default_language", Type(str, required=True)),
-        ("languages", Type(dict, required=True)),
+        ("default_language", Locale(str, required=True)),
+        ("languages", Locale(dict, required=True)),
     )
 
     def __init__(self, *args, **kwargs):
