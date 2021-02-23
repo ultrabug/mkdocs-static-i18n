@@ -74,7 +74,7 @@ class I18n(BasePlugin):
         i18n_page = deepcopy(page)
 
         # there is a specific translation file for this lang
-        for lang in self.config["languages"]:
+        for lang in self.all_languages:
             if self._is_translation_for(i18n_page.src_path, lang):
                 i18n_page.name = page.name.replace(f".{lang}", "")
                 if config.get("use_directory_urls") is False:
@@ -125,7 +125,7 @@ class I18n(BasePlugin):
         return i18n_page
 
     def _get_page_lang(self, page):
-        for language in self.config.get("languages"):
+        for language in self.all_languages:
             if Path(page.src_path).suffixes == [f".{language}", ".md"]:
                 return language
         return None
@@ -150,16 +150,16 @@ class I18n(BasePlugin):
             return files
 
         default_language = self.config.get("default_language")
-        languages = self.config.get("languages")
+        self.all_languages = set([default_language] + list(self.config["languages"]))
 
         main_files = Files([])
-        for language in languages:
+        for language in self.all_languages:
             self.i18n_files[language] = Files([])
 
         for obj in files:
             if obj not in files.documentation_pages():
                 main_files.append(obj)
-                for language in languages:
+                for language in self.all_languages:
                     self.i18n_files[language].append(obj)
 
         base_paths = set()
@@ -188,7 +188,7 @@ class I18n(BasePlugin):
                     self._get_non_translated_page(main_page, page_lang, config)
                 )
 
-            for language in languages:
+            for language in self.all_languages:
                 lang_expects = [
                     base_path.with_suffix(f".{language}.md"),
                     base_path.with_suffix(f".{default_language}.md"),
