@@ -42,6 +42,25 @@ PLUGIN_NO_USE_DIRECTORY_URLS = [
     "fr/folder/toto.html",
 ]
 
+PLUGIN_USE_DIRECTORY_URLS_NO_DEFAULT = [
+    "404.html",
+    "index.html",
+    "folder/tata/index.html",
+    "folder/toto/index.html",
+    "fr/index.html",
+    "fr/folder/tata/index.html",
+    "fr/folder/toto/index.html",
+]
+PLUGIN_NO_USE_DIRECTORY_URLS_NO_DEFAULT = [
+    "404.html",
+    "test.html",
+    "folder/tata.html",
+    "folder/toto.html",
+    "fr/test.html",
+    "fr/folder/tata.html",
+    "fr/folder/toto.html",
+]
+
 
 def test_build_use_directory_urls(config_base):
     config_base["use_directory_urls"] = True
@@ -81,3 +100,27 @@ def test_plugin_no_use_directory_urls(config_plugin):
         f.relative_to(site_dir).as_posix() for f in Path(site_dir).glob("**/*.html")
     ]
     assert sorted(generated_html) == sorted(PLUGIN_NO_USE_DIRECTORY_URLS)
+
+
+def test_plugin_use_directory_urls_no_default_language(
+    config_plugin_no_default_language,
+):
+    config_plugin_no_default_language["use_directory_urls"] = True
+    site_dir = config_plugin_no_default_language["site_dir"]
+    build(config_plugin_no_default_language)
+    generated_html = [
+        f.relative_to(site_dir).as_posix() for f in Path(site_dir).glob("**/*.html")
+    ]
+    assert sorted(generated_html) == sorted(PLUGIN_USE_DIRECTORY_URLS_NO_DEFAULT)
+
+
+def test_plugin_no_use_directory_urls_no_default_language(
+    config_plugin_no_default_language,
+):
+    config_plugin_no_default_language["use_directory_urls"] = False
+    site_dir = config_plugin_no_default_language["site_dir"]
+    build(config_plugin_no_default_language)
+    generated_html = [
+        f.relative_to(site_dir).as_posix() for f in Path(site_dir).glob("**/*.html")
+    ]
+    assert sorted(generated_html) == sorted(PLUGIN_NO_USE_DIRECTORY_URLS_NO_DEFAULT)

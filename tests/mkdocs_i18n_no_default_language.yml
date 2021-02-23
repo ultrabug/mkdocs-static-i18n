@@ -1,0 +1,7 @@
+site_name: MkDocs static i18n plugin tests without default language build
+
+plugins:
+  - i18n:
+      default_language: en
+      languages:
+        fr: français

@@ -14,3 +14,9 @@ def config_base():
 def config_plugin():
     site_dir = tempfile.mkdtemp(prefix="mkdocs_tests_")
     return load_config("tests/mkdocs_i18n.yml", site_dir=site_dir)
+
+
+@pytest.fixture
+def config_plugin_no_default_language():
+    site_dir = tempfile.mkdtemp(prefix="mkdocs_tests_")
+    return load_config("tests/mkdocs_i18n_no_default_language.yml", site_dir=site_dir)

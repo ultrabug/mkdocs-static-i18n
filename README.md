@@ -76,6 +76,51 @@ site
     └── index.html
 ```
 
+### Not building a dedicated version for the default language
+
+If you do not wish to build a dedicated `<language>/` path for the `default_language` version of your documentation, **simply do not list it on the `languages`** list. See issue #5 for more information.
+
+The following configuration:
+
+```
+plugins:
+  - i18n:
+      default_language: en
+      languages:
+        fr: français
+```
+
+Applied on the following structure:
+
+```
+docs
+├── index.fr.md
+├── index.md
+├── topic1
+│   ├── index.en.md
+│   └── index.fr.md
+└── topic2
+    ├── index.en.md
+    └── index.md
+```
+
+Will build:
+
+```
+site
+├── fr
+│   ├── index.html
+│   ├── topic1
+│   │   └── index.html
+│   └── topic2
+│       └── index.html
+├── index.html
+├── topic1
+│   └── index.html
+└── topic2
+    └── index.html
+```
+
 ## Compatibility with other plugins
 
 This plugin is compatible with the following mkdocs plugins:
