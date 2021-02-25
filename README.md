@@ -128,9 +128,54 @@ This plugin is compatible with the following mkdocs plugins:
 - [MkDocs Material](https://github.com/squidfunk/mkdocs-material): the `search` plugin text will be switched automatically to the right language depending on the version you're browsing
 - [MkDocs Awesome Pages Plugin](https://github.com/lukasgeiter/mkdocs-awesome-pages-plugin): the page ordering is preserved on the language specific versions of your site
 
-## TODO
+## Adding language switcher buttons on your navigation header
 
-- add mkdocs-material example with language switcher buttons, meanwhile [you can see how it looks on my website](https://ultrabug.fr).
+Let's take `mkdocs-material` as an example and say we would like to add two buttons to allow our visitors to switch to their preferred language.
+
+The following explanation is showcased in the demo website and you can find the files in this very repository:
+
+- [mkdocs.yml](https://github.com/ultrabug/mkdocs-static-i18n/tree/main/mkdocs.yml)
+- [theme_overrides](https://github.com/ultrabug/mkdocs-static-i18n/tree/main/theme_overrides)
+
+We need to add a `custom_dir` to our `theme` configuration:
+
+```
+theme:
+  name: material
+  custom_dir: theme_overrides
+```
+
+Then override the `header.html` to insert something like:
+
+```
+    {% if "i18n" in config.plugins %}
+      <div style="margin-left: 10px; margin-right: 10px;">
+          {% include "partials/i18n_languages.html" %}
+      </div>
+    {% endif %}
+```
+
+And add a `i18n_languages.html` that could look like this:
+
+```
+{% for lang, display in config.plugins.i18n.config.languages.items() -%}
+    <div style="display: inline-block; margin-right:5px;"><a href="/{{ lang }}/">{{ display }}</a></div>
+{% endfor %}
+```
+
+The resulting files should be placed like this:
+
+```
+theme_overrides
+└── partials
+    ├── header.html
+    └── i18n_languages.html
+```
+
+## See it in action!
+
+- [On this repository demo website](https://ultrabug.github.io/mkdocs-static-i18n/)
+- [On my own website: ultrabug.fr](https://ultrabug.fr)
 
 ## Contributions welcome!
 

@@ -2,7 +2,23 @@ site_name: MkDocs static i18n plugin demo
 site_url: https://ultrabug.github.io/mkdocs-static-i18n
 repo_url: https://github.com/ultrabug/mkdocs-static-i18n
 
+theme:
+  name: material
+  font:
+    text: Ubuntu
+    code: Ubuntu Mono
+  icon:
+    logo: material/translate
+  custom_dir: theme_overrides
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/ultrabug/mkdocs-static-i18n
+      name: mkdocs-static-i18n on Github
+
 plugins:
+  - search
   - i18n:
       default_language: en
       languages:
