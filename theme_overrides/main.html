@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<ul>
+{% for language in config.plugins.i18n.config.languages %}
+    {% if language not in i18n_translations %}
+        <li>no translation of this page for {{ language }}</li>
+    {% else %}
+        <li>this page has translation for {{ language }}</li>
+    {% endif %}
+{% endfor %}
+</ul>
+  {{ super() }}
+{% endblock %}

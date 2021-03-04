@@ -66,6 +66,7 @@ class I18n(BasePlugin):
         super().__init__(*args, **kwargs)
         self.i18n_files = defaultdict(list)
         self.i18n_navs = {}
+        self.i18n_translations = defaultdict(set)
 
     def _is_translation_for(self, src_path, language):
         return Path(src_path).suffixes == [f".{language}", ".md"]
@@ -181,12 +182,9 @@ class I18n(BasePlugin):
             main_page = self._get_page_from_paths(main_expects, files)
 
             page_lang = self._get_page_lang(main_page)
-            if page_lang is None:
-                main_files.append(main_page)
-            else:
-                main_files.append(
-                    self._get_non_translated_page(main_page, page_lang, config)
-                )
+            if page_lang is not None:
+                main_page = self._get_non_translated_page(main_page, page_lang, config)
+            main_files.append(main_page)
 
             for language in self.all_languages:
                 lang_expects = [
@@ -200,6 +198,7 @@ class I18n(BasePlugin):
                 self.i18n_files[language].append(
                     self._get_translated_page(lang_page, language, config)
                 )
+                self.i18n_translations[main_page.url].add(page_lang or default_language)
 
             base_paths.add(base_path)
 
@@ -253,6 +252,7 @@ class I18n(BasePlugin):
         """
         mkdocs-material search context i18n support
         """
+        context["i18n_translations"] = self.i18n_translations[page.url or "."]
         for language in self.config.get("languages"):
             if page.url.startswith(f"{language}/"):
                 if config["theme"].name == "material":
