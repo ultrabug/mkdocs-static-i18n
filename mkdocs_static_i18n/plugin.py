@@ -89,10 +89,10 @@ class I18n(BasePlugin):
                     )
                 else:
                     i18n_page.dest_path = i18n_page.dest_path.replace(
-                        str(Path(f"{page.name}/").joinpath()), ""
+                        str(Path(f"{page.name}/")), ""
                     )
                     i18n_page.abs_dest_path = i18n_page.abs_dest_path.replace(
-                        str(Path(f"{page.name}/").joinpath()), ""
+                        str(Path(f"{page.name}/")), ""
                     )
                     i18n_page.url = i18n_page.url.replace(f"{page.name}/", "") or "."
                 break
@@ -118,9 +118,9 @@ class I18n(BasePlugin):
             )
             i18n_page.url = page.url.replace(page.name, i18n_page.name) or "."
         else:
-            i18n_page.dest_path = page.dest_path.replace(str(Path(f"{page.name}/").joinpath()), "")
-            i18n_page.abs_dest_path = page.abs_dest_path.replace(str(Path(f"{page.name}/").joinpath()), "")
-            i18n_page.url = page.url.replace(str(Path(f"{page.name}/").joinpath()), "") or "."
+            i18n_page.dest_path = page.dest_path.replace(str(Path(f"{page.name}/")), "")
+            i18n_page.abs_dest_path = page.abs_dest_path.replace(str(Path(f"{page.name}/")), "")
+            i18n_page.url = page.url.replace(str(Path(f"{page.name}/")), "") or "."
 
         return i18n_page
 
