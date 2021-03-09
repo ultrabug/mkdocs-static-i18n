@@ -2,10 +2,12 @@
 {% block content %}
 <ul>
 {% for language in config.plugins.i18n.config.languages %}
-    {% if language not in i18n_translations %}
-        <li>no translation of this page for {{ language }}</li>
+    {% if language == i18n_page_language %}
+        <li>This page is displayed in {{ config.plugins.i18n.config.languages[i18n_page_language] }}</li>
+    {% elif language in i18n_page_translations %}
+        <li>See this page in <a href="{{ config.site_url }}{{ i18n_page_translations[language].url }}">{{ config.plugins.i18n.config.languages[language] }}</a></li>
     {% else %}
-        <li>this page has translation for {{ language }}</li>
+        <li>There is no translation of this page in {{ config.plugins.i18n.config.languages[language] }}</li>
     {% endif %}
 {% endfor %}
 </ul>

@@ -66,7 +66,7 @@ class I18n(BasePlugin):
         super().__init__(*args, **kwargs)
         self.i18n_files = defaultdict(list)
         self.i18n_navs = {}
-        self.i18n_translations = defaultdict(set)
+        self.i18n_translations = defaultdict(dict)
 
     def _is_translation_for(self, src_path, language):
         return Path(src_path).suffixes == [f".{language}", ".md"]
@@ -164,6 +164,7 @@ class I18n(BasePlugin):
                     self.i18n_files[language].append(obj)
 
         base_paths = set()
+        translations_per_url = defaultdict(set)
         for page in files.documentation_pages():
             page_lang = self._get_page_lang(page)
             if page_lang is None:
@@ -195,12 +196,23 @@ class I18n(BasePlugin):
                 lang_page = self._get_page_from_paths(lang_expects, files)
 
                 page_lang = self._get_page_lang(lang_page)
-                self.i18n_files[language].append(
-                    self._get_translated_page(lang_page, language, config)
-                )
-                self.i18n_translations[main_page.url].add(page_lang or default_language)
+                translated_page = self._get_translated_page(lang_page, language, config)
+                self.i18n_files[language].append(translated_page)
+                #
+                translations_per_url[main_page.url].add(page_lang or default_language)
+                self.i18n_translations[main_page.url][
+                    page_lang or default_language
+                ] = translated_page
 
             base_paths.add(base_path)
+
+        # reconstruct a mapping of all available translations per language path
+        for url, translations in translations_per_url.items():
+            for language in translations:
+                lang_url = f"{language}/{url}"
+                if url == ".":
+                    lang_url = f"{language}/"
+                self.i18n_translations[lang_url] = self.i18n_translations[url]
 
         # these comments are here to help me debug later if needed
         # print([{p.src_path: p.url} for p in main_files.documentation_pages()])
@@ -252,9 +264,11 @@ class I18n(BasePlugin):
         """
         mkdocs-material search context i18n support
         """
-        context["i18n_translations"] = self.i18n_translations[page.url or "."]
+        context["i18n_page_language"] = self.config.get("default_language")
+        context["i18n_page_translations"] = self.i18n_translations[page.url]
         for language in self.config.get("languages"):
             if page.url.startswith(f"{language}/"):
+                context["i18n_page_language"] = language
                 if config["theme"].name == "material":
                     context["config"]["theme"].language = language
                 break
