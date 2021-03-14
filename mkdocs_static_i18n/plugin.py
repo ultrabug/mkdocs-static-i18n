@@ -88,13 +88,7 @@ class I18n(BasePlugin):
                         i18n_page.url.replace(page.name, i18n_page.name) or "."
                     )
                 else:
-                    i18n_page.dest_path = i18n_page.dest_path.replace(
-                        str(Path(f"{page.name}/")), ""
-                    )
-                    i18n_page.abs_dest_path = i18n_page.abs_dest_path.replace(
-                        str(Path(f"{page.name}/")), ""
-                    )
-                    i18n_page.url = i18n_page.url.replace(f"{page.name}/", "") or "."
+                    i18n_page = self._fix_dest_paths(page)
                 break
 
         # setup and copy the file to the current language path
@@ -118,9 +112,7 @@ class I18n(BasePlugin):
             )
             i18n_page.url = page.url.replace(page.name, i18n_page.name) or "."
         else:
-            i18n_page.dest_path = page.dest_path.replace(str(Path(f"{page.name}/")), "")
-            i18n_page.abs_dest_path = page.abs_dest_path.replace(str(Path(f"{page.name}/")), "")
-            i18n_page.url = page.url.replace(str(Path(f"{page.name}/")), "") or "."
+            i18n_page = self._fix_dest_paths(page)
 
         return i18n_page
 
@@ -139,6 +131,17 @@ class I18n(BasePlugin):
             raise Exception(
                 f"mkdocs-static-i18n is expecting one of the following files: {expected_paths}"
             )
+
+    def _fix_dest_paths(self, page):
+        """
+        Corrects paths to work fine on Windows and Unix system
+        """
+        i18n_page = deepcopy(page)
+        i18n_page.dest_path = page.dest_path.replace(str(Path(f"{page.name}/")), "")
+        i18n_page.abs_dest_path = page.abs_dest_path.replace(str(Path(f"{page.name}/")), "")
+        i18n_page.url = page.url.replace(str(Path(f"{page.name}/")), "") or "."
+
+        return i18n_page
 
     def on_files(self, files, config):
         """
