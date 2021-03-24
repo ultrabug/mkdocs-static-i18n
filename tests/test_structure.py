@@ -26,15 +26,15 @@ PLUGIN_USE_DIRECTORY_URLS = [
     "index.html",
     "folder_01/tata/index.html",
     "folder_01/toto/index.html",
-    "folder_02/index.html",
+    "folder_02/tete/index.html",
     "en/index.html",
     "en/folder_01/tata/index.html",
     "en/folder_01/toto/index.html",
-    "en/folder_02/index.html",
+    "en/folder_02/tete/index.html",
     "fr/index.html",
     "fr/folder_01/tata/index.html",
     "fr/folder_01/toto/index.html",
-    "fr/folder_02/index.html",
+    "fr/folder_02/tete/index.html",
 ]
 PLUGIN_NO_USE_DIRECTORY_URLS = [
     "404.html",
