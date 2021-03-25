@@ -69,6 +69,7 @@ def test_build_use_directory_urls(config_base):
     generated_html = [
         f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")
     ]
+    print(list(Path(site_dir).glob("**/*.html")))
     assert sorted(generated_html) == sorted(USE_DIRECTORY_URLS)
 
 
@@ -79,6 +80,7 @@ def test_build_no_use_directory_urls(config_base):
     generated_html = [
         f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")
     ]
+    print(list(Path(site_dir).glob("**/*.html")))
     assert sorted(generated_html) == sorted(NO_USE_DIRECTORY_URLS)
 
 
@@ -89,6 +91,7 @@ def test_plugin_use_directory_urls(config_plugin):
     generated_html = [
         f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")
     ]
+    print(list(Path(site_dir).glob("**/*.html")))
     assert sorted(generated_html) == sorted(PLUGIN_USE_DIRECTORY_URLS)
 
 
@@ -99,6 +102,7 @@ def test_plugin_no_use_directory_urls(config_plugin):
     generated_html = [
         f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")
     ]
+    print(list(Path(site_dir).glob("**/*.html")))
     assert sorted(generated_html) == sorted(PLUGIN_NO_USE_DIRECTORY_URLS)
 
 
@@ -111,6 +115,7 @@ def test_plugin_use_directory_urls_no_default_language(
     generated_html = [
         f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")
     ]
+    print(list(Path(site_dir).glob("**/*.html")))
     assert sorted(generated_html) == sorted(PLUGIN_USE_DIRECTORY_URLS_NO_DEFAULT)
 
 
@@ -123,4 +128,5 @@ def test_plugin_no_use_directory_urls_no_default_language(
     generated_html = [
         f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")
     ]
+    print(list(Path(site_dir).glob("**/*.html")))
     assert sorted(generated_html) == sorted(PLUGIN_NO_USE_DIRECTORY_URLS_NO_DEFAULT)
