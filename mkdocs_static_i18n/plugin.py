@@ -71,41 +71,55 @@ class I18n(BasePlugin):
         return Path(src_path).suffixes == [f".{language}", ".md"]
 
     def _get_translated_page(self, page, language, config):
+        i18n_page = deepcopy(page)
+
         # there is a specific translation file for this lang
         for lang in self.all_languages:
-            if self._is_translation_for(page.src_path, lang):
-                i18n_page = self._get_i18n_page(page, lang, config)
+            if self._is_translation_for(i18n_page.src_path, lang):
+                i18n_page.name = page.name.replace(f".{lang}", "")
+                if config.get("use_directory_urls") is False:
+                    i18n_page.dest_path = i18n_page.dest_path.replace(
+                        page.name, i18n_page.name
+                    )
+                    i18n_page.abs_dest_path = i18n_page.abs_dest_path.replace(
+                        page.name, i18n_page.name
+                    )
+                    i18n_page.url = (
+                        i18n_page.url.replace(page.name, i18n_page.name) or "."
+                    )
+                else:
+                    i18n_page.dest_path = i18n_page.dest_path.replace(
+                        f"{page.name}/", ""
+                    )
+                    i18n_page.abs_dest_path = i18n_page.abs_dest_path.replace(
+                        f"{page.name}/", ""
+                    )
+                    i18n_page.url = i18n_page.url.replace(f"{page.name}/", "") or "."
                 break
-        else:
-            i18n_page = deepcopy(page)
 
         # setup and copy the file to the current language path
-        i18n_page.dest_path = Path(f"/{language}/{i18n_page.dest_path}")
-        i18n_page.abs_dest_path = Path(f"{config['site_dir']}/{i18n_page.dest_path}")
+        i18n_page.dest_path = f"/{language}/{i18n_page.dest_path}"
+        i18n_page.abs_dest_path = i18n_page.abs_dest_path.replace(
+            config["site_dir"], f"{config['site_dir']}/{language}"
+        )
         i18n_page.url = (
             f"{language}/" if i18n_page.url == "." else f"{language}/{i18n_page.url}"
         )
 
         return i18n_page
 
-    def _get_i18n_page(self, page, page_lang, config):
+    def _get_non_translated_page(self, page, page_lang, config):
         i18n_page = deepcopy(page)
-        i18n_page.abs_dest_path = Path(i18n_page.abs_dest_path)
-        i18n_page.dest_path = Path(i18n_page.dest_path)
-        i18n_page.name = str(Path(page.name).stem)
+        i18n_page.name = page.name.replace(f".{page_lang}", "")
         if config.get("use_directory_urls") is False:
-            i18n_page.dest_path = i18n_page.dest_path.with_name(
-                i18n_page.name
-            ).with_suffix(".html")
-            i18n_page.abs_dest_path = i18n_page.abs_dest_path.with_name(
-                i18n_page.name
-            ).with_suffix(".html")
+            i18n_page.dest_path = page.dest_path.replace(f"{page.name}", i18n_page.name)
+            i18n_page.abs_dest_path = page.abs_dest_path.replace(
+                f"{page.name}", i18n_page.name
+            )
             i18n_page.url = page.url.replace(page.name, i18n_page.name) or "."
         else:
-            i18n_page.dest_path = i18n_page.dest_path.name
-            i18n_page.abs_dest_path = (
-                i18n_page.abs_dest_path.parent.parent / i18n_page.abs_dest_path.name
-            )
+            i18n_page.dest_path = page.dest_path.replace(f"{page.name}/", "")
+            i18n_page.abs_dest_path = page.abs_dest_path.replace(f"{page.name}/", "")
             i18n_page.url = page.url.replace(f"{page.name}/", "") or "."
 
         return i18n_page
@@ -170,7 +184,9 @@ class I18n(BasePlugin):
             if page_lang is None:
                 main_files.append(main_page)
             else:
-                main_files.append(self._get_i18n_page(main_page, page_lang, config))
+                main_files.append(
+                    self._get_non_translated_page(main_page, page_lang, config)
+                )
 
             for language in self.all_languages:
                 lang_expects = [
