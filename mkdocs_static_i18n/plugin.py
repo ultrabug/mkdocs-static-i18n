@@ -102,11 +102,23 @@ class I18n(BasePlugin):
             ).with_suffix(".html")
             i18n_page.url = page.url.replace(page.name, i18n_page.name) or "."
         else:
-            i18n_page.dest_path = i18n_page.dest_path.name
-            i18n_page.abs_dest_path = (
-                i18n_page.abs_dest_path.parent.parent / i18n_page.abs_dest_path.name
-            )
-            i18n_page.url = page.url.replace(f"{page.name}/", "") or "."
+            # index files do not exhibit a named folder
+            # whereas named files do!
+            if i18n_page.name == "index":
+                i18n_page.dest_path = i18n_page.dest_path.parent.with_suffix(".html")
+                i18n_page.abs_dest_path = i18n_page.abs_dest_path.parent.with_suffix(
+                    ".html"
+                )
+                i18n_page.url = str(Path(i18n_page.dest_path).parent.as_posix())
+
+            else:
+                i18n_page.dest_path = i18n_page.dest_path.parent.with_suffix(
+                    ""
+                ).joinpath(i18n_page.dest_path.name)
+                i18n_page.abs_dest_path = i18n_page.abs_dest_path.parent.with_suffix(
+                    ""
+                ).joinpath(i18n_page.abs_dest_path.name)
+                i18n_page.url = str(Path(i18n_page.dest_path).parent.as_posix())
 
         return i18n_page
 

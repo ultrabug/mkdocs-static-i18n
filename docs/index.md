@@ -26,8 +26,8 @@ docs
 ├── index.fr.md
 ├── index.md  <-- you are here
 ├── topic1
-│   ├── index.en.md
-│   └── index.fr.md
+│   ├── named_file.en.md
+│   └── named_file.fr.md
 └── topic2
     ├── index.en.md
     └── index.md
