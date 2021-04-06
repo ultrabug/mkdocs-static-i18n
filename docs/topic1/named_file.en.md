@@ -1,14 +1,14 @@
-# Sujet 1 (français)
+# Topic 1 (english)
 
-Vous naviguez sur la version **FR** générée depuis le fichier `topic1/index.fr.md`.
+You are on the **EN** version generated from the file `topic1/index.en.md`.
 
 ```
 docs
 ├── index.fr.md
 ├── index.md
 ├── topic1
-│   ├── index.en.md
-│   └── index.fr.md  <-- you are here
+│   ├── named_file.en.md  <-- you are here
+│   └── named_file.fr.md
 └── topic2
     ├── index.en.md
     └── index.md

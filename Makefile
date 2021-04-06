@@ -17,4 +17,4 @@ deploy: qa test
 	mkdocs gh-deploy
 
 test:
-	pytest -xs
+	pytest -xsvv
