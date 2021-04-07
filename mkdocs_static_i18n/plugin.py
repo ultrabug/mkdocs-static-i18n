@@ -149,9 +149,10 @@ class I18n(BasePlugin):
                 v = self._dict_replace_value(v, old, new)
             elif isinstance(v, list):
                 v = self._list_replace_value(v, old, new)
-            elif isinstance(v, str):
+            elif isinstance(v, str) or isinstance(v, Path):
                 if str(v) == str(old):
                     v = new
+                v = str(Path(v))
             x[k] = v
         return x
 
@@ -165,9 +166,10 @@ class I18n(BasePlugin):
                 e = self._list_replace_value(e, old, new)
             elif isinstance(e, dict):
                 e = self._dict_replace_value(e, old, new)
-            elif isinstance(e, str):
+            elif isinstance(e, str) or isinstance(e, Path):
                 if str(e) == str(old):
                     e = new
+                e = str(Path(e))
             x.append(e)
         return x
 
