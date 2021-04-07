@@ -1,0 +1,14 @@
+site_name: MkDocs static i18n plugin tests with static nav
+
+nav:
+  - Home: index.md
+  - Topic1:
+    - Named File: topic1/named_file.en.md
+  - Topic2: index.en.md
+
+plugins:
+  - i18n:
+      default_language: en
+      languages:
+        en: english
+        fr: français
