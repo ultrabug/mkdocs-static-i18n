@@ -64,6 +64,7 @@ class I18n(BasePlugin):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.i18n_configs = {}
         self.i18n_files = defaultdict(list)
         self.i18n_navs = {}
 
@@ -138,6 +139,49 @@ class I18n(BasePlugin):
                 f"mkdocs-static-i18n is expecting one of the following files: {expected_paths}"
             )
 
+    def _dict_replace_value(self, directory, old, new):
+        """
+        Return a copy of the given dict with value replaced.
+        """
+        x = {}
+        for k, v in directory.items():
+            if isinstance(v, dict):
+                v = self._dict_replace_value(v, old, new)
+            elif isinstance(v, list):
+                v = self._list_replace_value(v, old, new)
+            elif isinstance(v, str):
+                if str(v) == str(old):
+                    v = new
+            x[k] = v
+        return x
+
+    def _list_replace_value(self, listing, old, new):
+        """
+        Return a copy of the given list with value replaced.
+        """
+        x = []
+        for e in listing:
+            if isinstance(e, list):
+                e = self._list_replace_value(e, old, new)
+            elif isinstance(e, dict):
+                e = self._dict_replace_value(e, old, new)
+            elif isinstance(e, str):
+                if str(e) == str(old):
+                    e = new
+            x.append(e)
+        return x
+
+    def _get_base_path(self, page):
+        """
+        Return the path of the given page without any suffix.
+        """
+        page_lang = self._get_page_lang(page)
+        if page_lang is None:
+            base_path = Path(page.src_path).with_suffix("")
+        else:
+            base_path = Path(page.src_path).with_suffix("").with_suffix("")
+        return base_path
+
     def on_files(self, files, config):
         """
         Construct the main + lang specific file tree which will be used to
@@ -147,11 +191,14 @@ class I18n(BasePlugin):
             # avoids calling ourselves multiple times via on_post_build
             return files
 
-        default_language = self.config.get("default_language")
-        self.all_languages = set([default_language] + list(self.config["languages"]))
+        self.default_language = self.config.get("default_language")
+        self.all_languages = set(
+            [self.default_language] + list(self.config["languages"])
+        )
 
         main_files = Files([])
         for language in self.all_languages:
+            self.i18n_configs[language] = deepcopy(config)
             self.i18n_files[language] = Files([])
 
         for obj in files:
@@ -162,19 +209,14 @@ class I18n(BasePlugin):
 
         base_paths = set()
         for page in files.documentation_pages():
-            page_lang = self._get_page_lang(page)
-            if page_lang is None:
-                base_path = Path(page.src_path).with_suffix("")
-            else:
-                base_path = Path(page.src_path).with_suffix("").with_suffix("")
-
+            base_path = self._get_base_path(page)
             if base_path in base_paths:
                 continue
 
             # main expects .md or .default_language.md
             main_expects = [
                 base_path.with_suffix(".md"),
-                base_path.with_suffix(f".{default_language}.md"),
+                base_path.with_suffix(f".{self.default_language}.md"),
             ]
             main_page = self._get_page_from_paths(main_expects, files)
 
@@ -187,7 +229,7 @@ class I18n(BasePlugin):
             for language in self.all_languages:
                 lang_expects = [
                     base_path.with_suffix(f".{language}.md"),
-                    base_path.with_suffix(f".{default_language}.md"),
+                    base_path.with_suffix(f".{self.default_language}.md"),
                     base_path.with_suffix(".md"),
                 ]
                 lang_page = self._get_page_from_paths(lang_expects, files)
@@ -206,13 +248,43 @@ class I18n(BasePlugin):
 
         return main_files
 
+    def _fix_config_navigation(self, language, files):
+        """
+        When a static navigation is set in mkdocs.yml a user will usually
+        structurate its navigation using the main (default language)
+        documentation markdown pages.
+
+        This function localizes the given pages to their translated
+        counterparts if available.
+        """
+        for i18n_page in files.documentation_pages():
+            if Path(i18n_page.src_path).suffixes == [f".{language}", ".md"]:
+                base_path = self._get_base_path(i18n_page)
+                config_path_expects = [
+                    base_path.with_suffix(".md"),
+                    base_path.with_suffix(f".{self.default_language}.md"),
+                ]
+                for config_path in config_path_expects:
+                    self.i18n_configs[language]["nav"] = self._list_replace_value(
+                        self.i18n_configs[language]["nav"],
+                        config_path,
+                        i18n_page.src_path,
+                    )
+
     def on_nav(self, nav, config, files):
-        """"""
+        """
+        Localize the navigation per language.
+        """
         if self.i18n_navs:
             # avoids calling ourselves multiple times via on_post_build
             return nav
         for language, files in self.i18n_files.items():
-            self.i18n_navs[language] = get_navigation(files, config)
+            # localize the src_path of the files listed in a static nav
+            if self.i18n_configs[language]["nav"]:
+                self._fix_config_navigation(language, files)
+            self.i18n_navs[language] = get_navigation(
+                files, self.i18n_configs[language]
+            )
             if nav.homepage is not None:
                 self.i18n_navs[language].homepage = deepcopy(nav.homepage)
                 self.i18n_navs[
@@ -231,6 +303,7 @@ class I18n(BasePlugin):
         for language in self.config.get("languages"):
             log.info(f"Building {language} documentation")
 
+            config = self.i18n_configs[language]
             files = self.i18n_files[language]
             nav = self.i18n_navs[language]
 
