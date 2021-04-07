@@ -8,10 +8,21 @@ theme:
     text: Ubuntu
     code: Ubuntu Mono
   icon:
-    logo: material/translate
-  custom_dir: theme_overrides
+    logo: material/file-document-multiple
+  palette:
+    primary: blue
 
 extra:
+  alternate:
+    - name: Default (en)
+      link: ./
+      lang: en
+    - name: English
+      link: ./en/
+      lang: en
+    - name: Français
+      link: ./fr/
+      lang: fr
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/ultrabug/mkdocs-static-i18n
