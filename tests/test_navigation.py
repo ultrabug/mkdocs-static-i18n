@@ -1,21 +1,23 @@
+from pathlib import Path
+
 from mkdocs.structure.files import get_files
 from mkdocs.structure.nav import get_navigation
 
 MAIN_STATIC_NAV = [
     {"Home": "index.md"},
-    {"Topic1": [{"Named File": "topic1/named_file.en.md"}]},
+    {"Topic1": [{"Named File": str(Path("topic1/named_file.en.md"))}]},
     {"Topic2": "index.en.md"},
 ]
 
 FR_STATIC_NAV = [
     {"Home": "index.fr.md"},
-    {"Topic1": [{"Named File": "topic1/named_file.fr.md"}]},
+    {"Topic1": [{"Named File": str(Path("topic1/named_file.fr.md"))}]},
     {"Topic2": "index.fr.md"},
 ]
 
 EN_STATIC_NAV = [
     {"Home": "index.md"},
-    {"Topic1": [{"Named File": "topic1/named_file.en.md"}]},
+    {"Topic1": [{"Named File": str(Path("topic1/named_file.en.md"))}]},
     {"Topic2": "index.en.md"},
 ]
 
