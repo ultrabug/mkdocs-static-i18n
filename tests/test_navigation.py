@@ -1,7 +1,6 @@
 from pathlib import Path
 
 from mkdocs.structure.files import get_files
-from mkdocs.structure.nav import get_navigation
 
 EN_STATIC_NAV = [
     {"Home": "index.md"},
@@ -22,8 +21,7 @@ def test_plugin_static_nav(config_plugin_static_nav):
     i18n_plugin = config["plugins"]["i18n"]
     #
     files = get_files(config)
-    i18n_files = i18n_plugin.on_files(files, config)
-    nav = get_navigation(i18n_files, config)
+    i18n_plugin.on_files(files, config)
     i18n_plugin.on_post_build(config)
     #
     assert i18n_plugin.i18n_configs["en"]["nav"] == EN_STATIC_NAV
