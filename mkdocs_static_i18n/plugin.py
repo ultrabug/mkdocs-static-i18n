@@ -273,27 +273,6 @@ class I18n(BasePlugin):
                         i18n_page.src_path,
                     )
 
-    def on_nav(self, nav, config, files):
-        """
-        Localize the navigation per language.
-        """
-        if self.i18n_navs:
-            # avoids calling ourselves multiple times via on_post_build
-            return nav
-        for language, files in self.i18n_files.items():
-            # localize the src_path of the files listed in a static nav
-            if self.i18n_configs[language]["nav"]:
-                self._fix_config_navigation(language, files)
-            self.i18n_navs[language] = get_navigation(
-                files, self.i18n_configs[language]
-            )
-            if nav.homepage is not None:
-                self.i18n_navs[language].homepage = deepcopy(nav.homepage)
-                self.i18n_navs[
-                    language
-                ].homepage.file.url = f"{language}/{nav.homepage.file.url}"
-        return nav
-
     def on_post_build(self, config):
         """
         Derived from mkdocs commands build function.
@@ -304,6 +283,13 @@ class I18n(BasePlugin):
         env = config["theme"].get_env()
         for language in self.config.get("languages"):
             log.info(f"Building {language} documentation")
+
+            if self.i18n_configs[language]["nav"]:
+                self._fix_config_navigation(language, self.i18n_files[language])
+
+            self.i18n_navs[language] = get_navigation(
+                self.i18n_files[language], self.i18n_configs[language]
+            )
 
             config = self.i18n_configs[language]
             files = self.i18n_files[language]

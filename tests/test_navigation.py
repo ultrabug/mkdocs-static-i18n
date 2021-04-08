@@ -24,7 +24,7 @@ def test_plugin_static_nav(config_plugin_static_nav):
     files = get_files(config)
     i18n_files = i18n_plugin.on_files(files, config)
     nav = get_navigation(i18n_files, config)
-    i18n_plugin.on_nav(nav, config, i18n_files)
+    i18n_plugin.on_post_build(config)
     #
     assert i18n_plugin.i18n_configs["en"]["nav"] == EN_STATIC_NAV
     assert i18n_plugin.i18n_configs["fr"]["nav"] == FR_STATIC_NAV
