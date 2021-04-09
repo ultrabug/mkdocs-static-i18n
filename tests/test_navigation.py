@@ -21,6 +21,7 @@ def test_plugin_static_nav(config_plugin_static_nav):
     i18n_plugin = config["plugins"]["i18n"]
     #
     files = get_files(config)
+    i18n_plugin.on_config(config)
     i18n_plugin.on_files(files, config)
     i18n_plugin.on_post_build(config)
     #

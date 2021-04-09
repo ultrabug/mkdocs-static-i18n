@@ -15,6 +15,13 @@ try:
 except ImportError:
     install_translations = None
 
+try:
+    import pkg_resources
+
+    material_version = pkg_resources.get_distribution("mkdocs-material").version
+except Exception:
+    material_version = None
+
 log = logging.getLogger(__name__)
 
 
@@ -37,25 +44,20 @@ class Locale(Type):
         if isinstance(value, str):
             if value.lower() != value:
                 raise ValidationError(
-                    f"Language values should be lower case, received '{value}' "
-                    f"expected '{value.lower()}'."
-                )
-            elif len(value) < 2:
-                raise ValidationError(
-                    f"Language values should be at least two characters long, "
-                    f"received '{value}' of length '{len(value)}'."
+                    "Language values must be ISO-639-1 lower case, "
+                    f"received '{value}' expected '{value.lower()}'."
                 )
         if isinstance(value, dict):
             for key in value:
                 if key.lower() != key:
                     raise ValidationError(
-                        f"Language values should be lower case, received '{key}' "
-                        f"expected '{key.lower()}'."
+                        "Language values must be ISO-639-1 lower case, "
+                        f"received '{key}' expected '{key.lower()}'."
                     )
-                elif len(key) < 2:
+                elif len(key) != 2:
                     raise ValidationError(
-                        f"Language values should be at least two characters long, "
-                        f"received '{key}' of length '{len(key)}'."
+                        "Language values must respect the ISO-639-1 (2-letter) "
+                        f"format, received '{key}' of length '{len(key)}'."
                     )
         return value
 
@@ -63,8 +65,9 @@ class Locale(Type):
 class I18n(BasePlugin):
 
     config_scheme = (
-        ("default_language", Locale(str, required=True)),
+        ("default_language", Locale(str, length=2, required=True)),
         ("languages", Locale(dict, required=True)),
+        ("material_alternate", Type(bool, default=True, required=False)),
     )
 
     def __init__(self, *args, **kwargs):
@@ -189,20 +192,45 @@ class I18n(BasePlugin):
             base_path = Path(page.src_path).with_suffix("").with_suffix("")
         return base_path
 
+    def on_config(self, config):
+        """
+        Enrich configuration with language specific knowledge.
+        """
+        self.default_language = self.config.get("default_language")
+        self.all_languages = set(
+            [self.default_language] + list(self.config["languages"])
+        )
+        # Support for mkdocs-material>=7.1.0 language selector
+        if self.config["material_alternate"]:
+            if material_version and material_version >= "7.1.0":
+                if not config["extra"].get("alternate"):
+                    config["extra"]["alternate"] = [
+                        {
+                            "name": self.config["languages"].get(
+                                self.config["default_language"],
+                                self.config["default_language"],
+                            ),
+                            "link": "./",
+                            "lang": self.config["default_language"],
+                        }
+                    ]
+                    for language in self.all_languages:
+                        if language == self.config["default_language"]:
+                            continue
+                        config["extra"]["alternate"].append(
+                            {
+                                "name": self.config["languages"][language],
+                                "link": f"./{language}/",
+                                "lang": language,
+                            }
+                        )
+        return config
+
     def on_files(self, files, config):
         """
         Construct the main + lang specific file tree which will be used to
         generate the navigation for the default site and per language.
         """
-        if self.i18n_files:
-            # avoids calling ourselves multiple times via on_post_build
-            return files
-
-        self.default_language = self.config.get("default_language")
-        self.all_languages = set(
-            [self.default_language] + list(self.config["languages"])
-        )
-
         main_files = Files([])
         for language in self.all_languages:
             self.i18n_configs[language] = deepcopy(config)
@@ -285,7 +313,6 @@ class I18n(BasePlugin):
         We build every language on its own directory.
         """
         dirty = False
-        env = config["theme"].get_env()
         for language in self.config.get("languages"):
             log.info(f"Building {language} documentation")
 
@@ -297,12 +324,13 @@ class I18n(BasePlugin):
             )
 
             config = self.i18n_configs[language]
+            env = self.i18n_configs[language]["theme"].get_env()
             files = self.i18n_files[language]
             nav = self.i18n_navs[language]
 
-            # Support for mkdocs>=1.2 theme internationalization
-            if install_translations is not None:
-                install_translations(env, config)
+            # Support mkdocs-material i18n search context
+            if config["theme"].name == "material":
+                config["theme"].language = language
 
             # Run `nav` plugin events.
             # This is useful to be compatible with nav order changing plugins
@@ -314,14 +342,3 @@ class I18n(BasePlugin):
 
             for file in self.i18n_files[language].documentation_pages():
                 _build_page(file.page, config, files, nav, env, dirty)
-
-    def on_page_context(self, context, page, config, nav):
-        """
-        mkdocs-material search context i18n support
-        """
-        for language in self.config.get("languages"):
-            if page.url.startswith(f"{language}/"):
-                if config["theme"].name == "material":
-                    context["config"]["theme"].language = language
-                break
-        return context

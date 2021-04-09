@@ -25,18 +25,19 @@ Just `pip install mkdocs-static-i18n`!
 
 ## Configuration
 
-All the parameters are mandatory:
+Supported parameters:
 
-- **default_language**: string
-- **languages**: mapping of **language name**: **display value**
+- **default_language** (mandatory): [ISO-639-1](https://en.wikipedia.org/wiki/ISO_639-1) (2-letter) string
+- **languages** (mandatory): mapping of **ISO-639-1 (2-letter) language code**: **display value**
+- **material_alternate** (default: true): boolean - [see this section for more info](#using-mkdocs-material-site-language-selector)
 
 ```
 plugins:
   - i18n:
       default_language: en
       languages:
-        en: english
-        fr: français
+        en: English
+        fr: Français
 ```
 
 ## Example output
@@ -87,7 +88,7 @@ plugins:
   - i18n:
       default_language: en
       languages:
-        fr: français
+        fr: Français
 ```
 
 Applied on the following structure:
@@ -125,10 +126,31 @@ site
 
 This plugin is compatible with the following mkdocs plugins:
 
-- [MkDocs Material](https://github.com/squidfunk/mkdocs-material): the `search` plugin text will be switched automatically to the right language depending on the version you're browsing
+- [MkDocs Material](https://github.com/squidfunk/mkdocs-material): the `search` plugin text will be switched automatically to the right language depending on the version you're browsing and the `language selector` will automatically be setup for you (requires mkdocs-material>=7.1.0)
 - [MkDocs Awesome Pages Plugin](https://github.com/lukasgeiter/mkdocs-awesome-pages-plugin): the page ordering is preserved on the language specific versions of your site
 
-## Adding language switcher buttons on your navigation header
+## Adding a language selector on your documentation header
+
+### Using mkdocs-material site language selector
+
+Starting version 7.1.0, [mkdocs-material supports a site language selector](https://squidfunk.github.io/mkdocs-material/setup/changing-the-language/#site-language-selector) configuration.
+
+The `mkdocs-static-i18n` plugin will detect if you're using `mkdocs-material` and, if its version is at least `7.1.0`, **will enable and configure the site language selector automatically for you** unless you specified your own `extra.alternate` configuration!
+
+If you wish to disable that feature, simply set the `material_alternate` option to `false`:
+
+```
+plugins:
+  - i18n:
+      default_language: en
+      languages:
+        en: English
+        fr: Français
+      material_alternate: false
+```
+
+
+### Writing a custom language switcher
 
 Let's take `mkdocs-material` as an example and say we would like to add two buttons to allow our visitors to switch to their preferred language.
 
