@@ -10,6 +10,11 @@ from mkdocs.plugins import BasePlugin
 from mkdocs.structure.files import Files
 from mkdocs.structure.nav import get_navigation
 
+try:
+    from mkdocs.localization import install_translations
+except ImportError:
+    install_translations = None
+
 log = logging.getLogger(__name__)
 
 
@@ -294,6 +299,10 @@ class I18n(BasePlugin):
             config = self.i18n_configs[language]
             files = self.i18n_files[language]
             nav = self.i18n_navs[language]
+
+            # Support for mkdocs>=1.2 theme internationalization
+            if install_translations is not None:
+                install_translations(env, config)
 
             # Run `nav` plugin events.
             # This is useful to be compatible with nav order changing plugins
