@@ -22,7 +22,7 @@ try:
 except Exception:
     material_version = None
 
-log = logging.getLogger(__name__)
+log = logging.getLogger("mkdocs.plugins." + __name__)
 
 
 class Locale(Type):
