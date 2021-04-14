@@ -192,7 +192,7 @@ class I18n(BasePlugin):
             base_path = Path(page.src_path).with_suffix("").with_suffix("")
         return base_path
 
-    def on_config(self, config):
+    def on_config(self, config, **kwargs):
         """
         Enrich configuration with language specific knowledge.
         """
@@ -203,14 +203,19 @@ class I18n(BasePlugin):
         # Support for mkdocs-material>=7.1.0 language selector
         if self.config["material_alternate"]:
             if material_version and material_version >= "7.1.0":
-                if not config["extra"].get("alternate"):
+                if not config["extra"].get("alternate") or kwargs.get("force"):
+                    # Add index.html file name when used with
+                    # use_directory_urls = True
+                    link_suffix = ""
+                    if config.get("use_directory_urls") is True:
+                        link_suffix = "index.html"
                     config["extra"]["alternate"] = [
                         {
                             "name": self.config["languages"].get(
                                 self.config["default_language"],
                                 self.config["default_language"],
                             ),
-                            "link": "./",
+                            "link": f"./{link_suffix}",
                             "lang": self.config["default_language"],
                         }
                     ]
@@ -220,7 +225,7 @@ class I18n(BasePlugin):
                         config["extra"]["alternate"].append(
                             {
                                 "name": self.config["languages"][language],
-                                "link": f"./{language}/",
+                                "link": f"./{language}/{link_suffix}",
                                 "lang": language,
                             }
                         )
