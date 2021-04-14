@@ -10,6 +10,8 @@ Multi language support is just **one `.<language>.md` file away**!
 
 If you want to see how it looks, [check out the demo documentation here](https://ultrabug.github.io/mkdocs-static-i18n/).
 
+*Like what you :eyes:? Give it a :star:!*
+
 ## Language detection logic
 
 This plugin is made to be as simple as possible and will generate a default version of your website + one per configured language on the `<language>/` path.
