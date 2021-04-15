@@ -2,12 +2,12 @@ from mkdocs.config.base import load_config
 
 from mkdocs_static_i18n.plugin import I18n
 
-ALTERNATE_USE_DIRECTORY_URLS = [
+ALTERNATE_NO_USE_DIRECTORY_URLS = [
     {"name": "english", "link": "./index.html", "lang": "en"},
     {"name": "français", "link": "./fr/index.html", "lang": "fr"},
 ]
 
-ALTERNATE_NO_USE_DIRECTORY_URLS = [
+ALTERNATE_USE_DIRECTORY_URLS = [
     {"name": "english", "link": "./", "lang": "en"},
     {"name": "français", "link": "./fr/", "lang": "fr"},
 ]

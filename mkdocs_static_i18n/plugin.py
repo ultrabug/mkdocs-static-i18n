@@ -207,7 +207,7 @@ class I18n(BasePlugin):
                     # Add index.html file name when used with
                     # use_directory_urls = True
                     link_suffix = ""
-                    if config.get("use_directory_urls") is True:
+                    if config.get("use_directory_urls") is False:
                         link_suffix = "index.html"
                     config["extra"]["alternate"] = [
                         {
