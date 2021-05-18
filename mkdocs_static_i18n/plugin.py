@@ -1,4 +1,5 @@
 import logging
+import os
 from collections import defaultdict
 from copy import deepcopy
 from pathlib import Path
@@ -60,6 +61,39 @@ class Locale(Type):
                         f"format, received '{key}' of length '{len(key)}'."
                     )
         return value
+
+
+class I18nFiles(Files):
+    """
+    This class extends MkDocs' Files class to support links and assets that
+    have a translated locale suffix.
+
+    This MkDocs relies on the file.src_path of pages and assets we have to
+    derive the file.src_path and check for a possible .<locale>.<suffix> file
+    to use instead of the link / asset referenced in the markdown source.
+    """
+
+    def __contains__(self, path):
+        """
+        Return a bool stipulating whether or not we found a translated version
+        of the given path or the path itself.
+        """
+        expected_src_path = Path(path)
+        expected_src_paths = [
+            expected_src_path.with_suffix(f".{self.locale}{expected_src_path.suffix}"),
+            expected_src_path,
+        ]
+        return any(filter(lambda s: Path(s) in expected_src_paths, self.src_paths))
+
+    def get_file_from_path(self, path):
+        """ Return a File instance with File.src_path equal to path. """
+        expected_src_path = Path(path)
+        expected_src_paths = [
+            expected_src_path.with_suffix(f".{self.locale}{expected_src_path.suffix}"),
+            expected_src_path,
+        ]
+        for src_path in filter(lambda s: Path(s) in expected_src_paths, self.src_paths):
+            return self.src_paths.get(os.path.normpath(src_path))
 
 
 class I18n(BasePlugin):
@@ -279,10 +313,12 @@ class I18n(BasePlugin):
         Construct the main + lang specific file tree which will be used to
         generate the navigation for the default site and per language.
         """
-        main_files = Files([])
+        main_files = I18nFiles([])
+        main_files.locale = self.default_language
         for language in self.all_languages:
             self.i18n_configs[language] = deepcopy(config)
-            self.i18n_files[language] = Files([])
+            self.i18n_files[language] = I18nFiles([])
+            self.i18n_files[language].locale = language
 
         base_paths = set()
         for fileobj in files:

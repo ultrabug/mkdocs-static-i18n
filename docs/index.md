@@ -35,3 +35,7 @@ docs
 
 Use the **language switcher in the header** to switch between the localized
 versions of the website. This switcher is part of [mkdocs-material >= 7.1.0](https://squidfunk.github.io/mkdocs-material/setup/changing-the-language/#site-language-selector) and is configured from the [mkdocs.yml file](https://github.com/ultrabug/mkdocs-static-i18n/blob/main/mkdocs.yml).
+
+You can also **localize your media / static content** like this image:
+
+![localized image](image.png)
