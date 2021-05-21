@@ -28,6 +28,9 @@ extra:
       link: https://github.com/ultrabug/mkdocs-static-i18n
       name: mkdocs-static-i18n on Github
 
+markdown_extensions:
+  - admonition
+
 plugins:
   - search
   - i18n:
