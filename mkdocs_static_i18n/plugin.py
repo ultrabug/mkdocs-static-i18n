@@ -19,8 +19,14 @@ except ImportError:
 try:
     import pkg_resources
 
-    material_version = pkg_resources.get_distribution("mkdocs-material").version
+    material_dist = pkg_resources.get_distribution("mkdocs-material")
+    material_version = material_dist.version
+    material_languages = [
+        lang.split(".html")[0]
+        for lang in material_dist.resource_listdir("material/partials/languages")
+    ]
 except Exception:
+    material_languages = []
     material_version = None
 
 log = logging.getLogger("mkdocs.plugins." + __name__)
@@ -81,6 +87,9 @@ class I18nFiles(Files):
         expected_src_path = Path(path)
         expected_src_paths = [
             expected_src_path.with_suffix(f".{self.locale}{expected_src_path.suffix}"),
+            expected_src_path.with_suffix(
+                f".{self.default_locale}{expected_src_path.suffix}"
+            ),
             expected_src_path,
         ]
         return any(filter(lambda s: Path(s) in expected_src_paths, self.src_paths))
@@ -90,6 +99,9 @@ class I18nFiles(Files):
         expected_src_path = Path(path)
         expected_src_paths = [
             expected_src_path.with_suffix(f".{self.locale}{expected_src_path.suffix}"),
+            expected_src_path.with_suffix(
+                f".{self.default_locale}{expected_src_path.suffix}"
+            ),
             expected_src_path,
         ]
         for src_path in filter(lambda s: Path(s) in expected_src_paths, self.src_paths):
@@ -314,10 +326,12 @@ class I18n(BasePlugin):
         generate the navigation for the default site and per language.
         """
         main_files = I18nFiles([])
+        main_files.default_locale = self.default_language
         main_files.locale = self.default_language
         for language in self.all_languages:
             self.i18n_configs[language] = deepcopy(config)
             self.i18n_files[language] = I18nFiles([])
+            self.i18n_files[language].default_locale = self.default_language
             self.i18n_files[language].locale = language
 
         base_paths = set()
@@ -427,7 +441,12 @@ class I18n(BasePlugin):
 
             # Support mkdocs-material i18n search context
             if config["theme"].name == "material":
-                config["theme"].language = language
+                if language in material_languages:
+                    config["theme"].language = language
+                else:
+                    log.warning(
+                        f"Language {language} is not supported by mkdocs-material=={material_version}, setting 'theme.language: {self.default_language}'"
+                    )
 
             # Run `nav` plugin events.
             # This is useful to be compatible with nav order changing plugins

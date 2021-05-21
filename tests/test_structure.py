@@ -31,7 +31,9 @@ def test_build_use_directory_urls(config_base):
     site_dir = config_base["site_dir"]
     build(config_base)
     generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
-    generate_site.extend([f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.png")])
+    generate_site.extend(
+        [f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.png")]
+    )
     print(list(Path(site_dir).glob("**/*.html")))
     assert sorted(generate_site) == sorted(USE_DIRECTORY_URLS)
 
@@ -41,7 +43,9 @@ def test_build_no_use_directory_urls(config_base):
     site_dir = config_base["site_dir"]
     build(config_base)
     generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
-    generate_site.extend([f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.png")])
+    generate_site.extend(
+        [f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.png")]
+    )
     print(list(Path(site_dir).glob("**/*.html")))
     assert sorted(generate_site) == sorted(NO_USE_DIRECTORY_URLS)
 
@@ -83,7 +87,9 @@ def test_plugin_use_directory_urls(config_plugin):
     site_dir = config_plugin["site_dir"]
     build(config_plugin)
     generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
-    generate_site.extend([f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.png")])
+    generate_site.extend(
+        [f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.png")]
+    )
     print(list(Path(site_dir).glob("**/*.html")))
     assert sorted(generate_site) == sorted(PLUGIN_USE_DIRECTORY_URLS)
 
@@ -93,7 +99,9 @@ def test_plugin_no_use_directory_urls(config_plugin):
     site_dir = config_plugin["site_dir"]
     build(config_plugin)
     generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
-    generate_site.extend([f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.png")])
+    generate_site.extend(
+        [f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.png")]
+    )
     print(list(Path(site_dir).glob("**/*.html")))
     assert sorted(generate_site) == sorted(PLUGIN_NO_USE_DIRECTORY_URLS)
 
@@ -129,7 +137,9 @@ def test_plugin_use_directory_urls_no_default_language(
     site_dir = config_plugin_no_default_language["site_dir"]
     build(config_plugin_no_default_language)
     generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
-    generate_site.extend([f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.png")])
+    generate_site.extend(
+        [f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.png")]
+    )
     print(list(Path(site_dir).glob("**/*.html")))
     assert sorted(generate_site) == sorted(PLUGIN_USE_DIRECTORY_URLS_NO_DEFAULT)
 
@@ -141,6 +151,8 @@ def test_plugin_no_use_directory_urls_no_default_language(
     site_dir = config_plugin_no_default_language["site_dir"]
     build(config_plugin_no_default_language)
     generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
-    generate_site.extend([f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.png")])
+    generate_site.extend(
+        [f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.png")]
+    )
     print(list(Path(site_dir).glob("**/*.html")))
     assert sorted(generate_site) == sorted(PLUGIN_NO_USE_DIRECTORY_URLS_NO_DEFAULT)
