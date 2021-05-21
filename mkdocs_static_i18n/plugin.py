@@ -445,7 +445,9 @@ class I18n(BasePlugin):
                     config["theme"].language = language
                 else:
                     log.warning(
-                        f"Language {language} is not supported by mkdocs-material=={material_version}, setting 'theme.language: {self.default_language}'"
+                        f"Language {language} is not supported by "
+                        f"mkdocs-material=={material_version}, not setting "
+                        "the 'theme.language' option"
                     )
 
             # Run `nav` plugin events.
