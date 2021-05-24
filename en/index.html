@@ -76,7 +76,7 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="MkDocs static i18n plugin demo" class="md-header__button md-logo" aria-label="MkDocs static i18n plugin demo" data-md-component="logo">
+    <a href=".." title="MkDocs static i18n plugin demo" class="md-header__button md-logo" aria-label="MkDocs static i18n plugin demo" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 4v18h16v2H4c-1.1 0-2-.9-2-2V4h2m11 3h5.5L15 1.5V7M8 0h8l6 6v12c0 1.11-.89 2-2 2H8a2 2 0 0 1-2-2V2c0-1.11.89-2 2-2m9 16v-2H8v2h9m3-4v-2H8v2h12z"/></svg>
@@ -201,7 +201,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="MkDocs static i18n plugin demo" class="md-nav__button md-logo" aria-label="MkDocs static i18n plugin demo" data-md-component="logo">
+    <a href=".." title="MkDocs static i18n plugin demo" class="md-nav__button md-logo" aria-label="MkDocs static i18n plugin demo" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 4v18h16v2H4c-1.1 0-2-.9-2-2V4h2m11 3h5.5L15 1.5V7M8 0h8l6 6v12c0 1.11-.89 2-2 2H8a2 2 0 0 1-2-2V2c0-1.11.89-2 2-2m9 16v-2H8v2h9m3-4v-2H8v2h12z"/></svg>
@@ -241,9 +241,52 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Home page (default version + english version)
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Home page (default version + english version)
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-you-are-seeing-now" class="md-nav__link">
+    What you are seeing now
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#automatic-media-link-asset-localization" class="md-nav__link">
+    Automatic media / link / asset localization
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#localized-build-logic" class="md-nav__link">
+    Localized build logic
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -279,7 +322,7 @@
   
     <li class="md-nav__item">
       <a href="topic1/named_file" class="md-nav__link">
-        Topic 1 (english)
+        Topic 1 (default version + english version)
       </a>
     </li>
   
@@ -351,6 +394,35 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-you-are-seeing-now" class="md-nav__link">
+    What you are seeing now
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#automatic-media-link-asset-localization" class="md-nav__link">
+    Automatic media / link / asset localization
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#localized-build-logic" class="md-nav__link">
+    Localized build logic
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -367,7 +439,60 @@
                 
                 
                 <h1 id="home-page-default-version-english-version">Home page (default version + english version)</h1>
-<p>This is the home page displayed from the <code>index.md</code> file.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><strong>Use the language switcher in the header</strong> to switch between the localized versions of this demo website. This switcher is part of <a href="https://squidfunk.github.io/mkdocs-material/setup/changing-the-language/#site-language-selector">mkdocs-material &gt;= 7.1.0</a> and is <strong>automatically configured by this plugin</strong> or can be statically configured from the <a href="https://github.com/ultrabug/mkdocs-static-i18n/blob/main/mkdocs.yml">mkdocs.yml file</a>.</p>
+</div>
+<h2 id="what-you-are-seeing-now">What you are seeing now</h2>
+<p>This page source file and media content have been localized after applying
+the <a href="#localized-build-logic">localized build logic</a> described below. Here is a
+quick recap of the files used as source and the generated build structure of
+what you see:</p>
+<pre><code>docs
+├── image.en.png  &lt;-- this image file is used here
+├── image.fr.png
+├── index.fr.md
+├── index.md  &lt;-- this file is used here
+├── topic1
+│   ├── named_file.en.md
+│   └── named_file.fr.md
+└── topic2
+    ├── index.en.md
+    └── index.md
+</code></pre>
+<pre><code>site
+├── en
+│   ├── image.png  &lt;-- you see this image here on the /en version
+│   ├── index.html  &lt;-- you are here on the /en version
+│   ├── topic1
+│   │   └── named_file
+│   │       └── index.html
+│   └── topic2
+│       └── index.html
+├── fr
+│   ├── image.png
+│   ├── index.html
+│   ├── topic1
+│   │   └── named_file
+│   │       └── index.html
+│   └── topic2
+│       └── index.html
+├── image.png  &lt;-- you see this image here on the default version
+├── index.html  &lt;-- you are here on the default version
+├── topic1
+│   └── named_file
+│       └── index.html
+└── topic2
+    └── index.html
+</code></pre>
+<h2 id="automatic-media-link-asset-localization">Automatic media / link / asset localization</h2>
+<p><img alt="localized image" src="image.png" /></p>
+<p>This image source is dynamically localized while still being referenced in the
+markdown source of the page as <code>![localized image](image.png)</code>. This means that
+this plugin allows you to not worry about links, media and static content file
+names, just use their simple name and concentrate on your content translation!</p>
+<hr />
+<h2 id="localized-build-logic">Localized build logic</h2>
 <p>The settings used to build this site is:</p>
 <pre><code>plugins:
   - i18n:
@@ -382,19 +507,37 @@
 <li>the <code>/en</code> language version which will use any <code>.en.md</code> documentation file first and fallback to any <code>.md</code> file found</li>
 <li>the <code>/fr</code> language version which will use any <code>.fr.md</code> documentation file first and fallback to either <code>.en.md</code> file (default language) or <code>.md</code> file (default language fallback) whichever comes first</li>
 </ol>
-<p>Given that logic, the following page is displayed on both the default language version and the /en version.</p>
-<pre><code>docs
-├── index.fr.md
-├── index.md  &lt;-- you are here
+<p>Given that logic, the following <code>site</code> structure is built:</p>
+<pre><code>site
+├── 404.html
+├── assets
+│   ├── images
+│   ├── javascripts
+│   └── stylesheets
+├── en
+│   ├── image.png
+│   ├── index.html
+│   ├── topic1
+│   │   └── named_file
+│   │       └── index.html
+│   └── topic2
+│       └── index.html
+├── fr
+│   ├── image.png
+│   ├── index.html
+│   ├── topic1
+│   │   └── named_file
+│   │       └── index.html
+│   └── topic2
+│       └── index.html
+├── image.png
+├── index.html
 ├── topic1
-│   ├── named_file.en.md
-│   └── named_file.fr.md
+│   └── named_file
+│       └── index.html
 └── topic2
-    ├── index.en.md
-    └── index.md
+    └── index.html
 </code></pre>
-<p>Use the <strong>language switcher in the header</strong> to switch between the localized
-versions of the website. This switcher is part of <a href="https://squidfunk.github.io/mkdocs-material/setup/changing-the-language/#site-language-selector">mkdocs-material &gt;= 7.1.0</a> and is configured from the <a href="https://github.com/ultrabug/mkdocs-static-i18n/blob/main/mkdocs.yml">mkdocs.yml file</a>.</p>
                 
               
               
@@ -420,7 +563,7 @@ versions of the website. This switcher is part of <a href="https://squidfunk.git
               <span class="md-footer__direction">
                 Next
               </span>
-              Topic 1 (english)
+              Topic 1 (default version + english version)
             </div>
           </div>
           <div class="md-footer__button md-icon">
