@@ -8,13 +8,17 @@ The `mkdocs-static-i18n` plugin allows you to support multiple languages of your
 
 Multi language support is just **one `.<language>.md` file away**!
 
+Even better, the `mkdocs-static-i18n` also allows you to build and serve [**localized versions of any file extension**](#referencing-localized-content-in-your-markdown-pages) to display localized images, medias and assets.
+
+Localized images/medias/assets are just **one `.<language>.<extension>` file away**!
+
 If you want to see how it looks, [check out the demo documentation here](https://ultrabug.github.io/mkdocs-static-i18n/).
 
 *Like what you :eyes:? Give it a :star:!*
 
 ## Language detection logic
 
-This plugin is made to be as simple as possible and will generate a default version of your website + one per configured language on the `<language>/` path.
+This plugin is made to be as simple as possible and will generate a default version of your website + one version per configured language on the `<language>/` path.
 
 - the `default` version will use any `.md` documentation file first and fallback to any `.<default_language>.md` file found
 - the `/<language>` language versions will use any `.<language>.md` documentation file first and fallback to any `.<default_language>.md` file before fallbacking to any default `.md` file found
@@ -48,6 +52,8 @@ Using the configuration above on the following `docs/` structure will build the 
 
 ```
 docs
+├── image.en.png
+├── image.fr.png
 ├── index.fr.md
 ├── index.md
 ├── topic1
@@ -61,17 +67,20 @@ docs
 ```
 site
 ├── en
+│   ├── image.png
 │   ├── index.html
 │   ├── topic1
 │   │   └── index.html
 │   └── topic2
 │       └── index.html
 ├── fr
+│   ├── image.png
 │   ├── index.html
 │   ├── topic1
 │   │   └── index.html
 │   └── topic2
 │       └── index.html
+├── image.png
 ├── index.html
 ├── topic1
 │   └── index.html
@@ -97,6 +106,8 @@ Applied on the following structure:
 
 ```
 docs
+├── image.en.png
+├── image.fr.png
 ├── index.fr.md
 ├── index.md
 ├── topic1
@@ -112,17 +123,56 @@ Will build:
 ```
 site
 ├── fr
+│   ├── image.png
 │   ├── index.html
 │   ├── topic1
 │   │   └── index.html
 │   └── topic2
 │       └── index.html
+├── image.png
 ├── index.html
 ├── topic1
 │   └── index.html
 └── topic2
     └── index.html
 ```
+
+### Referencing localized content in your markdown pages
+
+Focus on translating your content, not on updating all the links and references
+to your assets!
+
+Let `mkdocs-static-i18n` do the heavy lifting of dynamically localizing your
+assets and just reference everything without their localized extension.
+
+Since the generated `site` files have their localization extension removed
+during the build process, you can reference them in your markdown source
+without it (this includes links to `.md` files)!
+
+This simple docs structure:
+
+```
+docs
+├── image.en.png
+├── image.fr.png
+├── index.fr.md
+├── index.md
+```
+
+Will generate this site tree:
+
+```
+site
+├── fr
+│   ├── image.png
+│   ├── index.html
+├── image.png
+├── index.html
+```
+
+Which means that the `image.png` and its `fr/image.png` localized counterpart
+can be referenced the same way as `![my image](image.png)` on both `index.md`
+and `index.fr.md`!
 
 ## Compatibility with other plugins
 
@@ -156,10 +206,10 @@ plugins:
 
 Let's take `mkdocs-material` as an example and say we would like to add two buttons to allow our visitors to switch to their preferred language.
 
-The following explanation is showcased in the demo website and you can find the files in this very repository:
+The following explanation was showcased in the demo website up to 0.7 so you can find the files here:
 
-- [mkdocs.yml](https://github.com/ultrabug/mkdocs-static-i18n/tree/main/mkdocs.yml)
-- [theme_overrides](https://github.com/ultrabug/mkdocs-static-i18n/tree/main/theme_overrides)
+- [mkdocs.yml](https://github.com/ultrabug/mkdocs-static-i18n/tree/0.7/mkdocs.yml)
+- [theme_overrides](https://github.com/ultrabug/mkdocs-static-i18n/tree/0.7/theme_overrides/partials)
 
 We need to add a `custom_dir` to our `theme` configuration:
 

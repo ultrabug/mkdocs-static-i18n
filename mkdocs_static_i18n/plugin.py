@@ -1,4 +1,5 @@
 import logging
+import os
 from collections import defaultdict
 from copy import deepcopy
 from pathlib import Path
@@ -18,8 +19,14 @@ except ImportError:
 try:
     import pkg_resources
 
-    material_version = pkg_resources.get_distribution("mkdocs-material").version
+    material_dist = pkg_resources.get_distribution("mkdocs-material")
+    material_version = material_dist.version
+    material_languages = [
+        lang.split(".html")[0]
+        for lang in material_dist.resource_listdir("material/partials/languages")
+    ]
 except Exception:
+    material_languages = []
     material_version = None
 
 log = logging.getLogger("mkdocs.plugins." + __name__)
@@ -62,6 +69,45 @@ class Locale(Type):
         return value
 
 
+class I18nFiles(Files):
+    """
+    This class extends MkDocs' Files class to support links and assets that
+    have a translated locale suffix.
+
+    This MkDocs relies on the file.src_path of pages and assets we have to
+    derive the file.src_path and check for a possible .<locale>.<suffix> file
+    to use instead of the link / asset referenced in the markdown source.
+    """
+
+    def __contains__(self, path):
+        """
+        Return a bool stipulating whether or not we found a translated version
+        of the given path or the path itself.
+        """
+        expected_src_path = Path(path)
+        expected_src_paths = [
+            expected_src_path.with_suffix(f".{self.locale}{expected_src_path.suffix}"),
+            expected_src_path.with_suffix(
+                f".{self.default_locale}{expected_src_path.suffix}"
+            ),
+            expected_src_path,
+        ]
+        return any(filter(lambda s: Path(s) in expected_src_paths, self.src_paths))
+
+    def get_file_from_path(self, path):
+        """ Return a File instance with File.src_path equal to path. """
+        expected_src_path = Path(path)
+        expected_src_paths = [
+            expected_src_path.with_suffix(f".{self.locale}{expected_src_path.suffix}"),
+            expected_src_path.with_suffix(
+                f".{self.default_locale}{expected_src_path.suffix}"
+            ),
+            expected_src_path,
+        ]
+        for src_path in filter(lambda s: Path(s) in expected_src_paths, self.src_paths):
+            return self.src_paths.get(os.path.normpath(src_path))
+
+
 class I18n(BasePlugin):
 
     config_scheme = (
@@ -77,7 +123,7 @@ class I18n(BasePlugin):
         self.i18n_navs = {}
 
     def _is_translation_for(self, src_path, language):
-        return Path(src_path).suffixes == [f".{language}", ".md"]
+        return Path(src_path).suffixes == [f".{language}", Path(src_path).suffix]
 
     def _get_translated_page(self, page, language, config):
         # there is a specific translation file for this lang
@@ -87,6 +133,24 @@ class I18n(BasePlugin):
                 break
         else:
             i18n_page = deepcopy(page)
+
+        # setup and copy the file to the current language path
+        i18n_page.dest_path = Path(f"/{language}/{i18n_page.dest_path}")
+        i18n_page.abs_dest_path = Path(f"{config['site_dir']}/{i18n_page.dest_path}")
+        i18n_page.url = (
+            f"{language}/" if i18n_page.url == "." else f"{language}/{i18n_page.url}"
+        )
+
+        return i18n_page
+
+    def _get_translated_asset(self, page, language, config, suffix):
+        # there is a specific translation file for this lang
+        for lang in self.all_languages:
+            if self._is_translation_for(page.src_path, lang):
+                i18n_page = self._get_i18n_asset(page, lang, config, suffix)
+                break
+        else:
+            return page
 
         # setup and copy the file to the current language path
         i18n_page.dest_path = Path(f"/{language}/{i18n_page.dest_path}")
@@ -131,15 +195,40 @@ class I18n(BasePlugin):
 
         return i18n_page
 
+    def _get_i18n_asset(self, page, page_lang, config, suffix):
+        i18n_page = deepcopy(page)
+        i18n_page.abs_dest_path = Path(i18n_page.abs_dest_path)
+        i18n_page.dest_path = Path(i18n_page.dest_path)
+        i18n_page.name = str(Path(page.name).stem)
+        # root folder assets
+        if i18n_page.dest_path.parent == Path("."):
+            i18n_page.dest_path = Path(f"{i18n_page.name}{suffix}")
+            i18n_page.abs_dest_path = Path(
+                f"{i18n_page.abs_dest_path.parent}/{i18n_page.dest_path}"
+            )
+        else:
+            i18n_page.dest_path = i18n_page.dest_path.parent.with_suffix("").joinpath(
+                f"{i18n_page.name}{suffix}"
+            )
+            i18n_page.abs_dest_path = i18n_page.abs_dest_path.parent.with_suffix(
+                ""
+            ).joinpath(f"{i18n_page.name}{suffix}")
+        i18n_page.url = str(Path(i18n_page.dest_path).as_posix())
+
+        return i18n_page
+
     def _get_page_lang(self, page):
         for language in self.all_languages:
-            if Path(page.src_path).suffixes == [f".{language}", ".md"]:
+            if Path(page.src_path).suffixes == [
+                f".{language}",
+                Path(page.src_path).suffix,
+            ]:
                 return language
         return None
 
     def _get_page_from_paths(self, expected_paths, files):
         for expected_path in expected_paths:
-            for page in files.documentation_pages():
+            for page in files:
                 if Path(page.src_path) == expected_path:
                     return page
         else:
@@ -236,27 +325,27 @@ class I18n(BasePlugin):
         Construct the main + lang specific file tree which will be used to
         generate the navigation for the default site and per language.
         """
-        main_files = Files([])
+        main_files = I18nFiles([])
+        main_files.default_locale = self.default_language
+        main_files.locale = self.default_language
         for language in self.all_languages:
             self.i18n_configs[language] = deepcopy(config)
-            self.i18n_files[language] = Files([])
-
-        for obj in files:
-            if obj not in files.documentation_pages():
-                main_files.append(obj)
-                for language in self.all_languages:
-                    self.i18n_files[language].append(obj)
+            self.i18n_files[language] = I18nFiles([])
+            self.i18n_files[language].default_locale = self.default_language
+            self.i18n_files[language].locale = language
 
         base_paths = set()
-        for page in files.documentation_pages():
-            base_path = self._get_base_path(page)
+        for fileobj in files:
+            base_path = self._get_base_path(fileobj)
             if base_path in base_paths:
                 continue
 
+            suffix = Path(fileobj.src_path).suffix
+
             # main expects .md or .default_language.md
             main_expects = [
-                base_path.with_suffix(".md"),
-                base_path.with_suffix(f".{self.default_language}.md"),
+                Path(f"{base_path}{suffix}"),
+                Path(f"{base_path}.{self.default_language}{suffix}"),
             ]
             main_page = self._get_page_from_paths(main_expects, files)
 
@@ -264,27 +353,44 @@ class I18n(BasePlugin):
             if page_lang is None:
                 main_files.append(main_page)
             else:
-                main_files.append(self._get_i18n_page(main_page, page_lang, config))
+                if fileobj in files.documentation_pages():
+                    # .md documentation files
+                    main_files.append(self._get_i18n_page(main_page, page_lang, config))
+                else:
+                    # any other .<language>.<suffix> files
+                    main_files.append(
+                        self._get_i18n_asset(main_page, page_lang, config, suffix)
+                    )
 
             for language in self.all_languages:
                 lang_expects = [
-                    base_path.with_suffix(f".{language}.md"),
-                    base_path.with_suffix(f".{self.default_language}.md"),
-                    base_path.with_suffix(".md"),
+                    Path(f"{base_path}.{language}{suffix}"),
+                    Path(f"{base_path}.{self.default_language}{suffix}"),
+                    Path(f"{base_path}{suffix}"),
                 ]
                 lang_page = self._get_page_from_paths(lang_expects, files)
 
                 page_lang = self._get_page_lang(lang_page)
-                self.i18n_files[language].append(
-                    self._get_translated_page(lang_page, language, config)
-                )
+                if fileobj in files.documentation_pages():
+                    # .md documentation files
+                    self.i18n_files[language].append(
+                        self._get_translated_page(lang_page, language, config)
+                    )
+                else:
+                    # any other .<language>.<suffix> files
+                    self.i18n_files[language].append(
+                        self._get_translated_asset(lang_page, language, config, suffix)
+                    )
 
-            base_paths.add(base_path)
+                base_paths.add(base_path)
 
         # these comments are here to help me debug later if needed
         # print([{p.src_path: p.url} for p in main_files.documentation_pages()])
         # print([{p.src_path: p.url} for p in self.i18n_files["en"].documentation_pages()])
         # print([{p.src_path: p.url} for p in self.i18n_files["fr"].documentation_pages()])
+        # print([{p.src_path: p.url} for p in main_files.static_pages()])
+        # print([{p.src_path: p.url} for p in self.i18n_files["en"].static_pages()])
+        # print([{p.src_path: p.url} for p in self.i18n_files["fr"].static_pages()])
 
         return main_files
 
@@ -335,12 +441,21 @@ class I18n(BasePlugin):
 
             # Support mkdocs-material i18n search context
             if config["theme"].name == "material":
-                config["theme"].language = language
+                if language in material_languages:
+                    config["theme"].language = language
+                else:
+                    log.warning(
+                        f"Language {language} is not supported by "
+                        f"mkdocs-material=={material_version}, not setting "
+                        "the 'theme.language' option"
+                    )
 
             # Run `nav` plugin events.
             # This is useful to be compatible with nav order changing plugins
             # such as mkdocs-awesome-pages-plugin
             nav = config["plugins"].run_event("nav", nav, config=config, files=files)
+
+            files.copy_static_files(dirty=dirty)
 
             for file in files.documentation_pages():
                 _populate_page(file.page, config, files, dirty)
