@@ -114,6 +114,7 @@ class I18n(BasePlugin):
         ("default_language", Locale(str, length=2, required=True)),
         ("languages", Locale(dict, required=True)),
         ("material_alternate", Type(bool, default=True, required=False)),
+        ("nav_translations", Type(dict, default={}, required=False)),
     )
 
     def __init__(self, *args, **kwargs):
@@ -417,6 +418,15 @@ class I18n(BasePlugin):
                         i18n_page.src_path,
                     )
 
+    def _translate_navigation(self, language, nav):
+        translated_nav = self.config["nav_translations"].get(language, {})
+        if translated_nav:
+            for item in nav:
+                if hasattr(item, "title") and item.title in translated_nav:
+                    item.title = translated_nav[item.title]
+                if hasattr(item, "children") and item.children:
+                    self._translate_navigation(language, item.children)
+
     def on_post_build(self, config):
         """
         Derived from mkdocs commands build function.
@@ -433,6 +443,8 @@ class I18n(BasePlugin):
             self.i18n_navs[language] = get_navigation(
                 self.i18n_files[language], self.i18n_configs[language]
             )
+
+            self._translate_navigation(language, self.i18n_navs[language])
 
             config = self.i18n_configs[language]
             env = self.i18n_configs[language]["theme"].get_env()
