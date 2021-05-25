@@ -79,6 +79,9 @@ class I18nFiles(Files):
     to use instead of the link / asset referenced in the markdown source.
     """
 
+    locale = None
+    translated = False
+
     def __contains__(self, path):
         """
         Return a bool stipulating whether or not we found a translated version
@@ -427,6 +430,16 @@ class I18n(BasePlugin):
                 if hasattr(item, "children") and item.children:
                     self._translate_navigation(language, item.children)
 
+    def on_nav(self, nav, config, files):
+        """
+        Translate i18n aware navigation to honor the 'nav_translations' option.
+        """
+        if not files.translated and self.config["nav_translations"].get(files.locale):
+            log.info(f"Translating navigation to {files.locale}")
+            self._translate_navigation(files.locale, nav)
+            files.translated = True
+        return nav
+
     def on_post_build(self, config):
         """
         Derived from mkdocs commands build function.
@@ -443,8 +456,6 @@ class I18n(BasePlugin):
             self.i18n_navs[language] = get_navigation(
                 self.i18n_files[language], self.i18n_configs[language]
             )
-
-            self._translate_navigation(language, self.i18n_navs[language])
 
             config = self.i18n_configs[language]
             env = self.i18n_configs[language]["theme"].get_env()

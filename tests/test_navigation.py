@@ -18,6 +18,12 @@ FR_STATIC_NAV = [
 ]
 
 
+EN_TRANSLATED_NAV = [
+    {"The Home": "index.md"},
+    {"Translated1": [{"Renamed File": str(Path("topic1/named_file.en.md"))}]},
+    {"Translated2": "index.en.md"},
+]
+
 FR_TRANSLATED_NAV = [
     {"Accueil": "index.fr.md"},
     {"Sujet1": [{"Fichier Nommé": str(Path("topic1/named_file.fr.md"))}]},
@@ -53,6 +59,6 @@ def test_plugin_translated_nav(config_plugin_translated_nav):
     assert i18n_plugin.i18n_navs["fr"].__repr__() == fr_nav.__repr__()
     #
     en_config = deepcopy(i18n_plugin.i18n_configs["en"])
-    en_config["nav"] = EN_STATIC_NAV
+    en_config["nav"] = EN_TRANSLATED_NAV
     en_nav = get_navigation(i18n_plugin.i18n_files["en"], en_config)
     assert i18n_plugin.i18n_navs["en"].__repr__() == en_nav.__repr__()

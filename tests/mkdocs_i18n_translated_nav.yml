@@ -13,6 +13,11 @@ plugins:
         en: english
         fr: français
       nav_translations:
+        en:
+          Home: The Home
+          Named File: Renamed File
+          Topic1: Translated1
+          Topic2: Translated2
         fr:
           Home: Accueil
           Named File: Fichier Nommé
