@@ -36,6 +36,9 @@ Supported parameters:
 - **default_language** (mandatory): [ISO-639-1](https://en.wikipedia.org/wiki/ISO_639-1) (2-letter) string
 - **languages** (mandatory): mapping of **ISO-639-1 (2-letter) language code**: **display value**
 - **material_alternate** (default: true): boolean - [see this section for more info](#using-mkdocs-material-site-language-selector)
+- **nav_translations** (default: empty): nested mapping of **language**: **default title**: **translated title** - [see this section for more info](#translating-navigation)
+
+Basic usage:
 
 ```
 plugins:
@@ -173,6 +176,31 @@ site
 Which means that the `image.png` and its `fr/image.png` localized counterpart
 can be referenced the same way as `![my image](image.png)` on both `index.md`
 and `index.fr.md`!
+
+## Translating navigation
+
+Using the `nav_translations` configuration option, you can translate all your
+navigation titles easily.
+
+**Translations are applied to all titles** so you only need to provide a given
+translation once and it will be used to translate all the sections, links and
+pages which share the same title.
+
+This example will translate **any** navigation item title from **Topic1** to
+**Sujet1** on the French version of the documentation:
+
+```
+plugins:
+  - i18n:
+      default_language: en
+      languages:
+        en: english
+        fr: français
+      nav_translations:
+        fr:
+          Topic1: Sujet1
+          Topic2: Sujet2
+```
 
 ## Compatibility with other plugins
 

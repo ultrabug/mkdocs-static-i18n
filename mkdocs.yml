@@ -38,3 +38,7 @@ plugins:
       languages:
         en: english
         fr: français
+      nav_translations:
+        fr:
+          Topic1: Sujet1
+          Topic2: Sujet2
