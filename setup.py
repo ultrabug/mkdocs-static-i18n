@@ -8,12 +8,12 @@ from setuptools import find_packages, setup
 # README file and 2) it's easier to type in the README file than to put a raw
 # string in below ...
 def read(fname):
-    return (Path(__file__).resolve().parent / fname).read_text()
+    return (Path(__file__).resolve().parent / fname).read_text(encoding="utf-8")
 
 
 setup(
     name="mkdocs-static-i18n",
-    version="0.13",
+    version="0.14",
     author="Ultrabug",
     author_email="ultrabug@ultrabug.net",
     description="MkDocs i18n plugin using static translation markdown files",
