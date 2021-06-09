@@ -208,18 +208,18 @@ If you enabled the `search` plugin embedded with MkDocs, this plugin will
 automatically populate its `lang` option with the the configured `languages`
 as long as they are supported by [lunr](https://pypi.org/project/lunr/).
 
-!!! warning
-    Search results will include all the pages from all the localized contents.
+:warning: **Search results will include all the pages from all the localized
+contents!**
 
-    This means that your search results can't be contextual to the language
-    you are currently browsing.
+This means that your search results can't be contextual to the language
+you are currently browsing.
 
-    The `mkdocs-static-i18n` plugin will try to be smart and deduplicate the
-    pages from the `default_language` so that search results are not polluted.
+The `mkdocs-static-i18n` plugin will try to be smart and deduplicate the
+pages from the `default_language` so that search results are not polluted.
 
-    This is because the MkDocs `search` plugin is hardcoded in the themes
-    javascript sources so there can only be one search index for the whole
-    build.
+This is because the MkDocs `search` plugin is hardcoded in the themes
+javascript sources so there can only be one search index for the whole
+build.
 
 ## Compatibility with other plugins
 
