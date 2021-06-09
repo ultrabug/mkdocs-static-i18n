@@ -46,3 +46,13 @@ def config_plugin_translated_nav():
             docs_dir="../docs/",
             site_dir=site_dir,
         )
+
+
+@pytest.fixture
+def config_plugin_search():
+    with tempfile.TemporaryDirectory(prefix="mkdocs_tests_") as site_dir:
+        return load_config(
+            "tests/mkdocs_i18n_search.yml",
+            docs_dir="../docs/",
+            site_dir=site_dir,
+        )

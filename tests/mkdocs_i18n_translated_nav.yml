@@ -1,4 +1,5 @@
 site_name: MkDocs static i18n plugin tests with static nav
+site_url: http://localhost
 
 nav:
   - Home: index.md

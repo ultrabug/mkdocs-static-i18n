@@ -31,6 +31,28 @@ except Exception:
 
 log = logging.getLogger("mkdocs.plugins." + __name__)
 
+LUNR_LANGUAGES = [
+    "ar",
+    "da",
+    "de",
+    "en",
+    "es",
+    "fi",
+    "fr",
+    "hu",
+    "it",
+    "ja",
+    "nl",
+    "no",
+    "pt",
+    "ro",
+    "ru",
+    "sv",
+    "th",
+    "tr",
+    "vi",
+]
+
 
 class Locale(Type):
     """
@@ -186,7 +208,7 @@ class I18n(BasePlugin):
                 i18n_page.abs_dest_path = i18n_page.abs_dest_path.parent.with_suffix(
                     ".html"
                 )
-                i18n_page.url = str(Path(i18n_page.dest_path).parent.as_posix())
+                i18n_page.url = str(Path(i18n_page.dest_path).parent.as_posix()) + "/"
 
             else:
                 i18n_page.dest_path = i18n_page.dest_path.parent.with_suffix(
@@ -195,7 +217,7 @@ class I18n(BasePlugin):
                 i18n_page.abs_dest_path = i18n_page.abs_dest_path.parent.with_suffix(
                     ""
                 ).joinpath(i18n_page.abs_dest_path.name)
-                i18n_page.url = str(Path(i18n_page.dest_path).parent.as_posix())
+                i18n_page.url = str(Path(i18n_page.dest_path).parent.as_posix()) + "/"
 
         return i18n_page
 
@@ -322,6 +344,21 @@ class I18n(BasePlugin):
                                 "lang": language,
                             }
                         )
+        # Support for the search plugin lang
+        if "search" in config["plugins"]:
+            search_langs = config["plugins"]["search"].config["lang"] or []
+            for language in self.all_languages:
+                if language in LUNR_LANGUAGES:
+                    if language not in search_langs:
+                        search_langs.append(language)
+                        log.info(
+                            f"Adding '{language}' to the 'plugins.search.lang' option"
+                        )
+                else:
+                    log.warning(
+                        f"Language '{language}' is not supported by "
+                        f"lunr.js, not setting it in the 'plugins.search.lang' option"
+                    )
         return config
 
     def on_files(self, files, config):
@@ -337,6 +374,12 @@ class I18n(BasePlugin):
             self.i18n_files[language] = I18nFiles([])
             self.i18n_files[language].default_locale = self.default_language
             self.i18n_files[language].locale = language
+            # there can be only one instance of the search plugin because
+            # it is hardcoded in the JS worker sources
+            if "search" in config["plugins"]:
+                self.i18n_configs[language]["plugins"]["search"] = config["plugins"][
+                    "search"
+                ]
 
         base_paths = set()
         for fileobj in files:
@@ -440,6 +483,28 @@ class I18n(BasePlugin):
             files.translated = True
         return nav
 
+    def _fix_search_duplicates(self, language, search_plugin):
+        """
+        We want to avoid indexing the same pages twice if the default language
+        has its own version built as well as the /language version too as this
+        would pollute the search results.
+
+        When this happens, we favor the default language location if its
+        content is the same as its /language counterpart.
+        """
+        entries = deepcopy(search_plugin.search_index._entries)
+        for entry in entries:
+            if entry["location"].startswith(f"{language}/"):
+                for s_entry in search_plugin.search_index._entries:
+                    expected_locations = [
+                        f"{language}/{s_entry['location']}",
+                        f"{language}/{s_entry['location'].rstrip('/')}",
+                        f"{language}/{s_entry['location'].replace('/#', '#')}",
+                    ]
+                    if entry["location"] in expected_locations:
+                        if entry["text"] == s_entry["text"]:
+                            search_plugin.search_index._entries.remove(entry)
+
     def on_post_build(self, config):
         """
         Derived from mkdocs commands build function.
@@ -447,6 +512,7 @@ class I18n(BasePlugin):
         We build every language on its own directory.
         """
         dirty = False
+        search_plugin = config["plugins"].get("search")
         for language in self.config.get("languages"):
             log.info(f"Building {language} documentation")
 
@@ -462,7 +528,11 @@ class I18n(BasePlugin):
             files = self.i18n_files[language]
             nav = self.i18n_navs[language]
 
-            # Support mkdocs-material i18n search context
+            # TODO: check if messing with site_dir wouldn't be easier than
+            # changing file dest_paths etc
+            # config["site_dir"] += "/fr"
+
+            # Support mkdocs-material theme language
             if config["theme"].name == "material":
                 if language in material_languages:
                     config["theme"].language = language
@@ -483,5 +553,14 @@ class I18n(BasePlugin):
             for file in files.documentation_pages():
                 _populate_page(file.page, config, files, dirty)
 
-            for file in self.i18n_files[language].documentation_pages():
+            for file in files.documentation_pages():
                 _build_page(file.page, config, files, nav, env, dirty)
+
+            # Update the search plugin index with language pages
+            if search_plugin:
+                if (
+                    language == self.default_language
+                    and self.default_language in self.config["languages"]
+                ):
+                    self._fix_search_duplicates(language, search_plugin)
+                search_plugin.on_post_build(config)
