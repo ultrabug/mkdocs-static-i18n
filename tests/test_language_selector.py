@@ -23,6 +23,7 @@ def test_plugin_language_selector_use_directory_urls():
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="../docs/",
+        site_url="http://localhost",
         extra_javascript=[],
     )
     result = plugin.on_config(config, force=True)
@@ -39,6 +40,7 @@ def test_plugin_language_selector_no_use_directory_urls():
         theme={"name": "mkdocs"},
         use_directory_urls=False,
         docs_dir="../docs/",
+        site_url="http://localhost",
         extra_javascript=[],
     )
     result = plugin.on_config(config, force=True)
