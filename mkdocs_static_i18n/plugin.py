@@ -208,7 +208,7 @@ class I18n(BasePlugin):
                 i18n_page.abs_dest_path = i18n_page.abs_dest_path.parent.with_suffix(
                     ".html"
                 )
-                i18n_page.url = str(Path(i18n_page.dest_path).parent.as_posix())
+                i18n_page.url = str(Path(i18n_page.dest_path).parent.as_posix()) + "/"
 
             else:
                 i18n_page.dest_path = i18n_page.dest_path.parent.with_suffix(
@@ -217,7 +217,7 @@ class I18n(BasePlugin):
                 i18n_page.abs_dest_path = i18n_page.abs_dest_path.parent.with_suffix(
                     ""
                 ).joinpath(i18n_page.abs_dest_path.name)
-                i18n_page.url = str(Path(i18n_page.dest_path).parent.as_posix())
+                i18n_page.url = str(Path(i18n_page.dest_path).parent.as_posix()) + "/"
 
         return i18n_page
 
