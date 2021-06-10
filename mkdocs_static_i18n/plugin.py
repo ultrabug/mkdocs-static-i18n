@@ -542,6 +542,10 @@ class I18n(BasePlugin):
                         f"mkdocs-material=={material_version}, not setting "
                         "the 'theme.language' option"
                     )
+            
+            # Include theme specific files
+            env = config['theme'].get_env()
+            files.add_files_from_theme(env, config)
 
             # Run `nav` plugin events.
             # This is useful to be compatible with nav order changing plugins
