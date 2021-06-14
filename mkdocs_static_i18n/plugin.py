@@ -3,6 +3,7 @@ import os
 from collections import defaultdict
 from copy import deepcopy
 from pathlib import Path
+from re import compile
 
 from mkdocs.commands.build import _build_page, _populate_page
 from mkdocs.config.base import ValidationError
@@ -52,6 +53,7 @@ LUNR_LANGUAGES = [
     "tr",
     "vi",
 ]
+RE_LOCALE = compile(r"(^[a-z]{2}_[A-Z]{2}$)|(^[a-z]{2}$)")
 
 
 class Locale(Type):
@@ -61,33 +63,21 @@ class Locale(Type):
     Validate the locale config option against a given Python type.
     """
 
-    def __init__(self, type_, length=None, **kwargs):
-        super().__init__(type_, length=length, **kwargs)
-        self._type = type_
-        self.length = length
+    def _validate_locale(self, value):
+        if not RE_LOCALE.match(value):
+            raise ValidationError(
+                "Language code values must be either ISO-639-1 lower case "
+                "or represented with they territory/region/county codes, "
+                f"received '{value}' expected forms examples: 'en' or 'en_US'."
+            )
 
     def run_validation(self, value):
         value = super().run_validation(value)
-        # check that str of dict keys corresponding to languages we are lower case
-        # and have a minimal length
         if isinstance(value, str):
-            if value.lower() != value:
-                raise ValidationError(
-                    "Language values must be ISO-639-1 lower case, "
-                    f"received '{value}' expected '{value.lower()}'."
-                )
+            self._validate_locale(value)
         if isinstance(value, dict):
             for key in value:
-                if key.lower() != key:
-                    raise ValidationError(
-                        "Language values must be ISO-639-1 lower case, "
-                        f"received '{key}' expected '{key.lower()}'."
-                    )
-                elif len(key) != 2:
-                    raise ValidationError(
-                        "Language values must respect the ISO-639-1 (2-letter) "
-                        f"format, received '{key}' of length '{len(key)}'."
-                    )
+                self._validate_locale(key)
         return value
 
 
@@ -136,7 +126,7 @@ class I18nFiles(Files):
 class I18n(BasePlugin):
 
     config_scheme = (
-        ("default_language", Locale(str, length=2, required=True)),
+        ("default_language", Locale(str, required=True)),
         ("default_language_only", Type(bool, default=False, required=False)),
         ("languages", Locale(dict, required=True)),
         ("material_alternate", Type(bool, default=True, required=False)),
