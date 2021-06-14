@@ -33,9 +33,9 @@ Just `pip install mkdocs-static-i18n`!
 
 Supported parameters:
 
-- **default_language** (mandatory): [ISO-639-1](https://en.wikipedia.org/wiki/ISO_639-1) (2-letter) string
+- **default_language** (mandatory): 2-letter [ISO-639-1](https://en.wikipedia.org/wiki/ISO_639-1) language code (`en`) or [5-letter language code with added territory/region/country](https://www.mkdocs.org/user-guide/localizing-your-theme/#supported-locales) (`en_US`)
 - **default_language_only** (default: false): boolean - [see this section for more info](#building-only-the-default-language-for-faster-development)
-- **languages** (mandatory): mapping of **ISO-639-1 (2-letter) language code**: **display value**
+- **languages** (mandatory): mapping of **2-letter or 5-letter language code**: **display value**
 - **material_alternate** (default: true): boolean - [see this section for more info](#using-mkdocs-material-site-language-selector)
 - **nav_translations** (default: empty): nested mapping of **language**: **default title**: **translated title** - [see this section for more info](#translating-navigation)
 
