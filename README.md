@@ -34,6 +34,7 @@ Just `pip install mkdocs-static-i18n`!
 Supported parameters:
 
 - **default_language** (mandatory): [ISO-639-1](https://en.wikipedia.org/wiki/ISO_639-1) (2-letter) string
+- **default_language_only** (default: false): boolean - [see this section for more info](#building-only-the-default-language-for-faster-development)
 - **languages** (mandatory): mapping of **ISO-639-1 (2-letter) language code**: **display value**
 - **material_alternate** (default: true): boolean - [see this section for more info](#using-mkdocs-material-site-language-selector)
 - **nav_translations** (default: empty): nested mapping of **language**: **default title**: **translated title** - [see this section for more info](#translating-navigation)
@@ -139,6 +140,19 @@ site
 └── topic2
     └── index.html
 ```
+
+## Building only the default language for faster development
+
+When working on your project, building a version for each supported language
+can be slow depending on the size of your documentation.
+
+The `default_language_only` option allows you to only build the selected
+`default_language` of your documentation for faster development.
+
+Coupled with [MkDocs >= 1.2 support for environment variables](https://www.mkdocs.org/about/release-notes/#support-added-for-environment-variables-in-the-configuration-file-1954),
+this option can easily be passed dynamically [within your `mkdocs.yml` file like this](https://github.com/ultrabug/mkdocs-static-i18n/blob/main/mkdocs.yml)!
+
+You can [read more about the rationale behind this feature here](https://github.com/ultrabug/mkdocs-static-i18n/issues/32#issuecomment-860563081)
 
 ### Referencing localized content in your markdown pages
 
@@ -247,7 +261,6 @@ plugins:
         fr: Français
       material_alternate: false
 ```
-
 
 ### Writing a custom language switcher
 

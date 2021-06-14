@@ -34,7 +34,8 @@ markdown_extensions:
 plugins:
   - search
   - i18n:
-      default_language: en
+      default_language: !ENV [DEFAULT_LANGUAGE, "en"]
+      default_language_only: !ENV [DEFAULT_LANGUAGE_ONLY, false]
       languages:
         en: english
         fr: français

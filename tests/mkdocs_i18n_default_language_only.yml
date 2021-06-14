@@ -1,0 +1,10 @@
+site_name: MkDocs static i18n plugin tests without default language build
+site_url: http://localhost
+
+plugins:
+  - i18n:
+      default_language: en
+      default_language_only: true
+      languages:
+        en: english
+        fr: français

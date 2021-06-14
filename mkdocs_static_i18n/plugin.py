@@ -137,6 +137,7 @@ class I18n(BasePlugin):
 
     config_scheme = (
         ("default_language", Locale(str, length=2, required=True)),
+        ("default_language_only", Type(bool, default=False, required=False)),
         ("languages", Locale(dict, required=True)),
         ("material_alternate", Type(bool, default=True, required=False)),
         ("nav_translations", Type(dict, default={}, required=False)),
@@ -311,10 +312,13 @@ class I18n(BasePlugin):
         """
         Enrich configuration with language specific knowledge.
         """
-        self.default_language = self.config.get("default_language")
+        self.default_language = self.config["default_language"]
         self.all_languages = set(
             [self.default_language] + list(self.config["languages"])
         )
+        if self.config["default_language_only"]:
+            self.config["languages"] = {}
+            return config
         # Support for mkdocs-material>=7.1.0 language selector
         if self.config["material_alternate"]:
             if material_version and material_version >= "7.1.0":
@@ -513,7 +517,7 @@ class I18n(BasePlugin):
         """
         dirty = False
         search_plugin = config["plugins"].get("search")
-        for language in self.config.get("languages"):
+        for language in self.config["languages"]:
             log.info(f"Building {language} documentation")
 
             if self.i18n_configs[language]["nav"]:
