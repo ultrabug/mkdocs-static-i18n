@@ -316,8 +316,8 @@ class I18n(BasePlugin):
         self.all_languages = set(
             [self.default_language] + list(self.config["languages"])
         )
-        if self.config["default_language_only"]:
-            self.config["languages"] = {}
+        # skip language builds requested?
+        if self.config["default_language_only"] is True:
             return config
         # Support for mkdocs-material>=7.1.0 language selector
         if self.config["material_alternate"]:
@@ -412,6 +412,10 @@ class I18n(BasePlugin):
                     main_files.append(
                         self._get_i18n_asset(main_page, page_lang, config, suffix)
                     )
+
+            # skip language builds requested?
+            if self.config["default_language_only"] is True:
+                continue
 
             for language in self.all_languages:
                 lang_expects = [
@@ -515,6 +519,10 @@ class I18n(BasePlugin):
 
         We build every language on its own directory.
         """
+        # skip language builds requested?
+        if self.config["default_language_only"] is True:
+            return
+
         dirty = False
         search_plugin = config["plugins"].get("search")
         for language in self.config["languages"]:
