@@ -39,6 +39,16 @@ def config_plugin_no_default_language():
 
 
 @pytest.fixture
+def config_plugin_default_language_only():
+    with tempfile.TemporaryDirectory(prefix="mkdocs_tests_") as site_dir:
+        return load_config(
+            "tests/mkdocs_i18n_default_language_only.yml",
+            docs_dir="../docs/",
+            site_dir=site_dir,
+        )
+
+
+@pytest.fixture
 def config_plugin_translated_nav():
     with tempfile.TemporaryDirectory(prefix="mkdocs_tests_") as site_dir:
         return load_config(

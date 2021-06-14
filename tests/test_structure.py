@@ -156,3 +156,47 @@ def test_plugin_no_use_directory_urls_no_default_language(
     )
     print(list(Path(site_dir).glob("**/*.html")))
     assert sorted(generate_site) == sorted(PLUGIN_NO_USE_DIRECTORY_URLS_NO_DEFAULT)
+
+
+PLUGIN_USE_DIRECTORY_URLS_DEFAULT_ONLY = [
+    Path("404.html"),
+    Path("image.png"),
+    Path("index.html"),
+    Path("topic1/named_file/index.html"),
+    Path("topic2/index.html"),
+]
+PLUGIN_NO_USE_DIRECTORY_URLS_DEFAULT_ONLY = [
+    Path("404.html"),
+    Path("image.png"),
+    Path("index.html"),
+    Path("topic1/named_file.html"),
+    Path("topic2/index.html"),
+]
+
+
+def test_plugin_use_directory_urls_default_language_only(
+    config_plugin_default_language_only,
+):
+    config_plugin_default_language_only["use_directory_urls"] = True
+    site_dir = config_plugin_default_language_only["site_dir"]
+    build(config_plugin_default_language_only)
+    generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
+    generate_site.extend(
+        [f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.png")]
+    )
+    print(list(Path(site_dir).glob("**/*.html")))
+    assert sorted(generate_site) == sorted(PLUGIN_USE_DIRECTORY_URLS_DEFAULT_ONLY)
+
+
+def test_plugin_no_use_directory_urls_default_language_only(
+    config_plugin_default_language_only,
+):
+    config_plugin_default_language_only["use_directory_urls"] = False
+    site_dir = config_plugin_default_language_only["site_dir"]
+    build(config_plugin_default_language_only)
+    generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
+    generate_site.extend(
+        [f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.png")]
+    )
+    print(list(Path(site_dir).glob("**/*.html")))
+    assert sorted(generate_site) == sorted(PLUGIN_NO_USE_DIRECTORY_URLS_DEFAULT_ONLY)
