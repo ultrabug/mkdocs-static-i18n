@@ -152,7 +152,7 @@ The `default_language_only` option allows you to only build the selected
 Coupled with [MkDocs >= 1.2 support for environment variables](https://www.mkdocs.org/about/release-notes/#support-added-for-environment-variables-in-the-configuration-file-1954),
 this option can easily be passed dynamically [within your `mkdocs.yml` file like this](https://github.com/ultrabug/mkdocs-static-i18n/blob/main/mkdocs.yml)!
 
-You can [read more about the rationale behind this feature here](https://github.com/ultrabug/mkdocs-static-i18n/issues/32#issuecomment-860563081)
+You can [read more about the rationale behind this feature here](https://github.com/ultrabug/mkdocs-static-i18n/issues/32#issuecomment-860563081).
 
 ### Referencing localized content in your markdown pages
 
