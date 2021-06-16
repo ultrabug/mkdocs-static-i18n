@@ -120,7 +120,7 @@ class I18nFiles(Files):
         return any(filter(lambda s: Path(s) in expected_src_paths, self.src_paths))
 
     def get_file_from_path(self, path):
-        """ Return a File instance with File.src_path equal to path. """
+        """Return a File instance with File.src_path equal to path."""
         expected_src_path = Path(path)
         expected_src_paths = [
             expected_src_path.with_suffix(f".{self.locale}{expected_src_path.suffix}"),
@@ -542,9 +542,9 @@ class I18n(BasePlugin):
                         f"mkdocs-material=={material_version}, not setting "
                         "the 'theme.language' option"
                     )
-            
+
             # Include theme specific files
-            env = config['theme'].get_env()
+            env = config["theme"].get_env()
             files.add_files_from_theme(env, config)
 
             # Run `nav` plugin events.
