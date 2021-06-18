@@ -13,6 +13,14 @@ def config_base():
 
 
 @pytest.fixture
+def config_base_rtd():
+    with tempfile.TemporaryDirectory(prefix="mkdocs_tests_") as site_dir:
+        return load_config(
+            "tests/mkdocs_base_rtd.yml", docs_dir="../docs/", site_dir=site_dir
+        )
+
+
+@pytest.fixture
 def config_plugin():
     with tempfile.TemporaryDirectory(prefix="mkdocs_tests_") as site_dir:
         return load_config(
@@ -65,4 +73,12 @@ def config_plugin_search():
             "tests/mkdocs_i18n_search.yml",
             docs_dir="../docs/",
             site_dir=site_dir,
+        )
+
+
+@pytest.fixture
+def config_plugin_rtd():
+    with tempfile.TemporaryDirectory(prefix="mkdocs_tests_") as site_dir:
+        return load_config(
+            "tests/mkdocs_i18n_rtd.yml", docs_dir="../docs/", site_dir=site_dir
         )

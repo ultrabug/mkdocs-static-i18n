@@ -545,6 +545,10 @@ class I18n(BasePlugin):
                         "the 'theme.language' option"
                     )
 
+            # Include theme specific files
+            env = config["theme"].get_env()
+            files.add_files_from_theme(env, config)
+
             # Run `nav` plugin events.
             # This is useful to be compatible with nav order changing plugins
             # such as mkdocs-awesome-pages-plugin
