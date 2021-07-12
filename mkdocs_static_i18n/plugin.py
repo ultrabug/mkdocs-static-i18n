@@ -118,7 +118,8 @@ class I18n(BasePlugin):
         """
         Enrich configuration with language specific knowledge.
         """
-        if 'skip_i18n' in config: return
+        if "skip_i18n" in config:
+            return
         self.default_language = self.config["default_language"]
         # Make a order preserving list of all the configured
         # languages, add the default one first if not listed by the user
@@ -432,7 +433,7 @@ class I18n(BasePlugin):
         We build every language on its own directory.
         """
         # skip language builds requested?
-        if self.config["default_language_only"] is True or 'skip_i18n' in config:
+        if self.config["default_language_only"] is True or "skip_i18n" in config:
             return
 
         dirty = False
@@ -468,8 +469,10 @@ class I18n(BasePlugin):
             for file in files.documentation_pages():
                 _build_page(file.page, config, files, nav, env, dirty)
 
-            if self.i18n_configs[language]["plugins"]["with-pdf"]:
-                self.i18n_configs[language]["plugins"].run_event('post_build', config=config)
+            if "with-pdf" in self.i18n_configs[language]["plugins"]:
+                self.i18n_configs[language]["plugins"].run_event(
+                    "post_build", config=config
+                )
 
             # Update the search plugin index with language pages
             if search_plugin:
