@@ -142,6 +142,10 @@ class I18n(BasePlugin):
     def _is_translation_for(self, src_path, language):
         return Path(src_path).suffixes == [f".{language}", Path(src_path).suffix]
 
+    @staticmethod
+    def _is_url(value):
+        return value.startswith("http://") or value.startswith("https://")
+
     def _get_translated_page(self, page, language, config):
         # there is a specific translation file for this lang
         for lang in self.all_languages:
@@ -266,7 +270,8 @@ class I18n(BasePlugin):
             elif isinstance(v, str) or isinstance(v, Path):
                 if str(v) == str(old):
                     v = new
-                v = str(Path(v))
+                if not self._is_url(v):
+                    v = str(Path(v))
             x[k] = v
         return x
 
@@ -283,7 +288,8 @@ class I18n(BasePlugin):
             elif isinstance(e, str) or isinstance(e, Path):
                 if str(e) == str(old):
                     e = new
-                e = str(Path(e))
+                if not self._is_url(e):
+                    e = str(Path(e))
             x.append(e)
         return x
 

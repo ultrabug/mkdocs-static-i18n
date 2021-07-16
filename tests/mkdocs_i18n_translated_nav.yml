@@ -6,6 +6,7 @@ nav:
   - Topic1:
     - Named File: topic1/named_file.en.md
   - Topic2: index.en.md
+  - External: https://ultrabug.fr
 
 plugins:
   - i18n:

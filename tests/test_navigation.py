@@ -8,6 +8,7 @@ EN_STATIC_NAV = [
     {"Home": "index.md"},
     {"Topic1": [{"Named File": str(Path("topic1/named_file.en.md"))}]},
     {"Topic2": "index.en.md"},
+    {"External": "https://ultrabug.fr"},
 ]
 
 
@@ -15,6 +16,7 @@ FR_STATIC_NAV = [
     {"Home": "index.fr.md"},
     {"Topic1": [{"Named File": str(Path("topic1/named_file.fr.md"))}]},
     {"Topic2": "index.fr.md"},
+    {"External": "https://ultrabug.fr"},
 ]
 
 
@@ -22,12 +24,14 @@ EN_TRANSLATED_NAV = [
     {"The Home": "index.md"},
     {"Translated1": [{"Renamed File": str(Path("topic1/named_file.en.md"))}]},
     {"Translated2": "index.en.md"},
+    {"External": "https://ultrabug.fr"},
 ]
 
 FR_TRANSLATED_NAV = [
     {"Accueil": "index.fr.md"},
     {"Sujet1": [{"Fichier Nommé": str(Path("topic1/named_file.fr.md"))}]},
     {"Sujet2": "index.fr.md"},
+    {"External": "https://ultrabug.fr"},
 ]
 
 
