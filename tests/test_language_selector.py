@@ -45,3 +45,18 @@ def test_plugin_language_selector_no_use_directory_urls():
     )
     result = plugin.on_config(config, force=True)
     assert result["extra"]["alternate"] == ALTERNATE_NO_USE_DIRECTORY_URLS
+
+
+def test_plugin_language_selector_single_default_language():
+    plugin = I18n()
+    plugin.load_config({"default_language": "fr", "languages": {"fr": "français"}})
+    config = load_config(
+        "tests/mkdocs_base.yml",
+        theme={"name": "mkdocs"},
+        use_directory_urls=True,
+        docs_dir="../docs/",
+        site_url="http://localhost",
+        extra_javascript=[],
+    )
+    result = plugin.on_config(config, force=True)
+    assert result["extra"] == {}

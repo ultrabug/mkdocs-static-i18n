@@ -5,6 +5,7 @@ from copy import deepcopy
 from pathlib import Path
 from re import compile
 
+from mkdocs import __version__ as mkdocs_version
 from mkdocs.commands.build import _build_page, _populate_page
 from mkdocs.config.base import ValidationError
 from mkdocs.config.config_options import Type
@@ -53,6 +54,7 @@ LUNR_LANGUAGES = [
     "tr",
     "vi",
 ]
+MKDOCS_THEMES = ["mkdocs", "readthedocs"]
 RE_LOCALE = compile(r"(^[a-z]{2}_[A-Z]{2}$)|(^[a-z]{2}$)")
 
 
@@ -312,7 +314,20 @@ class I18n(BasePlugin):
         self.all_languages = set(
             [self.default_language] + list(self.config["languages"])
         )
-        # skip language builds requested?
+        # Set theme locale to default language
+        if self.default_language != "en":
+            if config["theme"].name in MKDOCS_THEMES:
+                if mkdocs_version >= "1.2":
+                    config["theme"]["locale"] = self.default_language
+                    log.info(
+                        f"Setting the default 'theme.locale' option to '{self.default_language}'"
+                    )
+            elif config["theme"].name == "material":
+                config["theme"].language = self.default_language
+                log.info(
+                    f"Setting the default 'theme.language' option to '{self.default_language}'"
+                )
+        # Skip language builds requested?
         if self.config["default_language_only"] is True:
             return config
         # Support for mkdocs-material>=7.1.0 language selector
