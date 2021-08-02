@@ -316,7 +316,7 @@ class I18n(BasePlugin):
         if self.config["default_language_only"] is True:
             return config
         # Support for mkdocs-material>=7.1.0 language selector
-        if self.config["material_alternate"]:
+        if self.config["material_alternate"] and len(self.all_languages) > 1:
             if material_version and material_version >= "7.1.0":
                 if not config["extra"].get("alternate") or kwargs.get("force"):
                     # Add index.html file name when used with
