@@ -399,10 +399,10 @@ class I18n(BasePlugin):
         base_paths = set()
         for fileobj in files:
             base_path = self._get_base_path(fileobj)
-            if base_path in base_paths:
-                continue
-
             suffix = Path(fileobj.src_path).suffix
+
+            if f"{base_path}{suffix}" in base_paths:
+                continue
 
             # main expects .md or .default_language.md
             main_expects = [
@@ -448,7 +448,7 @@ class I18n(BasePlugin):
                         self._get_translated_asset(lang_page, language, config, suffix)
                     )
 
-                base_paths.add(base_path)
+                base_paths.add(f"{base_path}{suffix}")
 
         # these comments are here to help me debug later if needed
         # print([{p.src_path: p.url} for p in main_files.documentation_pages()])
