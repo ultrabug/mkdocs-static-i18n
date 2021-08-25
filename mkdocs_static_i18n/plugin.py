@@ -206,6 +206,8 @@ class I18n(BasePlugin):
                     ".html"
                 )
                 i18n_page.url = str(Path(i18n_page.dest_path).parent.as_posix()) + "/"
+                if i18n_page.url == "./":
+                    i18n_page.url = "."
 
             else:
                 i18n_page.dest_path = i18n_page.dest_path.parent.with_suffix(
