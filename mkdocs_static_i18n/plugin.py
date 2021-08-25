@@ -6,7 +6,7 @@ from pathlib import Path
 from re import compile
 
 from mkdocs import __version__ as mkdocs_version
-from mkdocs.commands.build import _build_page, _populate_page
+from mkdocs.commands.build import _build_page, _build_theme_template, _populate_page
 from mkdocs.config.base import ValidationError
 from mkdocs.config.config_options import Type
 from mkdocs.plugins import BasePlugin
@@ -140,6 +140,7 @@ class I18n(BasePlugin):
         self.i18n_configs = {}
         self.i18n_files = defaultdict(list)
         self.i18n_navs = {}
+        self.sitemap_pages = []
 
     def _is_translation_for(self, src_path, language):
         return Path(src_path).suffixes == [f".{language}", Path(src_path).suffix]
@@ -460,6 +461,11 @@ class I18n(BasePlugin):
         # print([{p.src_path: p.url} for p in self.i18n_files["en"].static_pages()])
         # print([{p.src_path: p.url} for p in self.i18n_files["fr"].static_pages()])
 
+        # populate sitemap pages
+        self.sitemap_pages += main_files.documentation_pages()
+        for language in self.config["languages"]:
+            self.sitemap_pages += self.i18n_files[language].documentation_pages()
+
         return main_files
 
     def _fix_config_navigation(self, language, files):
@@ -578,6 +584,13 @@ class I18n(BasePlugin):
 
             # Include static files
             files.copy_static_files(dirty=dirty)
+
+            # Update sitemap.xml
+            for template in config["theme"].static_templates:
+                if template == "sitemap.xml":
+                    _build_theme_template(
+                        template, env, self.sitemap_pages, config, nav
+                    )
 
             for file in files.documentation_pages():
                 _populate_page(file.page, config, files, dirty)
