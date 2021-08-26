@@ -526,6 +526,39 @@ class I18n(BasePlugin):
                         if entry["text"] == s_entry["text"]:
                             search_plugin.search_index._entries.remove(entry)
 
+    def on_page_context(self, context, page, config, nav):
+        """
+        Make the language switcher contextual to the current page.
+
+        This allows to switch language while staying on the same page.
+        """
+        alternates = config.get("extra", {}).get("alternate")
+        if alternates is None:
+            return
+
+        for language in self.all_languages:
+            if page.url.startswith(f"{language}/"):
+                localized = language
+                break
+        else:
+            localized = None
+
+        if localized:
+            # localized context
+            for alternate in alternates:
+                if alternate["link"].startswith(f"./{alternate['lang']}/"):
+                    # localized
+                    alternate["link"] = page.url.replace(
+                        f"{localized}/", f"./{alternate['lang']}/", 1
+                    )
+                else:
+                    # default
+                    alternate["link"] = page.url.replace(f"{localized}/", "./", 1)
+        else:
+            # default context
+            for alternate in alternates:
+                alternate["link"] += page.url
+
     def on_post_build(self, config):
         """
         Derived from mkdocs commands build function.
