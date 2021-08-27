@@ -543,21 +543,23 @@ class I18n(BasePlugin):
         else:
             localized = None
 
-        if localized:
-            # localized context
-            for alternate in alternates:
-                if alternate["link"].startswith(f"./{alternate['lang']}/"):
-                    # localized
+        for alternate in alternates:
+            if alternate["link"].startswith(f"./{alternate['lang']}/"):
+                # localized link
+                if localized:
+                    # localized page
                     alternate["link"] = page.url.replace(
                         f"{localized}/", f"./{alternate['lang']}/", 1
                     )
                 else:
-                    # default
+                    # default page
+                    alternate["link"] = f"./{alternate['lang']}/{page.url}"
+            else:
+                # default link
+                if localized:
                     alternate["link"] = page.url.replace(f"{localized}/", "./", 1)
-        else:
-            # default context
-            for alternate in alternates:
-                alternate["link"] += page.url
+                else:
+                    alternate["link"] = f"./{page.url}"
 
     def on_post_build(self, config):
         """
