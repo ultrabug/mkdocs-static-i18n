@@ -538,12 +538,11 @@ class I18n(BasePlugin):
             return
 
         alternates = deepcopy(self.material_alternates)
-        page_lang = None
         page_url = page.url
         for language in self.all_languages:
             if page.url.startswith(f"{language}/"):
-                page_lang = language
-                page_url = page.url[len(language) + 1:]
+                prefix_len = len(language) + 1
+                page_url = page.url[prefix_len:]
                 break
 
         for alternate in alternates:
