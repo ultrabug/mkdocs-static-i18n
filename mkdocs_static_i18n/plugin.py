@@ -140,6 +140,7 @@ class I18n(BasePlugin):
         self.i18n_configs = {}
         self.i18n_files = defaultdict(list)
         self.i18n_navs = {}
+        self.material_alternates = None
 
     def _is_translation_for(self, src_path, language):
         return Path(src_path).suffixes == [f".{language}", Path(src_path).suffix]
@@ -361,6 +362,7 @@ class I18n(BasePlugin):
                                 "lang": language,
                             }
                         )
+                self.material_alternates = config["extra"].get("alternate")
         # Support for the search plugin lang
         if "search" in config["plugins"]:
             search_langs = config["plugins"]["search"].config["lang"] or []
@@ -532,34 +534,26 @@ class I18n(BasePlugin):
 
         This allows to switch language while staying on the same page.
         """
-        alternates = config.get("extra", {}).get("alternate")
-        if alternates is None:
+        if not self.material_alternates:
             return
 
+        alternates = deepcopy(self.material_alternates)
+        page_lang = None
+        page_url = page.url
         for language in self.all_languages:
             if page.url.startswith(f"{language}/"):
-                localized = language
+                page_lang = language
+                page_url = page.url[len(language) + 1:]
                 break
-        else:
-            localized = None
 
         for alternate in alternates:
-            if alternate["link"].startswith(f"./{alternate['lang']}/"):
-                # localized link
-                if localized:
-                    # localized page
-                    alternate["link"] = page.url.replace(
-                        f"{localized}/", f"./{alternate['lang']}/", 1
-                    )
-                else:
-                    # default page
-                    alternate["link"] = f"./{alternate['lang']}/{page.url}"
+            if alternate["link"].endswith("/"):
+                separator = ""
             else:
-                # default link
-                if localized:
-                    alternate["link"] = page.url.replace(f"{localized}/", "./", 1)
-                else:
-                    alternate["link"] = f"./{page.url}"
+                separator = "/"
+            alternate["link"] += f"{separator}{page_url}"
+
+        config["extra"]["alternate"] = alternates
 
     def on_post_build(self, config):
         """
