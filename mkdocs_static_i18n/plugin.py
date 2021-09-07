@@ -140,6 +140,7 @@ class I18n(BasePlugin):
         self.i18n_configs = {}
         self.i18n_files = defaultdict(list)
         self.i18n_navs = {}
+        self.material_alternates = None
 
     def _is_translation_for(self, src_path, language):
         return Path(src_path).suffixes == [f".{language}", Path(src_path).suffix]
@@ -361,6 +362,7 @@ class I18n(BasePlugin):
                                 "lang": language,
                             }
                         )
+                self.material_alternates = config["extra"].get("alternate")
         # Support for the search plugin lang
         if "search" in config["plugins"]:
             search_langs = config["plugins"]["search"].config["lang"] or []
@@ -525,6 +527,32 @@ class I18n(BasePlugin):
                     if entry["location"] in expected_locations:
                         if entry["text"] == s_entry["text"]:
                             search_plugin.search_index._entries.remove(entry)
+
+    def on_page_context(self, context, page, config, nav):
+        """
+        Make the language switcher contextual to the current page.
+
+        This allows to switch language while staying on the same page.
+        """
+        if not self.material_alternates:
+            return
+
+        alternates = deepcopy(self.material_alternates)
+        page_url = page.url
+        for language in self.all_languages:
+            if page.url.startswith(f"{language}/"):
+                prefix_len = len(language) + 1
+                page_url = page.url[prefix_len:]
+                break
+
+        for alternate in alternates:
+            if alternate["link"].endswith("/"):
+                separator = ""
+            else:
+                separator = "/"
+            alternate["link"] += f"{separator}{page_url}"
+
+        config["extra"]["alternate"] = alternates
 
     def on_post_build(self, config):
         """
