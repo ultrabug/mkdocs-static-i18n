@@ -216,6 +216,14 @@ plugins:
           Topic2: Sujet2
 ```
 
+## Localized content can diverge from the default version
+
+Since version 0.20 of the plugin, localized content can diverge from the
+default language version. This means that you can have pages that are specific
+to some languages without any problem.
+
+See #59 if you need more information about this.
+
 ## Compatibility with the search plugin
 
 If you enabled the `search` plugin embedded with MkDocs, this plugin will
