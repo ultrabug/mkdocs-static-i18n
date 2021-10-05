@@ -252,14 +252,15 @@ class I18n(BasePlugin):
                 return language
         return None
 
-    def _get_page_from_paths(self, expected_paths, files):
+    def _get_page_from_paths(self, expected_paths, files, version):
         for expected_path in expected_paths:
             for page in files:
                 if Path(page.src_path) == expected_path:
                     return page
         else:
-            raise Exception(
-                f"mkdocs-static-i18n is expecting one of the following files: {expected_paths}"
+            log.debug(
+                "mkdocs-static-i18n could not find any of those files for the "
+                f"'{version}' version: {set(expected_paths)}"
             )
 
     def _dict_replace_value(self, directory, old, new):
@@ -413,20 +414,26 @@ class I18n(BasePlugin):
                 Path(f"{base_path}{suffix}"),
                 Path(f"{base_path}.{self.default_language}{suffix}"),
             ]
-            main_page = self._get_page_from_paths(main_expects, files)
+            main_page = self._get_page_from_paths(
+                main_expects, files, version="default"
+            )
 
-            page_lang = self._get_page_lang(main_page)
-            if page_lang is None:
-                main_files.append(main_page)
-            else:
-                if fileobj in files.documentation_pages():
-                    # .md documentation files
-                    main_files.append(self._get_i18n_page(main_page, page_lang, config))
+            if main_page is not None:
+                page_lang = self._get_page_lang(main_page)
+
+                if page_lang is None:
+                    main_files.append(main_page)
                 else:
-                    # any other .<language>.<suffix> files
-                    main_files.append(
-                        self._get_i18n_asset(main_page, page_lang, config, suffix)
-                    )
+                    if fileobj in files.documentation_pages():
+                        # .md documentation files
+                        main_files.append(
+                            self._get_i18n_page(main_page, page_lang, config)
+                        )
+                    else:
+                        # any other .<language>.<suffix> files
+                        main_files.append(
+                            self._get_i18n_asset(main_page, page_lang, config, suffix)
+                        )
 
             # skip language builds requested?
             if self.config["default_language_only"] is True:
@@ -438,7 +445,11 @@ class I18n(BasePlugin):
                     Path(f"{base_path}.{self.default_language}{suffix}"),
                     Path(f"{base_path}{suffix}"),
                 ]
-                lang_page = self._get_page_from_paths(lang_expects, files)
+                lang_page = self._get_page_from_paths(
+                    lang_expects, files, version=language
+                )
+                if lang_page is None:
+                    continue
 
                 page_lang = self._get_page_lang(lang_page)
                 if fileobj in files.documentation_pages():
