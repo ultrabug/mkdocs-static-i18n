@@ -561,6 +561,8 @@ class I18n(BasePlugin):
                 separator = ""
             else:
                 separator = "/"
+            if config.get("use_directory_urls") is False:
+                alternate["link"] = alternate["link"].replace("/index.html", "", 1)
             alternate["link"] += f"{separator}{page_url}"
 
         config["extra"]["alternate"] = alternates
