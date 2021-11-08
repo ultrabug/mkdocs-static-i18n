@@ -12,7 +12,7 @@ USE_DIRECTORY_URLS = [
     Path("index.html"),
     Path("topic1/named_file.en/index.html"),
     Path("topic1/named_file.fr/index.html"),
-    Path("topic2/index.en/index.html"),
+    Path("topic2/README.en/index.html"),
     Path("topic2/index.html"),
 ]
 NO_USE_DIRECTORY_URLS = [
@@ -25,7 +25,7 @@ NO_USE_DIRECTORY_URLS = [
     Path("index.html"),
     Path("topic1/named_file.en.html"),
     Path("topic1/named_file.fr.html"),
-    Path("topic2/index.en.html"),
+    Path("topic2/README.en.html"),
     Path("topic2/index.html"),
 ]
 
