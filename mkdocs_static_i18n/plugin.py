@@ -363,7 +363,14 @@ class I18n(BasePlugin):
                                 "lang": language,
                             }
                         )
-                self.material_alternates = config["extra"].get("alternate")
+
+                if "navigation.instant" in config["theme"]._vars.get("features", []):
+                    log.warning(
+                        "mkdocs-material language switcher contextual link is not "
+                        "compatible with theme.features = navigation.instant"
+                    )
+                else:
+                    self.material_alternates = config["extra"].get("alternate")
         # Support for the search plugin lang
         if "search" in config["plugins"]:
             search_langs = config["plugins"]["search"].config["lang"] or []
