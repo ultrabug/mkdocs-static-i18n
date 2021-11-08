@@ -258,7 +258,7 @@ Starting version 7.1.0, [mkdocs-material supports a site language selector](http
 
 The `mkdocs-static-i18n` plugin will detect if you're using `mkdocs-material` and, if its version is at least `7.1.0`, **will enable and configure the site language selector automatically for you** unless you specified your own `extra.alternate` configuration!
 
-Even better, `mkdocs-static-i18n` will also make it so that changing between languages keeps you on the same page instead of getting you back to the language specific home page!
+Even better, `mkdocs-static-i18n` will also make it so that changing between languages keeps you on the same page instead of getting you back to the language specific home page (not compatible with theme.features = navigation.instant, [see #62](https://github.com/ultrabug/mkdocs-static-i18n/issues/62))!
 
 If you wish to disable that feature, simply set the `material_alternate` option to `false`:
 
