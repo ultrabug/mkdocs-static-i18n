@@ -386,6 +386,17 @@ class I18n(BasePlugin):
                         f"Language '{language}' is not supported by "
                         f"lunr.js, not setting it in the 'plugins.search.lang' option"
                     )
+        # Report misconfigured nav_translations, see #66
+        if self.config["nav_translations"]:
+            for lang in self.config["languages"]:
+                if lang in self.config["nav_translations"]:
+                    break
+            else:
+                log.info(
+                    "Ignoring 'nav_translations' option: expected a language key "
+                    f"from {list(self.config['languages'].keys())}, got "
+                    f"{list(self.config['nav_translations'].keys())}"
+                )
         return config
 
     def on_files(self, files, config):
