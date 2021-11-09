@@ -363,6 +363,14 @@ class I18n(BasePlugin):
                                 "lang": language,
                             }
                         )
+                elif "alternate" in config["extra"]:
+                    for alternate in config["extra"]["alternate"]:
+                        if not alternate.get("link", "").startswith("./"):
+                            log.info(
+                                "The 'extra.alternate' configuration contains a "
+                                "'link' option that should starts with './' in "
+                                f"{alternate}"
+                            )
 
                 if "navigation.instant" in config["theme"]._vars.get("features", []):
                     log.warning(
