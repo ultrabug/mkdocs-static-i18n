@@ -397,6 +397,13 @@ class I18n(BasePlugin):
                     f"from {list(self.config['languages'].keys())}, got "
                     f"{list(self.config['nav_translations'].keys())}"
                 )
+                self.config["nav_translations"] = {}
+            if "awesome-pages" in config["plugins"] and self.config["nav_translations"]:
+                log.info(
+                    "Ignoring 'nav_translations' option: the 'awesome-pages' "
+                    "plugin breaks the ability to translate navigation titles"
+                )
+                self.config["nav_translations"] = {}
         return config
 
     def on_files(self, files, config):
