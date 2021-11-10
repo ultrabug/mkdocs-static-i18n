@@ -37,4 +37,4 @@ def test_search_deduplicate_entries_no_directory_urls(config_plugin_search):
     config["use_directory_urls"] = False
     build(config)
     search_plugin = config["plugins"]["search"]
-    assert len(search_plugin.search_index._entries) == 33
+    assert len(search_plugin.search_index._entries) == 35

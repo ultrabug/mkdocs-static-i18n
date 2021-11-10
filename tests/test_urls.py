@@ -14,7 +14,7 @@ def test_urls_no_use_directory_urls(config_base, config_plugin):
     mkdocs_urls = set()
     for page in files.documentation_pages():
         for lang in i18n_plugin.config["languages"]:
-            page.url = page.url.replace(f".{lang}", "")
+            page.url = page.url.replace(f".{lang}", "").replace("README", "index")
         mkdocs_urls.add(page.url)
     plugin_urls = {p.url for p in i18n_files.documentation_pages()}
     assert mkdocs_urls == plugin_urls
@@ -35,7 +35,7 @@ def test_urls_use_directory_urls(config_base, config_plugin):
         if "index" in page.url:
             continue
         for lang in i18n_plugin.config["languages"]:
-            page.url = page.url.replace(f".{lang}", "")
+            page.url = page.url.replace(f".{lang}", "").replace("README/", "")
         mkdocs_urls.add(page.url)
     plugin_urls = {p.url for p in i18n_files.documentation_pages()}
     assert mkdocs_urls == plugin_urls
