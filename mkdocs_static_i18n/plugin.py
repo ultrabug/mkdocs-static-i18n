@@ -94,7 +94,6 @@ class I18nFiles(Files):
     """
 
     locale = None
-    translated = False
 
     def __contains__(self, path):
         """
@@ -419,12 +418,6 @@ class I18n(BasePlugin):
                     f"{list(self.config['nav_translations'].keys())}"
                 )
                 self.config["nav_translations"] = {}
-            if "awesome-pages" in config["plugins"] and self.config["nav_translations"]:
-                log.info(
-                    "Ignoring 'nav_translations' option: the 'awesome-pages' "
-                    "plugin breaks the ability to translate navigation titles"
-                )
-                self.config["nav_translations"] = {}
         return config
 
     def on_files(self, files, config):
@@ -553,16 +546,6 @@ class I18n(BasePlugin):
                 if hasattr(item, "children") and item.children:
                     self._translate_navigation(language, item.children)
 
-    def on_nav(self, nav, config, files):
-        """
-        Translate i18n aware navigation to honor the 'nav_translations' option.
-        """
-        if not files.translated and self.config["nav_translations"].get(files.locale):
-            log.info(f"Translating navigation to {files.locale}")
-            self._translate_navigation(files.locale, nav)
-            files.translated = True
-        return nav
-
     def _fix_search_duplicates(self, language, search_plugin):
         """
         We want to avoid indexing the same pages twice if the default language
@@ -655,10 +638,17 @@ class I18n(BasePlugin):
                         "the 'theme.language' option"
                     )
 
-            # Run `nav` plugin events.
-            # This is useful to be compatible with nav order changing plugins
-            # such as mkdocs-awesome-pages-plugin
-            nav = config["plugins"].run_event("nav", nav, config=config, files=files)
+            # Translate the navigation if requested
+            if self.config["nav_translations"].get(files.locale):
+                log.info(f"Translating navigation to {files.locale}")
+                self._translate_navigation(files.locale, nav)
+
+            # Support rebuilding a localized nav
+            # when using the awesome-pages plugin
+            if "awesome-pages" in config["plugins"]:
+                awesome_pages_plugin = config["plugins"]["awesome-pages"]
+                awesome_pages_plugin.nav_config_with_rest = config["nav"]
+                nav = awesome_pages_plugin.on_nav(nav, config, files)
 
             # Include theme specific files
             files.add_files_from_theme(env, config)
