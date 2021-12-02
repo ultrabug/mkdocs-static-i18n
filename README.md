@@ -216,9 +216,6 @@ plugins:
           Topic2: Sujet2
 ```
 
-**NOTE**: this option [is not compatible](https://github.com/ultrabug/mkdocs-static-i18n/issues/65)
-with the `awesome-pages` plugin!
-
 ## Localized content can diverge from the default version
 
 Since version 0.20 of the plugin, localized content can diverge from the

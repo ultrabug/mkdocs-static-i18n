@@ -27,9 +27,12 @@ try:
         lang.split(".html")[0]
         for lang in material_dist.resource_listdir("material/partials/languages")
     ]
+    awesome_pages_dist = pkg_resources.get_distribution("mkdocs-awesome-pages-plugin")
+    awesome_pages_version = awesome_pages_dist.version
 except Exception:
     material_languages = []
     material_version = None
+    awesome_pages_version = None
 
 log = logging.getLogger("mkdocs.plugins." + __name__)
 
@@ -211,11 +214,13 @@ class I18n(BasePlugin):
                 )
                 self.config["nav_translations"] = {}
             if "awesome-pages" in config["plugins"] and self.config["nav_translations"]:
-                log.info(
-                    "Ignoring 'nav_translations' option: the 'awesome-pages' "
-                    "plugin breaks the ability to translate navigation titles"
-                )
-                self.config["nav_translations"] = {}
+                if awesome_pages_version < "2.6.1":
+                    log.info(
+                        "Ignoring 'nav_translations' option: this option is not compatible "
+                        "with the 'awesome-pages' plugin before version 2.6.1 "
+                        f"(you have mkdocs-awesome-pages-plugin=={awesome_pages_version})"
+                    )
+                    self.config["nav_translations"] = {}
         return config
 
     def on_files(self, files, config):
