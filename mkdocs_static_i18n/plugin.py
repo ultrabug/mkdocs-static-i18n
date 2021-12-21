@@ -27,11 +27,14 @@ try:
         lang.split(".html")[0]
         for lang in material_dist.resource_listdir("material/partials/languages")
     ]
-    awesome_pages_dist = pkg_resources.get_distribution("mkdocs-awesome-pages-plugin")
-    awesome_pages_version = awesome_pages_dist.version
 except Exception:
     material_languages = []
     material_version = None
+
+try:
+    awesome_pages_dist = pkg_resources.get_distribution("mkdocs-awesome-pages-plugin")
+    awesome_pages_version = awesome_pages_dist.version
+except Exception:
     awesome_pages_version = None
 
 log = logging.getLogger("mkdocs.plugins." + __name__)
