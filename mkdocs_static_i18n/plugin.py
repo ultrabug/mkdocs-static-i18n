@@ -128,6 +128,13 @@ class I18n(BasePlugin):
         self.all_languages = set(
             [self.default_language] + list(self.config["languages"])
         )
+        # Make a localized copy of the config, the plugins are mutualized
+        # We remove it from the config before (deep)copying it
+        plugins = config.pop("plugins")
+        for language in self.all_languages:
+            self.i18n_configs[language] = deepcopy(config)
+            self.i18n_configs[language]["plugins"] = plugins
+        config["plugins"] = plugins
         # Set theme locale to default language
         if self.default_language != "en":
             if config["theme"].name in MKDOCS_THEMES:
@@ -235,16 +242,9 @@ class I18n(BasePlugin):
         main_files.default_locale = self.default_language
         main_files.locale = self.default_language
         for language in self.all_languages:
-            self.i18n_configs[language] = deepcopy(config)
             self.i18n_files[language] = I18nFiles([])
             self.i18n_files[language].default_locale = self.default_language
             self.i18n_files[language].locale = language
-            # there can be only one instance of the search plugin because
-            # it is hardcoded in the JS worker sources
-            if "search" in config["plugins"]:
-                self.i18n_configs[language]["plugins"]["search"] = config["plugins"][
-                    "search"
-                ]
 
         for fileobj in files:
 
