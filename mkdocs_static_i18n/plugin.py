@@ -223,14 +223,20 @@ class I18n(BasePlugin):
                     f"{list(self.config['nav_translations'].keys())}"
                 )
                 self.config["nav_translations"] = {}
-            if "awesome-pages" in config["plugins"] and self.config["nav_translations"]:
-                if awesome_pages_version < "2.6.1":
-                    log.info(
-                        "Ignoring 'nav_translations' option: this option is not compatible "
-                        "with the 'awesome-pages' plugin before version 2.6.1 "
-                        f"(you have mkdocs-awesome-pages-plugin=={awesome_pages_version})"
-                    )
-                    self.config["nav_translations"] = {}
+        # Make sure awesome-pages is always called first, see #65
+        if "awesome-pages" in config["plugins"]:
+            config["plugins"].move_to_end("awesome-pages", last=False)
+            for events in config["plugins"].events.values():
+                for idx, event in enumerate(list(events)):
+                    try:
+                        if (
+                            str(event.__module__)
+                            == "mkdocs_awesome_pages_plugin.plugin"
+                        ):
+                            events.insert(0, events.pop(idx))
+                    except AttributeError:
+                        # partials don't have a module
+                        pass
         return config
 
     def on_files(self, files, config):
