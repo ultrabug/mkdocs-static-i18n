@@ -31,12 +31,6 @@ except Exception:
     material_languages = []
     material_version = None
 
-try:
-    awesome_pages_dist = pkg_resources.get_distribution("mkdocs-awesome-pages-plugin")
-    awesome_pages_version = awesome_pages_dist.version
-except Exception:
-    awesome_pages_version = None
-
 log = logging.getLogger("mkdocs.plugins." + __name__)
 
 LUNR_LANGUAGES = [
