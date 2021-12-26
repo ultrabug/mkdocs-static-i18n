@@ -315,23 +315,40 @@ class I18n(BasePlugin):
                         i18n_page.src_path,
                     )
 
-    def _translate_navigation(self, language, nav):
+    def _maybe_translate_navigation(self, language, nav):
         translated_nav = self.config["nav_translations"].get(language, {})
         if translated_nav:
             for item in nav:
                 if hasattr(item, "title") and item.title in translated_nav:
                     item.title = translated_nav[item.title]
                 if hasattr(item, "children") and item.children:
-                    self._translate_navigation(language, item.children)
+                    self._maybe_translate_navigation(language, item.children)
 
     def on_nav(self, nav, config, files):
         """
         Translate i18n aware navigation to honor the 'nav_translations' option.
         """
-        if not files.translated and self.config["nav_translations"].get(files.locale):
-            log.info(f"Translating navigation to {files.locale}")
-            self._translate_navigation(files.locale, nav)
-            files.translated = True
+        for language in self.config["languages"]:
+            if self.i18n_configs[language]["nav"]:
+                self._fix_config_navigation(language, self.i18n_files[language])
+
+            self.i18n_navs[language] = get_navigation(
+                self.i18n_files[language], self.i18n_configs[language]
+            )
+
+            # If awesome-pages is used, we want to use it to structurate our
+            # localized navigations as well
+            if "awesome-pages" in config["plugins"]:
+                self.i18n_navs[language] = config["plugins"]["awesome-pages"].on_nav(
+                    self.i18n_navs[language],
+                    config=self.i18n_configs[language],
+                    files=self.i18n_files[language],
+                )
+
+            if self.config["nav_translations"].get(language, {}):
+                log.info(f"Translating navigation to {language}")
+                self._maybe_translate_navigation(language, self.i18n_navs[language])
+
         return nav
 
     def _fix_search_duplicates(self, language, search_plugin):
@@ -399,13 +416,6 @@ class I18n(BasePlugin):
         for language in self.config["languages"]:
             log.info(f"Building {language} documentation")
 
-            if self.i18n_configs[language]["nav"]:
-                self._fix_config_navigation(language, self.i18n_files[language])
-
-            self.i18n_navs[language] = get_navigation(
-                self.i18n_files[language], self.i18n_configs[language]
-            )
-
             config = self.i18n_configs[language]
             env = self.i18n_configs[language]["theme"].get_env()
             files = self.i18n_files[language]
@@ -421,11 +431,6 @@ class I18n(BasePlugin):
                         f"mkdocs-material=={material_version}, not setting "
                         "the 'theme.language' option"
                     )
-
-            # Run `nav` plugin events.
-            # This is useful to be compatible with nav order changing plugins
-            # such as mkdocs-awesome-pages-plugin
-            nav = config["plugins"].run_event("nav", nav, config=config, files=files)
 
             # Include theme specific files
             files.add_files_from_theme(env, config)
