@@ -259,7 +259,7 @@ class I18n(BasePlugin):
 
         for fileobj in files:
 
-            i18n_file = I18nFile(
+            main_i18n_file = I18nFile(
                 fileobj,
                 "",
                 all_languages=self.all_languages,
@@ -268,7 +268,7 @@ class I18n(BasePlugin):
                 site_dir=config["site_dir"],
                 use_directory_urls=config.get("use_directory_urls"),
             )
-            main_files.append(i18n_file)
+            main_files.append(main_i18n_file)
 
             # user requested only the default version to be built
             if self.config["default_language_only"] is True:
@@ -285,6 +285,14 @@ class I18n(BasePlugin):
                     use_directory_urls=config.get("use_directory_urls"),
                 )
                 self.i18n_files[language].append(i18n_file)
+                if (
+                    main_i18n_file.is_documentation_page()
+                    and language != self.default_language
+                    and main_i18n_file.src_path == i18n_file.src_path
+                ):
+                    log.debug(
+                        f"file {main_i18n_file.src_path} is missing translation in '{language}'"
+                    )
 
         # these comments are here to help me debug later if needed
         # print([{p.src_path: p.url} for p in main_files.documentation_pages()])
