@@ -125,9 +125,14 @@ class I18n(BasePlugin):
         Enrich configuration with language specific knowledge.
         """
         self.default_language = self.config["default_language"]
-        self.all_languages = set(
-            [self.default_language] + list(self.config["languages"])
-        )
+        # Make a order preserving list of all the configured
+        # languages, add the default one first if not listed by the user
+        self.all_languages = []
+        for language in self.config["languages"]:
+            if language not in self.all_languages:
+                self.all_languages.append(language)
+        if self.default_language not in self.all_languages:
+            self.all_languages.insert(0, self.default_language)
         # Make a localized copy of the config, the plugins are mutualized
         # We remove it from the config before (deep)copying it
         plugins = config.pop("plugins")
