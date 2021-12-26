@@ -368,17 +368,17 @@ class I18n(BasePlugin):
         content is the same as its /language counterpart.
         """
         entries = deepcopy(search_plugin.search_index._entries)
-        for entry in entries:
-            if entry["location"].startswith(f"{language}/"):
-                for s_entry in search_plugin.search_index._entries:
-                    expected_locations = [
-                        f"{language}/{s_entry['location']}",
-                        f"{language}/{s_entry['location'].rstrip('/')}",
-                        f"{language}/{s_entry['location'].replace('/#', '#')}",
-                    ]
-                    if entry["location"] in expected_locations:
-                        if entry["text"] == s_entry["text"]:
-                            search_plugin.search_index._entries.remove(entry)
+        default_lang_entries = filter(lambda x: not x["location"].startswith(tuple(self.config["languages"].keys())), search_plugin.search_index._entries)
+        target_lang_entries = list(filter(lambda x: x["location"].startswith(f"{language}/"), entries))
+        for default_lang_entry in default_lang_entries:
+            expected_locations = [
+                f"{language}/{default_lang_entry['location']}",
+                f"{language}/{default_lang_entry['location'].rstrip('/')}",
+                f"{language}/{default_lang_entry['location'].replace('/#', '#')}",
+            ]
+            duplicated_entries = filter(lambda x: x["location"] in expected_locations and x["text"] == default_lang_entry["text"], target_lang_entries)
+            for duplicated_entry in duplicated_entries:
+                search_plugin.search_index._entries.remove(duplicated_entry)
 
     def on_page_context(self, context, page, config, nav):
         """
