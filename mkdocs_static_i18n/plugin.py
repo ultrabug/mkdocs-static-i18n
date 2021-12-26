@@ -408,6 +408,10 @@ class I18n(BasePlugin):
 
         config["extra"]["alternate"] = alternates
 
+        # export some useful i18n related variables on page context, see #75
+        context["i18n_config"] = self.config
+        context["i18n_page_locale"] = page.file.locale
+
     def on_post_build(self, config):
         """
         Derived from mkdocs commands build function.
