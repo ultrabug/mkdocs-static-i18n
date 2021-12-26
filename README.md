@@ -316,6 +316,13 @@ theme_overrides
     └── i18n_languages.html
 ```
 
+### Using i18n context variables in your pages
+
+The plugin exports some useful i18n variables that you can access through the page context:
+
+- `i18n_config`: the i18n plugin configuration
+- `i18n_page_locale`: the current page locale
+
 ## See it in action!
 
 - [On this repository demo website](https://ultrabug.github.io/mkdocs-static-i18n/)
