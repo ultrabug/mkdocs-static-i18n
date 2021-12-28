@@ -278,6 +278,7 @@ class I18n(BasePlugin):
                     site_dir=config["site_dir"],
                     use_directory_urls=config.get("use_directory_urls"),
                 )
+                # this 'append' method is reimplemented in I18nFiles to avoid duplicates
                 self.i18n_files[language].append(i18n_file)
                 if (
                     main_i18n_file.is_documentation_page()
@@ -397,31 +398,31 @@ class I18n(BasePlugin):
 
         This allows to switch language while staying on the same page.
         """
-        if not self.material_alternates:
-            return
-
-        alternates = deepcopy(self.material_alternates)
-        page_url = page.url
-        for language in self.all_languages:
-            if page.url.startswith(f"{language}/"):
-                prefix_len = len(language) + 1
-                page_url = page.url[prefix_len:]
-                break
-
-        for alternate in alternates:
-            if alternate["link"].endswith("/"):
-                separator = ""
-            else:
-                separator = "/"
-            if config.get("use_directory_urls") is False:
-                alternate["link"] = alternate["link"].replace("/index.html", "", 1)
-            alternate["link"] += f"{separator}{page_url}"
-
-        config["extra"]["alternate"] = alternates
-
         # export some useful i18n related variables on page context, see #75
         context["i18n_config"] = self.config
-        context["i18n_page_locale"] = page.file.locale
+        context["i18n_page_locale"] = page.file.dest_language or self.default_language
+        context["i18n_page_file_locale"] = page.file.locale_suffix
+
+        if self.material_alternates:
+            alternates = deepcopy(self.material_alternates)
+            page_url = page.url
+            for language in self.all_languages:
+                if page.url.startswith(f"{language}/"):
+                    prefix_len = len(language) + 1
+                    page_url = page.url[prefix_len:]
+                    break
+
+            for alternate in alternates:
+                if alternate["link"].endswith("/"):
+                    separator = ""
+                else:
+                    separator = "/"
+                if config.get("use_directory_urls") is False:
+                    alternate["link"] = alternate["link"].replace("/index.html", "", 1)
+                alternate["link"] += f"{separator}{page_url}"
+            config["extra"]["alternate"] = alternates
+
+        return context
 
     def on_post_build(self, config):
         """

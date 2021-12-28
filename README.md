@@ -316,18 +316,21 @@ theme_overrides
     └── i18n_languages.html
 ```
 
-### Using i18n context variables in your pages
+## Using i18n context variables in your pages
 
 The plugin exports some useful i18n variables that you can access through the page context:
 
 - `i18n_config`: the i18n plugin configuration
-- `i18n_page_locale`: the current page locale
+- `i18n_page_locale`: the current rendering locale of the page
+- `i18n_page_file_locale`: the locale suffix of the source file used to render the page
 
-## See it in action!
+Those context [variables can be accessed using Jinja2 notation](https://jinja.palletsprojects.com/en/latest/templates/#variables), like `{{ i18n_page_locale }}` in your theme overrides.
+
+## See it in action
 
 - [On this repository demo website](https://ultrabug.github.io/mkdocs-static-i18n/)
 - [On my own website: ultrabug.fr](https://ultrabug.fr)
 
-## Contributions welcome!
+## Contributions welcome
 
 Feel free to ask questions, enhancements and to contribute to this project!

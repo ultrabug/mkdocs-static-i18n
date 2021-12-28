@@ -122,32 +122,37 @@ class I18nFile(File):
         self.initial_abs_dest_path = file_from.abs_dest_path
         self.initial_dest_path = file_from.dest_path
         self.initial_src_path = file_from.src_path
-
-        # guess the file locale from its suffixes
-        self.locale = self._get_locale()
+        self.locale_suffix = None
 
         # the name without any suffix
         self.name = self._get_stem()
 
-        # the destination name with the locale trimmed (if present)
-        if self.locale:
-            self.dest_name = Path(self.name).with_suffix(self.suffix)
-        else:
-            self.dest_name = Path(self.name).with_suffix(
-                "".join(Path(self.initial_src_path).suffixes)
-            )
-
         # find src_path
         expected_paths = [
-            Path(docs_dir) / Path(f"{self.non_i18n_src_path}.{language}{self.suffix}"),
-            Path(docs_dir)
-            / Path(f"{self.non_i18n_src_path}.{default_language}{self.suffix}"),
-            Path(docs_dir) / Path(f"{self.non_i18n_src_path}{self.suffix}"),
+            (
+                language,
+                Path(docs_dir)
+                / Path(f"{self.non_i18n_src_path}.{language}{self.suffix}"),
+            ),
+            (
+                default_language,
+                Path(docs_dir)
+                / Path(f"{self.non_i18n_src_path}.{default_language}{self.suffix}"),
+            ),
+            (None, Path(docs_dir) / Path(f"{self.non_i18n_src_path}{self.suffix}")),
         ]
-        for expected_path in expected_paths:
+        for locale_suffix, expected_path in expected_paths:
             if Path(expected_path).exists():
                 self.src_path = expected_path.relative_to(self.docs_dir)
                 self.abs_src_path = Path(self.docs_dir) / Path(self.src_path)
+                #
+                self.locale_suffix = locale_suffix
+                if self.locale_suffix:
+                    self.dest_name = Path(self.name).with_suffix(self.suffix)
+                else:
+                    self.dest_name = Path(self.name).with_suffix(
+                        "".join(Path(self.initial_src_path).suffixes)
+                    )
                 #
                 self.dest_path = self._get_dest_path(use_directory_urls)
                 self.abs_dest_path = (
@@ -176,8 +181,9 @@ class I18nFile(File):
         return (
             f"I18nFile(src_path='{self.src_path}', abs_src_path='{self.abs_src_path}',"
             f" dest_path='{self.dest_path}', abs_dest_path='{self.abs_dest_path}',"
-            f" name='{self.name}', locale='{self.dest_language}',"
-            f" dest_name='{self.dest_name}', url='{self.url}')"
+            f" name='{self.name}', locale_suffix='{self.locale_suffix}',"
+            f" dest_language='{self.dest_language}', dest_name='{self.dest_name}',"
+            f" url='{self.url}')"
         )
 
     @property
@@ -185,7 +191,7 @@ class I18nFile(File):
         """
         Return the path of the given page without any suffix.
         """
-        if self.locale is None:
+        if self._is_localized_for() is None:
             non_i18n_src_path = Path(self.initial_src_path).with_suffix("")
         else:
             non_i18n_src_path = (
@@ -193,7 +199,7 @@ class I18nFile(File):
             )
         return non_i18n_src_path
 
-    def _get_locale(self):
+    def _is_localized_for(self):
         """
         Returns the locale detected in the file's suffixes <name>.<locale>.<suffix>.
         """
