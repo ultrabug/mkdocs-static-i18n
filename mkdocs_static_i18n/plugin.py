@@ -135,6 +135,17 @@ class I18n(BasePlugin):
         for language in self.all_languages:
             self.i18n_configs[language] = deepcopy(config)
             self.i18n_configs[language]["plugins"] = plugins
+            if "with-pdf" in plugins:
+                # Make a new with-pdf plugin object with modified output path (the language dir)
+                # and call life cycle events manualy for each language
+                self.i18n_configs[language]["with-pdf"] = deepcopy(plugins["with-pdf"])
+                output_path = plugins["with-pdf"].config["output_path"]
+                self.i18n_configs[language]["with-pdf"].config[
+                    "output_path"
+                ] = f"{language}/{output_path}"
+                self.i18n_configs[language]["with-pdf"].on_config(
+                    self.i18n_configs[language]
+                )
         config["plugins"] = plugins
         # Set theme locale to default language
         if self.default_language != "en":
@@ -359,6 +370,13 @@ class I18n(BasePlugin):
                 log.info(f"Translating navigation to {language}")
                 self._maybe_translate_navigation(language, self.i18n_navs[language])
 
+            if "with-pdf" in config["plugins"]:
+                self.i18n_configs[language]["with-pdf"].on_nav(
+                    self.i18n_navs[language],
+                    config=self.i18n_configs[language],
+                    files=self.i18n_files[language],
+                )
+
         return nav
 
     def _fix_search_duplicates(self, language, search_plugin):
@@ -426,6 +444,13 @@ class I18n(BasePlugin):
 
         return context
 
+    def on_post_page(self, output_content, page, config):
+        if "with-pdf" in config["plugins"]:
+            for language in self.config["languages"]:
+                self.i18n_configs[language]["with-pdf"].on_post_page(
+                    output_content, page, self.i18n_configs[language]
+                )
+
     def on_post_build(self, config):
         """
         Derived from mkdocs commands build function.
@@ -482,3 +507,6 @@ class I18n(BasePlugin):
                 ):
                     self._fix_search_duplicates(language, search_plugin)
                 search_plugin.on_post_build(config)
+
+            if "with-pdf" in config["plugins"]:
+                config["with-pdf"].on_post_build(config)
