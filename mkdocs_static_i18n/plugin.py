@@ -492,11 +492,6 @@ class I18n(BasePlugin):
             for file in files.documentation_pages():
                 _build_page(file.page, config, files, nav, env, dirty)
 
-            if "with-pdf" in self.i18n_configs[language]["plugins"]:
-                self.i18n_configs[language]["plugins"].run_event(
-                    "post_build", config=config
-                )
-
             # Update the search plugin index with language pages
             if search_plugin:
                 if (
