@@ -118,8 +118,6 @@ class I18n(BasePlugin):
         """
         Enrich configuration with language specific knowledge.
         """
-        if "skip_i18n" in config:
-            return
         self.default_language = self.config["default_language"]
         # Make a order preserving list of all the configured
         # languages, add the default one first if not listed by the user
@@ -458,7 +456,7 @@ class I18n(BasePlugin):
         We build every language on its own directory.
         """
         # skip language builds requested?
-        if self.config["default_language_only"] is True or "skip_i18n" in config:
+        if self.config["default_language_only"] is True:
             return
 
         dirty = False
