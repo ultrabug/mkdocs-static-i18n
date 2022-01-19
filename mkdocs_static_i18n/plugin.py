@@ -66,6 +66,7 @@ class I18n(BasePlugin):
         ("languages", Locale(dict, required=True)),
         ("material_alternate", Type(bool, default=True, required=False)),
         ("nav_translations", Type(dict, default={}, required=False)),
+        ("site_name_translations", Type(dict, default={}, required=False)),
     )
 
     def __init__(self, *args, **kwargs):
@@ -460,6 +461,9 @@ class I18n(BasePlugin):
                     alternate["link"] = alternate["link"].replace("/index.html", "", 1)
                 alternate["link"] += f"{separator}{page_url}"
             config["extra"]["alternate"] = alternates
+
+        if self.config["site_name_translations"].get(page.file.dest_language, {}):
+            config['site_name'] = self.config["site_name_translations"].get(page.file.dest_language)
 
         return context
 
