@@ -204,10 +204,8 @@ class I18nFile(File):
         Returns the locale detected in the file's suffixes <name>.<locale>.<suffix>.
         """
         for language in self.all_languages:
-            if Path(self.initial_src_path).suffixes == [
-                f".{language}",
-                Path(self.initial_src_path).suffix,
-            ]:
+            expected_suffixes = [f".{language}", Path(self.initial_src_path).suffix]
+            if set(expected_suffixes) <= set(Path(self.initial_src_path).suffixes):
                 return language
         return None
 
@@ -219,8 +217,8 @@ class I18nFile(File):
         """ Return the name of the file without it's extension. """
         return (
             "index"
-            if self.non_i18n_src_path.stem in ("index", "README")
-            else self.non_i18n_src_path.stem
+            if self.non_i18n_src_path.name in ("index", "README")
+            else self.non_i18n_src_path.name
         )
 
     def _get_dest_path(self, use_directory_urls):
