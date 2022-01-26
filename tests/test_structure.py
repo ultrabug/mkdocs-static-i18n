@@ -14,6 +14,8 @@ USE_DIRECTORY_URLS = [
     Path("topic1/named_file.fr/index.html"),
     Path("topic2/README.en/index.html"),
     Path("topic2/index.html"),
+    Path("topic2/1.1.filename.fr.html"),
+    Path("topic2/1.1.filename.html"),
 ]
 NO_USE_DIRECTORY_URLS = [
     Path("404.html"),
@@ -27,6 +29,8 @@ NO_USE_DIRECTORY_URLS = [
     Path("topic1/named_file.fr.html"),
     Path("topic2/README.en.html"),
     Path("topic2/index.html"),
+    Path("topic2/1.1.filename.fr.html"),
+    Path("topic2/1.1.filename.html"),
 ]
 
 
@@ -61,16 +65,19 @@ PLUGIN_USE_DIRECTORY_URLS = [
     Path("index.html"),
     Path("topic1/named_file/index.html"),
     Path("topic2/index.html"),
+    Path("topic2/1.1.filename.html"),
     Path("en/index.html"),
     Path("en/image.png"),
     Path("en/image.fake"),
     Path("en/topic1/named_file/index.html"),
     Path("en/topic2/index.html"),
+    Path("en/topic2/1.1.filename.html"),
     Path("fr/index.html"),
     Path("fr/image.png"),
     Path("fr/image.fake"),
     Path("fr/topic1/named_file/index.html"),
     Path("fr/topic2/index.html"),
+    Path("fr/topic2/1.1.filename.html"),
 ]
 PLUGIN_NO_USE_DIRECTORY_URLS = [
     Path("404.html"),
@@ -79,16 +86,19 @@ PLUGIN_NO_USE_DIRECTORY_URLS = [
     Path("index.html"),
     Path("topic1/named_file.html"),
     Path("topic2/index.html"),
+    Path("topic2/1.1.filename.html"),
     Path("en/index.html"),
     Path("en/image.png"),
     Path("en/image.fake"),
     Path("en/topic1/named_file.html"),
     Path("en/topic2/index.html"),
+    Path("en/topic2/1.1.filename.html"),
     Path("fr/index.html"),
     Path("fr/image.png"),
     Path("fr/image.fake"),
     Path("fr/topic1/named_file.html"),
     Path("fr/topic2/index.html"),
+    Path("fr/topic2/1.1.filename.html"),
 ]
 
 
@@ -123,11 +133,13 @@ PLUGIN_USE_DIRECTORY_URLS_NO_DEFAULT = [
     Path("index.html"),
     Path("topic1/named_file/index.html"),
     Path("topic2/index.html"),
+    Path("topic2/1.1.filename.html"),
     Path("fr/index.html"),
     Path("fr/image.png"),
     Path("fr/image.fake"),
     Path("fr/topic1/named_file/index.html"),
     Path("fr/topic2/index.html"),
+    Path("fr/topic2/1.1.filename.html"),
 ]
 PLUGIN_NO_USE_DIRECTORY_URLS_NO_DEFAULT = [
     Path("404.html"),
@@ -136,11 +148,13 @@ PLUGIN_NO_USE_DIRECTORY_URLS_NO_DEFAULT = [
     Path("index.html"),
     Path("topic1/named_file.html"),
     Path("topic2/index.html"),
+    Path("topic2/1.1.filename.html"),
     Path("fr/index.html"),
     Path("fr/image.png"),
     Path("fr/image.fake"),
     Path("fr/topic1/named_file.html"),
     Path("fr/topic2/index.html"),
+    Path("fr/topic2/1.1.filename.html"),
 ]
 
 
@@ -179,6 +193,7 @@ PLUGIN_USE_DIRECTORY_URLS_DEFAULT_ONLY = [
     Path("index.html"),
     Path("topic1/named_file/index.html"),
     Path("topic2/index.html"),
+    Path("topic2/1.1.filename.html"),
 ]
 PLUGIN_NO_USE_DIRECTORY_URLS_DEFAULT_ONLY = [
     Path("404.html"),
@@ -187,6 +202,7 @@ PLUGIN_NO_USE_DIRECTORY_URLS_DEFAULT_ONLY = [
     Path("index.html"),
     Path("topic1/named_file.html"),
     Path("topic2/index.html"),
+    Path("topic2/1.1.filename.html"),
 ]
 
 
