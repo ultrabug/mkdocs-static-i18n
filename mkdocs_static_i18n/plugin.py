@@ -264,10 +264,6 @@ class I18n(BasePlugin):
             )
             main_files.append(main_i18n_file)
 
-            # user requested only the default version to be built
-            if self.config["default_language_only"] is True:
-                continue
-
             for language in self.all_languages:
                 i18n_file = I18nFile(
                     fileobj,
@@ -430,7 +426,7 @@ class I18n(BasePlugin):
 
         We build every language on its own directory.
         """
-        # skip language builds requested?
+        # user requested only the default version to be built
         if self.config["default_language_only"] is True:
             return
 
