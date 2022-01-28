@@ -93,6 +93,17 @@ class I18nFiles(Files):
         for src_path in filter(lambda s: Path(s) in expected_src_paths, self.src_paths):
             return self.src_paths.get(os.path.normpath(src_path))
 
+    def get_localized_page_from_url(self, url, language):
+        """ Return the I18nFile instance from our files that match the given url and language """
+        if language:
+            url = f"{language}/{url}"
+        url = url.rstrip(".") or "."
+        for file in self._files:
+            if not file.is_documentation_page():
+                continue
+            if file.url == url:
+                return file
+
 
 class I18nFile(File):
     """
@@ -117,9 +128,11 @@ class I18nFile(File):
 
         # i18n addons
         self.all_languages = all_languages
+        self.alternates = {lang: None for lang in self.all_languages}
+        self.default_language = default_language
         self.dest_language = language
-        self.initial_abs_src_path = file_from.abs_src_path
         self.initial_abs_dest_path = file_from.abs_dest_path
+        self.initial_abs_src_path = file_from.abs_src_path
         self.initial_dest_path = file_from.dest_path
         self.initial_src_path = file_from.src_path
         self.locale_suffix = None
@@ -174,6 +187,9 @@ class I18nFile(File):
         # set url
         self.url = self._get_url(use_directory_urls)
 
+        # set ourself as our own alternate
+        self.alternates[self.dest_language or self.default_language] = self
+
         # mkdocs expects strings for those
         self.abs_dest_path = str(self.abs_dest_path)
         self.abs_src_path = str(self.abs_src_path)
@@ -194,7 +210,7 @@ class I18nFile(File):
         """
         Return the path of the given page without any suffix.
         """
-        if self._is_localized_for() is None:
+        if self._is_localized() is None:
             non_i18n_src_path = Path(self.initial_src_path).with_suffix("")
         else:
             non_i18n_src_path = (
@@ -202,7 +218,7 @@ class I18nFile(File):
             )
         return non_i18n_src_path
 
-    def _is_localized_for(self):
+    def _is_localized(self):
         """
         Returns the locale detected in the file's suffixes <name>.<locale>.<suffix>.
         """

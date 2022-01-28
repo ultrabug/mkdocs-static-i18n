@@ -293,6 +293,40 @@ class I18n(BasePlugin):
         # print([{p.src_path: p.url} for p in self.i18n_files["en"].static_pages()])
         # print([{p.src_path: p.url} for p in self.i18n_files["fr"].static_pages()])
 
+        # populate pages alternates
+        # main default version
+        for page in main_files.documentation_pages():
+            for language in self.all_languages:
+                alternate = self.i18n_files[language].get_localized_page_from_url(
+                    page.url, language
+                )
+                if alternate:
+                    page.alternates[language] = alternate
+                else:
+                    log.warning(
+                        f"could not find '{language}' alternate for the default version of page '{page.src_path}'"
+                    )
+        # localized versions
+        # for files in self.i18n_files.values():
+        #     for page in files.documentation_pages():
+        #         url = page.url
+        #         if url.startswith(f"{files.locale}/"):
+        #             url = url.replace(f"{files.locale}/", "", 1) or "."
+        #         for language in self.all_languages:
+        #             alternate = self.i18n_files[language].get_localized_page_from_url(
+        #                 url, language
+        #             )
+        #             if not alternate:
+        #                 page.alternates[
+        #                     language
+        #                 ] = main_files.get_localized_page_from_url(url, "")
+        #             if alternate:
+        #                 page.alternates[language] = alternate
+        #             else:
+        #                 log.warning(
+        #                     f"could not find '{language}' alternate for the '{files.locale}' version of page '{page.src_path}'"
+        #                 )
+
         return main_files
 
     def _fix_config_navigation(self, language, files):
