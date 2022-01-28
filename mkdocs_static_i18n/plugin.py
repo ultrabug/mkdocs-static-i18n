@@ -436,6 +436,9 @@ class I18n(BasePlugin):
 
         dirty = False
         search_plugin = config["plugins"].get("search")
+        with_pdf_plugin = config["plugins"].get("with-pdf")
+        if with_pdf_plugin:
+            with_pdf_output_path = with_pdf_plugin.config["output_path"]
         for language in self.config["languages"]:
             log.info(f"Building {language} documentation")
 
@@ -475,3 +478,12 @@ class I18n(BasePlugin):
                 ):
                     self._fix_search_duplicates(language, search_plugin)
                 search_plugin.on_post_build(config)
+
+            if with_pdf_plugin:
+                print(with_pdf_output_path)
+                with_pdf_plugin.config[
+                    "output_path"
+                ] = f"{language}/{with_pdf_output_path}"
+                with_pdf_plugin.on_config(config)
+                with_pdf_plugin.on_nav(nav, config, files)
+                with_pdf_plugin.on_post_build(config)
