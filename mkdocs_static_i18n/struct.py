@@ -125,7 +125,7 @@ class I18nFile(File):
         self.locale_suffix = None
 
         # the name without any suffix
-        self.name = self._get_stem()
+        self.name = self._get_name()
 
         # find src_path
         expected_paths = [
@@ -143,16 +143,17 @@ class I18nFile(File):
         ]
         for locale_suffix, expected_path in expected_paths:
             if Path(expected_path).exists():
+
                 self.src_path = expected_path.relative_to(self.docs_dir)
                 self.abs_src_path = Path(self.docs_dir) / Path(self.src_path)
                 #
                 self.locale_suffix = locale_suffix
                 if self.locale_suffix:
-                    self.dest_name = Path(self.name).with_suffix(self.suffix)
-                else:
                     self.dest_name = Path(self.name).with_suffix(
-                        "".join(Path(self.initial_src_path).suffixes)
+                        Path(self.name).suffix + self.suffix
                     )
+                else:
+                    self.dest_name = Path(expected_path).name
                 #
                 self.dest_path = self._get_dest_path(use_directory_urls)
                 self.abs_dest_path = (
@@ -167,6 +168,8 @@ class I18nFile(File):
             #
             self.dest_path = file_from.dest_path
             self.abs_dest_path = file_from.abs_dest_path
+            #
+            self.dest_name = self.name
 
         # set url
         self.url = self._get_url(use_directory_urls)
@@ -204,23 +207,27 @@ class I18nFile(File):
         Returns the locale detected in the file's suffixes <name>.<locale>.<suffix>.
         """
         for language in self.all_languages:
-            if Path(self.initial_src_path).suffixes == [
-                f".{language}",
-                Path(self.initial_src_path).suffix,
-            ]:
-                return language
+            initial_file_suffixes = Path(self.initial_src_path).suffixes
+            expected_suffixes = [f".{language}", Path(self.initial_src_path).suffix]
+            if len(initial_file_suffixes) >= len(expected_suffixes):
+                if (
+                    # fmt: off
+                    initial_file_suffixes[-len(expected_suffixes):]
+                    == expected_suffixes
+                ):
+                    return language
         return None
 
     @property
     def suffix(self):
         return Path(self.initial_src_path).suffix
 
-    def _get_stem(self):
+    def _get_name(self):
         """ Return the name of the file without it's extension. """
         return (
             "index"
-            if self.non_i18n_src_path.stem in ("index", "README")
-            else self.non_i18n_src_path.stem
+            if self.non_i18n_src_path.name in ("index", "README")
+            else self.non_i18n_src_path.name
         )
 
     def _get_dest_path(self, use_directory_urls):
