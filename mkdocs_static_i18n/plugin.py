@@ -9,6 +9,7 @@ from mkdocs.config.config_options import Type
 from mkdocs.plugins import BasePlugin
 from mkdocs.structure.nav import get_navigation
 
+from mkdocs_static_i18n import __file__ as installation_path
 from mkdocs_static_i18n.struct import I18nFile
 
 from .struct import I18nFiles, Locale
@@ -236,6 +237,14 @@ class I18n(BasePlugin):
                     except AttributeError:
                         # partials don't have a module
                         pass
+        # Install a i18n aware version of sitemap.xml if not provided by the user
+        if not Path(
+            Path(config["theme"]._vars.get("custom_dir", ".")) / Path("sitemap.xml")
+        ).exists():
+            custom_i18n_sitemap_dir = Path(
+                Path(installation_path).parent / Path("custom_i18n_sitemap")
+            ).resolve()
+            config["theme"].dirs.insert(0, str(custom_i18n_sitemap_dir))
         return config
 
     def on_files(self, files, config):
