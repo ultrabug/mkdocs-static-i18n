@@ -92,6 +92,22 @@ site
     └── index.html
 ```
 
+### Alternate aware sitemap.xml
+
+The `mkdocs-static-i18n` provides and will generate an alternate aware `sitemap.xml` for you automatically so that your localized content is made available to search engines!
+
+Localization aware sitemap.xml:
+
+```
+    <url>
+         <loc>https://ultrabug.github.io/mkdocs-static-i18n/</loc>
+         <lastmod>2022-01-31</lastmod>
+         <changefreq>daily</changefreq>
+         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/en/"/>
+         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/"/>
+    </url>
+```
+
 ### Not building a dedicated version for the default language
 
 If you do not wish to build a dedicated `<language>/` path for the `default_language` version of your documentation, **simply do not list it on the `languages`** list. See issue #5 for more information.
