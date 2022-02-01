@@ -94,7 +94,7 @@ site
 
 ### Alternate aware sitemap.xml
 
-The `mkdocs-static-i18n` provides and will generate an alternate aware `sitemap.xml` for you automatically so that your localized content is made available to search engines!
+The `mkdocs-static-i18n` plugin since version 0.32 provides a template that will generate automatically an alternate aware `sitemap.xml` so that your localized content is made available to search engines!
 
 Localization aware sitemap.xml:
 
