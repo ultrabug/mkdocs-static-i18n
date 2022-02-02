@@ -9,6 +9,7 @@ from mkdocs.config.config_options import Type
 from mkdocs.plugins import BasePlugin
 from mkdocs.structure.nav import get_navigation
 
+from mkdocs_static_i18n import __file__ as installation_path
 from mkdocs_static_i18n.struct import I18nFile
 
 from .struct import I18nFiles, Locale
@@ -236,6 +237,14 @@ class I18n(BasePlugin):
                     except AttributeError:
                         # partials don't have a module
                         pass
+        # Install a i18n aware version of sitemap.xml if not provided by the user
+        if not Path(
+            Path(config["theme"]._vars.get("custom_dir", ".")) / Path("sitemap.xml")
+        ).exists():
+            custom_i18n_sitemap_dir = Path(
+                Path(installation_path).parent / Path("custom_i18n_sitemap")
+            ).resolve()
+            config["theme"].dirs.insert(0, str(custom_i18n_sitemap_dir))
         return config
 
     def on_files(self, files, config):
@@ -292,6 +301,40 @@ class I18n(BasePlugin):
         # print([{p.src_path: p.url} for p in main_files.static_pages()])
         # print([{p.src_path: p.url} for p in self.i18n_files["en"].static_pages()])
         # print([{p.src_path: p.url} for p in self.i18n_files["fr"].static_pages()])
+
+        # populate pages alternates
+        # main default version
+        for page in main_files.documentation_pages():
+            for language in self.all_languages:
+                alternate = self.i18n_files[language].get_localized_page_from_url(
+                    page.url, language
+                )
+                if alternate:
+                    page.alternates[language] = alternate
+                else:
+                    log.warning(
+                        f"could not find '{language}' alternate for the default version of page '{page.src_path}'"
+                    )
+        # localized versions
+        # for files in self.i18n_files.values():
+        #     for page in files.documentation_pages():
+        #         url = page.url
+        #         if url.startswith(f"{files.locale}/"):
+        #             url = url.replace(f"{files.locale}/", "", 1) or "."
+        #         for language in self.all_languages:
+        #             alternate = self.i18n_files[language].get_localized_page_from_url(
+        #                 url, language
+        #             )
+        #             if not alternate:
+        #                 page.alternates[
+        #                     language
+        #                 ] = main_files.get_localized_page_from_url(url, "")
+        #             if alternate:
+        #                 page.alternates[language] = alternate
+        #             else:
+        #                 log.warning(
+        #                     f"could not find '{language}' alternate for the '{files.locale}' version of page '{page.src_path}'"
+        #                 )
 
         return main_files
 

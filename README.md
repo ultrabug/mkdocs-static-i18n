@@ -41,7 +41,7 @@ Supported parameters:
 
 Basic usage:
 
-```
+```yaml
 plugins:
   - i18n:
       default_language: en
@@ -92,13 +92,29 @@ site
     └── index.html
 ```
 
+### Alternate aware sitemap.xml
+
+The `mkdocs-static-i18n` plugin since version 0.32 provides a template that will generate automatically an alternate aware `sitemap.xml` so that your localized content is made available to search engines!
+
+Localization aware sitemap.xml:
+
+```xml
+    <url>
+         <loc>https://ultrabug.github.io/mkdocs-static-i18n/</loc>
+         <lastmod>2022-01-31</lastmod>
+         <changefreq>daily</changefreq>
+         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/en/"/>
+         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/"/>
+    </url>
+```
+
 ### Not building a dedicated version for the default language
 
 If you do not wish to build a dedicated `<language>/` path for the `default_language` version of your documentation, **simply do not list it on the `languages`** list. See issue #5 for more information.
 
 The following configuration:
 
-```
+```yaml
 plugins:
   - i18n:
       default_language: en
@@ -203,7 +219,7 @@ pages which share the same title.
 This example will translate **any** navigation item title from **Topic1** to
 **Sujet1** on the French version of the documentation:
 
-```
+```yaml
 plugins:
   - i18n:
       default_language: en
@@ -262,7 +278,7 @@ Even better, `mkdocs-static-i18n` will also make it so that changing between lan
 
 If you wish to disable that feature, simply set the `material_alternate` option to `false`:
 
-```
+```yaml
 plugins:
   - i18n:
       default_language: en
@@ -283,7 +299,7 @@ The following explanation was showcased in the demo website up to 0.7 so you can
 
 We need to add a `custom_dir` to our `theme` configuration:
 
-```
+```yaml
 theme:
   name: material
   custom_dir: theme_overrides
