@@ -462,8 +462,10 @@ class I18n(BasePlugin):
                 alternate["link"] += f"{separator}{page_url}"
             config["extra"]["alternate"] = alternates
 
-        if self.config["site_name_translations"].get(page.file.dest_language, {}):
-            config['site_name'] = self.config["site_name_translations"].get(page.file.dest_language)
+        if self.config["site_name_translations"].get(page.file.dest_language):
+            config["site_name"] = self.config["site_name_translations"].get(
+                page.file.dest_language
+            )
 
         return context
 

@@ -38,6 +38,7 @@ Supported parameters:
 - **languages** (mandatory): mapping of **2-letter or 5-letter language code**: **display value**
 - **material_alternate** (default: true): boolean - [see this section for more info](#using-mkdocs-material-site-language-selector)
 - **nav_translations** (default: empty): nested mapping of **language**: **default title**: **translated title** - [see this section for more info](#translating-navigation)
+- **site_name_translations** (default: empty): mapping of **2-letter or 5-letter language code**: **display value**
 
 Basic usage:
 
