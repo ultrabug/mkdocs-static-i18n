@@ -31,15 +31,56 @@ Just `pip install mkdocs-static-i18n`!
 
 ## Configuration
 
-Supported parameters:
+Here is the list of all the options that the plugin supports.
 
-- **default_language** (mandatory): 2-letter [ISO-639-1](https://en.wikipedia.org/wiki/ISO_639-1) language code (`en`) or [5-letter language code with added territory/region/country](https://www.mkdocs.org/user-guide/localizing-your-theme/#supported-locales) (`en_US`)
-- **default_language_only** (default: false): boolean - [see this section for more info](#building-only-the-default-language-for-faster-development)
-- **languages** (mandatory): mapping of **2-letter or 5-letter language code**: **display value**
-- **material_alternate** (default: true): boolean - [see this section for more info](#using-mkdocs-material-site-language-selector)
-- **nav_translations** (default: empty): nested mapping of **language**: **default title**: **translated title** - [see this section for more info](#translating-navigation)
+### default_language
 
-Basic usage:
+- mandatory: `yes`
+
+A 2-letter [ISO-639-1](https://en.wikipedia.org/wiki/ISO_639-1) language code (`en`) or [5-letter language code with added territory/region/country](https://www.mkdocs.org/user-guide/localizing-your-theme/#supported-locales) (`en_US`).
+
+```yaml
+default_language: en
+```
+
+### default_language_only
+
+- default: `false`
+
+This **boolean** (true/false) option is used to [speed up the build process while developing your documentation](#building-only-the-default-language-for-faster-development).
+
+```yaml
+default_language_only: false
+```
+
+### languages
+
+- mandatory: `yes`
+
+A mapping of **2-letter or 5-letter language code** (like `default_language`) with **either** the display name of the language **or** some optional keys used to control the build process of each language.
+
+Allowed options per language:
+
+- `name` (mandatory): the name that should be displayed in the [mkdocs-material language switcher](#using-mkdocs-material-site-language-selector)
+- `link` (default: `./<language>`): the link path to be used in the [mkdocs-material language switcher](#using-mkdocs-material-site-language-selector)
+- `build` (default: `true`) : a boolean used to control the build of a `/<language>` path for the given language
+
+Feature rich `languages` options usage:
+
+```yaml
+plugins:
+  - i18n:
+      default_language: en
+      languages:
+        en:
+          name: English
+          build: true
+        fr:
+          name: Français
+          build: true
+```
+
+Short (legacy) `languages` options usage:
 
 ```yaml
 plugins:
@@ -50,7 +91,43 @@ plugins:
         fr: Français
 ```
 
-## Example output
+### material_alternate
+
+- default: `true`
+
+If you're using the mkdocs-material theme, this **boolean** (true/false) option will let you choose if you want the mkdocs-static-i18n plugin to [configure the language switcher for you.](#using-mkdocs-material-site-language-selector).
+
+```yaml
+material_alternate: true
+```
+
+### nav_translations
+
+- default: `empty`
+
+This option is a nested mapping of **language**: **default title**: **translated title** that allows you to [translate the navigation sections of your website](#translating-navigation).
+
+```yaml
+nav_translations:
+  fr:
+    Topic1: Sujet1
+    Topic2: Sujet2
+```
+
+## Example configuration and output
+
+```yaml
+plugins:
+  - i18n:
+      default_language: en
+      languages:
+        en:
+          name: English
+          build: true
+        fr:
+          name: Français
+          build: true
+```
 
 Using the configuration above on the following `docs/` structure will build the following `site/` (leaving out static files for readability):
 
@@ -110,7 +187,7 @@ Localization aware sitemap.xml:
 
 ### Not building a dedicated version for the default language
 
-If you do not wish to build a dedicated `<language>/` path for the `default_language` version of your documentation, **simply do not list it on the `languages`** list. See issue #5 for more information.
+If you do not wish to build a dedicated `<language>/` path for the `default_language` version of your documentation, just **set its `build` option to `false`**.
 
 The following configuration:
 
@@ -119,7 +196,12 @@ plugins:
   - i18n:
       default_language: en
       languages:
-        fr: Français
+        fr:
+          name: Français
+          build: true
+        en:
+          name: English
+          build: false
 ```
 
 Applied on the following structure:
@@ -224,8 +306,10 @@ plugins:
   - i18n:
       default_language: en
       languages:
-        en: english
-        fr: français
+        en:
+          name: English
+        fr:
+          name: Français
       nav_translations:
         fr:
           Topic1: Sujet1
@@ -284,8 +368,10 @@ plugins:
   - i18n:
       default_language: en
       languages:
-        en: English
-        fr: Français
+        en:
+          name: English
+        fr:
+          name: Français
       material_alternate: false
 ```
 
