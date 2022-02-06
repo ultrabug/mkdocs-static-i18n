@@ -4,9 +4,7 @@ repo_url: https://github.com/ultrabug/mkdocs-static-i18n
 
 theme:
   name: material
-  font:
-    text: Ubuntu
-    code: Ubuntu Mono
+  font: false
   icon:
     logo: material/file-document-multiple
   palette:
