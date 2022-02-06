@@ -63,7 +63,8 @@ Allowed options per language:
 
 - `name` (mandatory): the name that should be displayed in the [mkdocs-material language switcher](#using-mkdocs-material-site-language-selector)
 - `link` (default: `./<language>`): the link path to be used in the [mkdocs-material language switcher](#using-mkdocs-material-site-language-selector)
-- `build` (default: `true`) : a boolean used to control the build of a `/<language>` path for the given language
+- `build` (default: `true`): a boolean used to control the build of a `/<language>` path for the given language
+- `site_name` (default: `mkdocs.yml site_name`): the [`site_name` translation for the given language](#translating-site-name)
 
 Feature rich `languages` options usage:
 
@@ -288,6 +289,27 @@ site
 Which means that the `image.png` and its `fr/image.png` localized counterpart
 can be referenced the same way as `![my image](image.png)` on both `index.md`
 and `index.fr.md`!
+
+## Translating site name
+
+Using the `site_name` option for a given language, you can translate the site
+name that will be used to render the localized pages for the language version
+of your website.
+
+```yaml
+site_name: Default site title
+
+plugins:
+  - i18n:
+      default_language: en
+      languages:
+        en:
+          name: English
+          site_name: Site title in English for pages with path /en/
+        fr:
+          name: Français
+          site_name: Titre du site en Français pour les pages en /fr/
+```
 
 ## Translating navigation
 

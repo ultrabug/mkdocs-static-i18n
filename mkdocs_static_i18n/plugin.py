@@ -115,14 +115,24 @@ class I18n(BasePlugin):
             x.append(e)
         return x
 
-    def _maybe_configure_default_language(self):
+    def _set_languages_options(self, config):
         """
         Configure languages options for the 'default' language
         """
+        # Set the 'site_name' for all configured languages
+        for language, lang_config in self.config["languages"].items():
+            localized_site_name = lang_config["site_name"] or config["site_name"]
+            self.config["languages"][language]["site_name"] = localized_site_name
         # the default_language options can be made available for the
         # 'default' / version of the website
         self.default_language_options = self.config["languages"].pop(
-            "default", {"name": "default", "link": "./", "build": True}
+            "default",
+            {
+                "name": "default",
+                "link": "./",
+                "build": True,
+                "site_name": config["site_name"],
+            },
         )
         if self.default_language_options["name"] == "default":
             default_language_name = (
@@ -130,7 +140,13 @@ class I18n(BasePlugin):
                 .get(self.default_language, {})
                 .get("name", self.default_language)
             )
+            default_language_site_name = (
+                self.config["languages"]
+                .get(self.default_language, {})
+                .get("site_name", config["site_name"])
+            )
             self.default_language_options["name"] = default_language_name
+            self.default_language_options["site_name"] = default_language_site_name
 
         # when the default language is listed on the languages
         # this means that the user wants a /default_language version
@@ -145,6 +161,7 @@ class I18n(BasePlugin):
                 "name": self.default_language_options["name"],
                 "link": "./",
                 "build": build,
+                "site_name": config["site_name"],
             }
 
     def on_config(self, config, **kwargs):
@@ -152,9 +169,8 @@ class I18n(BasePlugin):
         Enrich configuration with language specific knowledge.
         """
         self.default_language = self.config["default_language"]
-        self._maybe_configure_default_language()
-        # Make a order preserving list of all the configured
-        # languages, add the default one first if not listed by the user
+        self._set_languages_options(config)
+        # Make an order preserving list of all the configured languages
         self.all_languages = []
         for language in self.config["languages"]:
             if language not in self.all_languages:
@@ -502,6 +518,18 @@ class I18n(BasePlugin):
                     alternate["link"] = alternate["link"].replace("/index.html", "", 1)
                 alternate["link"] += f"{separator}{page_url}"
             config["extra"]["alternate"] = alternates
+
+        # set the localized site_name if any
+        if page.file.dest_language == "":
+            # default
+            localized_site_name = self.default_language_options["site_name"]
+        else:
+            localized_site_name = (
+                self.config["languages"]
+                .get(context["i18n_page_locale"], {})
+                .get("site_name", config["site_name"])
+            )
+        config["site_name"] = localized_site_name
 
         return context
 

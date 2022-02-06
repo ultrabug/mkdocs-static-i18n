@@ -33,9 +33,11 @@ plugins:
         en:
           name: English
           build: true
+          site_name: "MkDocs static i18n plugin demo (en)"
         fr:
           name: Français
           build: true
+          site_name: "Démo du plugin MkDocs static i18n (fr)"
       nav_translations:
         fr:
           Topic1: Sujet1
