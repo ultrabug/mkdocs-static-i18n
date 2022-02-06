@@ -13,16 +13,6 @@ theme:
     primary: blue
 
 extra:
-  alternate:
-    - name: Default (en)
-      link: ./
-      lang: en
-    - name: English
-      link: ./en/
-      lang: en
-    - name: Français
-      link: ./fr/
-      lang: fr
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/ultrabug/mkdocs-static-i18n
@@ -37,8 +27,15 @@ plugins:
       default_language: !ENV [DEFAULT_LANGUAGE, "en"]
       default_language_only: !ENV [DEFAULT_LANGUAGE_ONLY, false]
       languages:
-        en: english
-        fr: français
+        default:
+          name: Default (en)
+          build: true
+        en:
+          name: English
+          build: true
+        fr:
+          name: Français
+          build: true
       nav_translations:
         fr:
           Topic1: Sujet1

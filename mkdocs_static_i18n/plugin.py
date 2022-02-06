@@ -115,11 +115,44 @@ class I18n(BasePlugin):
             x.append(e)
         return x
 
+    def _maybe_configure_default_language(self):
+        """
+        Configure languages options for the 'default' language
+        """
+        # the default_language options can be made available for the
+        # 'default' / version of the website
+        self.default_language_options = self.config["languages"].pop(
+            "default", {"name": "default", "link": "./", "build": True}
+        )
+        if self.default_language_options["name"] == "default":
+            default_language_name = (
+                self.config["languages"]
+                .get(self.default_language, {})
+                .get("name", self.default_language)
+            )
+            self.default_language_options["name"] = default_language_name
+
+        # when the default language is listed on the languages
+        # this means that the user wants a /default_language version
+        # of his website
+        if self.default_language not in self.config["languages"]:
+            # no other language than default language set?
+            if len(self.config["languages"]) == 0:
+                build = True
+            else:
+                build = False
+            self.config["languages"][self.default_language] = {
+                "name": self.default_language_options["name"],
+                "link": "./",
+                "build": build,
+            }
+
     def on_config(self, config, **kwargs):
         """
         Enrich configuration with language specific knowledge.
         """
         self.default_language = self.config["default_language"]
+        self._maybe_configure_default_language()
         # Make a order preserving list of all the configured
         # languages, add the default one first if not listed by the user
         self.all_languages = []
@@ -155,31 +188,36 @@ class I18n(BasePlugin):
         if self.config["material_alternate"] and len(self.all_languages) > 1:
             if material_version and material_version >= "7.1.0":
                 if not config["extra"].get("alternate") or kwargs.get("force"):
+                    config["extra"]["alternate"] = []
                     # Add index.html file name when used with
                     # use_directory_urls = True
                     link_suffix = ""
                     if config.get("use_directory_urls") is False:
                         link_suffix = "index.html"
-                    config["extra"]["alternate"] = [
-                        {
-                            "name": self.config["languages"].get(
-                                self.config["default_language"],
-                                self.config["default_language"],
-                            ),
-                            "link": f"./{link_suffix}",
-                            "lang": self.config["default_language"],
-                        }
-                    ]
-                    for language in self.all_languages:
-                        if language == self.config["default_language"]:
-                            continue
+                    # TODO: document
+                    if self.default_language_options["build"] is True:
                         config["extra"]["alternate"].append(
                             {
-                                "name": self.config["languages"][language],
-                                "link": f"./{language}/{link_suffix}",
-                                "lang": language,
+                                "name": f"{self.default_language_options['name']}",
+                                "link": f"{self.default_language_options['link']}{link_suffix}",
+                                "lang": self.default_language,
                             }
                         )
+                    for language, lang_config in self.config["languages"].items():
+                        if lang_config["build"] is True:
+                            if (
+                                self.default_language_options["build"] is True
+                                and lang_config["name"]
+                                == self.default_language_options["name"]
+                            ):
+                                continue
+                            config["extra"]["alternate"].append(
+                                {
+                                    "name": f"{lang_config['name']}",
+                                    "link": f"{lang_config['link']}{link_suffix}",
+                                    "lang": language,
+                                }
+                            )
                 elif "alternate" in config["extra"]:
                     for alternate in config["extra"]["alternate"]:
                         if not alternate.get("link", "").startswith("./"):
@@ -271,7 +309,11 @@ class I18n(BasePlugin):
                 site_dir=config["site_dir"],
                 use_directory_urls=config.get("use_directory_urls"),
             )
-            main_files.append(main_i18n_file)
+            if (
+                self.default_language_options is not None
+                and self.default_language_options["build"] is True
+            ):
+                main_files.append(main_i18n_file)
 
             for language in self.all_languages:
                 i18n_file = I18nFile(
@@ -478,7 +520,12 @@ class I18n(BasePlugin):
         with_pdf_plugin = config["plugins"].get("with-pdf")
         if with_pdf_plugin:
             with_pdf_output_path = with_pdf_plugin.config["output_path"]
-        for language in self.config["languages"]:
+        for language, language_config in self.config["languages"].items():
+            # Language build disabled by the user, skip
+            if language_config["build"] is False:
+                log.info(f"Skipping building {language} documentation")
+                continue
+
             log.info(f"Building {language} documentation")
 
             config = self.i18n_configs[language]
@@ -519,7 +566,6 @@ class I18n(BasePlugin):
                 search_plugin.on_post_build(config)
 
             if with_pdf_plugin:
-                print(with_pdf_output_path)
                 with_pdf_plugin.config[
                     "output_path"
                 ] = f"{language}/{with_pdf_output_path}"
