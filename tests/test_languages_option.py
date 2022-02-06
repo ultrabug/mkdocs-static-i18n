@@ -19,8 +19,18 @@ def test_plugin_languages_backward_compat_1():
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
     i18n_plugin.on_config(mkdocs_config)
     assert i18n_plugin.config["languages"] == {
-        "en": {"name": "english", "link": "./en/", "build": True},
-        "fr": {"name": "français", "link": "./fr/", "build": True},
+        "en": {
+            "name": "english",
+            "link": "./en/",
+            "build": True,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
+        "fr": {
+            "name": "français",
+            "link": "./fr/",
+            "build": True,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
     }
 
 
@@ -37,7 +47,12 @@ def test_plugin_languages_backward_compat_2():
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
     i18n_plugin.on_config(mkdocs_config)
     assert i18n_plugin.config["languages"] == {
-        "en": {"name": "english", "link": "./en/", "build": True},
+        "en": {
+            "name": "english",
+            "link": "./en/",
+            "build": True,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
     }
 
 
@@ -54,8 +69,18 @@ def test_plugin_languages_backward_compat_3():
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
     i18n_plugin.on_config(mkdocs_config)
     assert i18n_plugin.config["languages"] == {
-        "en": {"name": "en", "link": "./", "build": False},
-        "fr": {"name": "français", "link": "./fr/", "build": True},
+        "en": {
+            "name": "en",
+            "link": "./",
+            "build": False,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
+        "fr": {
+            "name": "français",
+            "link": "./fr/",
+            "build": True,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
     }
 
 
@@ -77,8 +102,18 @@ def test_plugin_languages_backward_compat_4():
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
     i18n_plugin.on_config(mkdocs_config)
     assert i18n_plugin.config["languages"] == {
-        "en": {"name": "english_default", "link": "./", "build": False},
-        "fr": {"name": "français", "link": "./fr/", "build": True},
+        "en": {
+            "name": "english_default",
+            "link": "./",
+            "build": False,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
+        "fr": {
+            "name": "français",
+            "link": "./fr/",
+            "build": True,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
     }
 
 
@@ -96,7 +131,11 @@ def test_plugin_languages_backward_compat_5():
                 "languages": {
                     "default": {"name": "english_default"},
                     "fr": "français",
-                    "en": {"name": "english", "build": True},
+                    "en": {
+                        "name": "english",
+                        "build": True,
+                        "site_name": "English site name",
+                    },
                 },
             }
         },
@@ -104,8 +143,18 @@ def test_plugin_languages_backward_compat_5():
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
     i18n_plugin.on_config(mkdocs_config)
     assert i18n_plugin.config["languages"] == {
-        "en": {"name": "english", "link": "./en/", "build": True},
-        "fr": {"name": "français", "link": "./fr/", "build": True},
+        "en": {
+            "name": "english",
+            "link": "./en/",
+            "build": True,
+            "site_name": "English site name",
+        },
+        "fr": {
+            "name": "français",
+            "link": "./fr/",
+            "build": True,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
     }
 
 
@@ -123,7 +172,11 @@ def test_plugin_languages_backward_compat_6():
                 "languages": {
                     "default": {"name": "english_default"},
                     "fr": {"name": "français", "link": "/fr"},
-                    "en": {"name": "english", "build": False},
+                    "en": {
+                        "name": "english",
+                        "build": False,
+                        "site_name": "MkDocs static i18n plugin tests",
+                    },
                 },
             }
         },
@@ -131,8 +184,18 @@ def test_plugin_languages_backward_compat_6():
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
     i18n_plugin.on_config(mkdocs_config)
     assert i18n_plugin.config["languages"] == {
-        "en": {"name": "english", "link": "./en/", "build": False},
-        "fr": {"name": "français", "link": "/fr", "build": True},
+        "en": {
+            "name": "english",
+            "link": "./en/",
+            "build": False,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
+        "fr": {
+            "name": "français",
+            "link": "/fr",
+            "build": True,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
     }
 
 
@@ -154,8 +217,18 @@ def test_plugin_languages_backward_compat_7():
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
     i18n_plugin.on_config(mkdocs_config)
     assert i18n_plugin.config["languages"] == {
-        "en": {"name": "english", "link": "./en/", "build": True},
-        "fr": {"name": "français", "link": "./fr/", "build": True},
+        "en": {
+            "name": "english",
+            "link": "./en/",
+            "build": True,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
+        "fr": {
+            "name": "français",
+            "link": "./fr/",
+            "build": True,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
     }
 
 
@@ -181,8 +254,18 @@ def test_plugin_languages_backward_compat_8():
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
     i18n_plugin.on_config(mkdocs_config)
     assert i18n_plugin.config["languages"] == {
-        "en": {"name": "english", "link": "./en/", "build": True},
-        "fr": {"name": "français", "link": "./fr/", "build": True},
+        "en": {
+            "name": "english",
+            "link": "./en/",
+            "build": True,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
+        "fr": {
+            "name": "français",
+            "link": "./fr/",
+            "build": True,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
     }
 
 
@@ -208,8 +291,18 @@ def test_plugin_languages_backward_compat_9():
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
     i18n_plugin.on_config(mkdocs_config)
     assert i18n_plugin.config["languages"] == {
-        "en": {"name": "english", "link": "./en/", "build": False},
-        "fr": {"name": "français", "link": "./fr/", "build": True},
+        "en": {
+            "name": "english",
+            "link": "./en/",
+            "build": False,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
+        "fr": {
+            "name": "français",
+            "link": "./fr/",
+            "build": True,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
     }
 
 
@@ -234,8 +327,18 @@ def test_plugin_languages_backward_compat_10():
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
     i18n_plugin.on_config(mkdocs_config)
     assert i18n_plugin.config["languages"] == {
-        "en": {"name": "english_default", "link": "./", "build": False},
-        "fr": {"name": "français", "link": "./fr/", "build": True},
+        "en": {
+            "name": "english_default",
+            "link": "./",
+            "build": False,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
+        "fr": {
+            "name": "français",
+            "link": "./fr/",
+            "build": True,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
     }
 
 
@@ -260,8 +363,18 @@ def test_plugin_languages_backward_compat_11():
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
     i18n_plugin.on_config(mkdocs_config)
     assert i18n_plugin.config["languages"] == {
-        "en": {"name": "en", "link": "./", "build": False},
-        "fr": {"name": "français", "link": "./fr/", "build": True},
+        "en": {
+            "name": "en",
+            "link": "./",
+            "build": False,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
+        "fr": {
+            "name": "français",
+            "link": "./fr/",
+            "build": True,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
     }
 
 
@@ -285,5 +398,55 @@ def test_plugin_languages_backward_compat_12():
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
     i18n_plugin.on_config(mkdocs_config)
     assert i18n_plugin.config["languages"] == {
-        "fr": {"name": "french_default", "link": "./", "build": True},
+        "fr": {
+            "name": "french_default",
+            "link": "./",
+            "build": True,
+            "site_name": "MkDocs static i18n plugin tests",
+        },
+    }
+
+
+def test_plugin_languages_backward_compat_13():
+    mkdocs_config = load_config(
+        "tests/mkdocs_base.yml",
+        theme={"name": "mkdocs"},
+        use_directory_urls=True,
+        docs_dir="../docs/",
+        site_url="http://localhost",
+        extra_javascript=[],
+        plugins={
+            "i18n": {
+                "default_language": "en",
+                "languages": {
+                    "default": {
+                        "name": "english_default",
+                        "site_name": "Default site name",
+                    },
+                    "fr": {"name": "français", "site_name": "Site en Français"},
+                    "en": {
+                        "name": "english",
+                        "build": True,
+                        "site_name": "English site name",
+                    },
+                },
+            }
+        },
+    )
+    i18n_plugin = mkdocs_config["plugins"]["i18n"]
+    i18n_plugin.on_config(mkdocs_config)
+    assert i18n_plugin.default_language_options["site_name"] == "Default site name"
+    assert i18n_plugin.config["languages"] == {
+        "en": {
+            "name": "english",
+            "link": "./en/",
+            "build": True,
+            "site_name": "English site name",
+        },
+        "fr": {
+            "name": "français",
+            "link": "./fr/",
+            "build": True,
+            "site_name": "Site en Français",
+        },
     }
