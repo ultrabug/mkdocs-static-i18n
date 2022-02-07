@@ -364,6 +364,12 @@ class I18n(BasePlugin):
         # main default version
         for page in main_files.documentation_pages():
             for language in self.all_languages:
+                # do not list languages not being built as alternates
+                if (
+                    self.config["languages"].get(language, {}).get("build", False)
+                    is False
+                ):
+                    continue
                 alternate = self.i18n_files[language].get_localized_page_from_url(
                     page.url, language
                 )
