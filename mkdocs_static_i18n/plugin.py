@@ -433,7 +433,10 @@ class I18n(BasePlugin):
         """
         Translate i18n aware navigation to honor the 'nav_translations' option.
         """
-        for language in self.config["languages"]:
+        for language, lang_config in self.config["languages"].items():
+            # skip nav generation for languages that we do not build
+            if lang_config["build"] is False:
+                continue
             if self.i18n_configs[language]["nav"]:
                 self._fix_config_navigation(language, self.i18n_files[language])
 
