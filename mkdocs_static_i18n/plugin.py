@@ -426,14 +426,25 @@ class I18n(BasePlugin):
                         i18n_page.src_path,
                     )
 
-    def _maybe_translate_navigation(self, language, nav):
+    def _maybe_translate_titles(self, language, items):
+        translated = False
         translated_nav = self.config["nav_translations"].get(language, {})
         if translated_nav:
-            for item in nav:
+            for item in items:
                 if hasattr(item, "title") and item.title in translated_nav:
+                    log.debug(
+                        f"Translating {type(item).__name__} title '{item.title}' "
+                        f"({self.default_language}) to "
+                        f"'{translated_nav[item.title]}' ({language})"
+                    )
                     item.title = translated_nav[item.title]
+                    translated = True
                 if hasattr(item, "children") and item.children:
-                    self._maybe_translate_navigation(language, item.children)
+                    translated = (
+                        self._maybe_translate_titles(language, item.children)
+                        or translated
+                    )
+        return translated
 
     def on_nav(self, nav, config, files):
         """
@@ -460,8 +471,8 @@ class I18n(BasePlugin):
                 )
 
             if self.config["nav_translations"].get(language, {}):
-                log.info(f"Translating navigation to {language}")
-                self._maybe_translate_navigation(language, self.i18n_navs[language])
+                if self._maybe_translate_titles(language, self.i18n_navs[language]):
+                    log.info(f"Translated navigation to {language}")
 
         return nav
 
@@ -498,6 +509,21 @@ class I18n(BasePlugin):
             for duplicated_entry in duplicated_entries:
                 search_plugin.search_index._entries.remove(duplicated_entry)
 
+    def on_page_markdown(self, markdown, page, config, files):
+        """
+        Use the 'page_markdown' event to translate page titles as well
+        because they are used in the bottom navigation links for
+        previous/next links titles.
+
+        This event is triggered right after the page.read_source() has
+        been executed so we get the definitive 'page.title' that mkdocs
+        discovered and we just have to translate if it needed.
+        """
+        page.locale = page.file.dest_language or self.default_language
+        if self.config["nav_translations"].get(page.locale, {}):
+            self._maybe_translate_titles(page.locale, [page])
+        return markdown
+
     def on_page_context(self, context, page, config, nav):
         """
         Make the language switcher contextual to the current page.
@@ -506,7 +532,7 @@ class I18n(BasePlugin):
         """
         # export some useful i18n related variables on page context, see #75
         context["i18n_config"] = self.config
-        context["i18n_page_locale"] = page.file.dest_language or self.default_language
+        context["i18n_page_locale"] = page.locale
         context["i18n_page_file_locale"] = page.file.locale_suffix
 
         if self.material_alternates:
