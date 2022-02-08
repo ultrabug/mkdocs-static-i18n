@@ -1,6 +1,7 @@
 import logging
 from collections import defaultdict
 from copy import deepcopy
+from json.tool import main
 from pathlib import Path
 
 from mkdocs import __version__ as mkdocs_version
@@ -10,6 +11,7 @@ from mkdocs.plugins import BasePlugin
 from mkdocs.structure.nav import get_navigation
 
 from mkdocs_static_i18n import __file__ as installation_path
+from mkdocs_static_i18n.i18n_folders import I18nFolderFile, I18nFolderFiles
 from mkdocs_static_i18n.struct import I18nFile
 
 from .struct import I18nFiles, Locale
@@ -66,6 +68,7 @@ class I18n(BasePlugin):
         ("languages", Locale(dict, required=True)),
         ("material_alternate", Type(bool, default=True, required=False)),
         ("nav_translations", Type(dict, default={}, required=False)),
+        ("folder_per_language", Type(bool, default=False, required=False)),
     )
 
     def __init__(self, *args, **kwargs):
@@ -306,6 +309,13 @@ class I18n(BasePlugin):
         Construct the main + lang specific file tree which will be used to
         generate the navigation for the default site and per language.
         """
+        if self.config["folder_per_language"] is False:
+            return self._on_files_with_suffix(files, config)
+        else:
+            return self._on_files_per_folder(files, config)
+
+    def _on_files_with_suffix(self, files, config):
+        """"""
         main_files = I18nFiles([])
         main_files.default_locale = self.default_language
         main_files.locale = self.default_language
@@ -400,6 +410,54 @@ class I18n(BasePlugin):
         #                     f"could not find '{language}' alternate for the '{files.locale}' version of page '{page.src_path}'"
         #                 )
 
+        return main_files
+
+    def _on_files_per_folder(self, files, config):
+        """"""
+        main_files = I18nFolderFiles([])
+        main_files.default_locale = self.default_language
+        main_files.locale = self.default_language
+        for language in self.all_languages:
+            self.i18n_files[language] = I18nFolderFiles([])
+            self.i18n_files[language].default_locale = self.default_language
+            self.i18n_files[language].locale = language
+
+        for fileobj in files:
+
+            file_locale = Path(fileobj.src_path).parts[0]
+            print(file_locale)
+
+            if file_locale not in self.all_languages:
+                log.warning(
+                    f"Ignoring file {fileobj.src_path} because it is not inside a language folder"
+                )
+                continue
+
+            i18n_ffile = I18nFolderFile(
+                fileobj,
+                file_locale,
+                all_languages=self.all_languages,
+                default_language=self.default_language,
+                docs_dir=config["docs_dir"],
+                site_dir=config["site_dir"],
+                use_directory_urls=config.get("use_directory_urls"),
+            )
+            print(i18n_ffile)
+            self.i18n_files[language].append(i18n_ffile)
+
+            if file_locale == self.default_language:
+                i18n_ffile = I18nFolderFile(
+                    fileobj,
+                    "",
+                    all_languages=self.all_languages,
+                    default_language=self.default_language,
+                    docs_dir=config["docs_dir"],
+                    site_dir=config["site_dir"],
+                    use_directory_urls=config.get("use_directory_urls"),
+                )
+                main_files.append(i18n_ffile)
+
+        print(list(main_files))
         return main_files
 
     def _fix_config_navigation(self, language, files):
