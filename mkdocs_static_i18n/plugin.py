@@ -579,6 +579,7 @@ class I18n(BasePlugin):
             return
 
         dirty = False
+        minify_plugin = config["plugins"].get("minify")
         search_plugin = config["plugins"].get("search")
         with_pdf_plugin = config["plugins"].get("with-pdf")
         if with_pdf_plugin:
@@ -606,6 +607,10 @@ class I18n(BasePlugin):
                         f"mkdocs-material=={material_version}, not setting "
                         "the 'theme.language' option"
                     )
+
+            # Support mkdocs-minify-plugin
+            if minify_plugin:
+                minify_plugin.on_pre_build(config)
 
             # Include theme specific files
             files.add_files_from_theme(env, config)
