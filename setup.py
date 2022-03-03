@@ -40,4 +40,10 @@ setup(
         "Programming Language :: Python :: 3 :: Only",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
+    project_urls={
+        "Documentation": "https://github.com/ultrabug/mkdocs-static-i18n#readme",
+        "Funding": "https://ultrabug.fr/#support-me",
+        "Source": "https://github.com/ultrabug/mkdocs-static-i18n",
+        "Tracker": "https://github.com/ultrabug/mkdocs-static-i18n/issues",
+    },
 )
