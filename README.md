@@ -372,6 +372,7 @@ This plugin is compatible with the following mkdocs plugins:
 - [MkDocs Material](https://github.com/squidfunk/mkdocs-material): the `search` plugin text will be switched automatically to the right language depending on the version you're browsing and the `language selector` will automatically be setup for you (requires mkdocs-material>=7.1.0)
 - [MkDocs Awesome Pages Plugin](https://github.com/lukasgeiter/mkdocs-awesome-pages-plugin): the page ordering is preserved on the language specific versions of your site
 - [MkDocs with PDF Plugin](https://github.com/orzih/mkdocs-with-pdf): you get a PDF of every localized version of your site
+- [MkDocs minify Plugin](https://github.com/byrnereese/mkdocs-minify-plugin): to minify your JS, CSS and HTML localized files
 
 ## Adding a language selector on your documentation header
 
