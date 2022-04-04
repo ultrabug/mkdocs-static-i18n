@@ -115,6 +115,12 @@ nav_translations:
     Topic2: Sujet2
 ```
 
+### search_reconfigure
+
+- default: `true`
+
+This is a **boolean** (true/false) option that lets you activate or not [the automatic reconfiguration](#compatibility-with-the-search-plugin) of the `plugins.search.lang` option based on your configured languages.
+
 ## Example configuration and output
 
 ```yaml
@@ -364,6 +370,8 @@ pages from the `default_language` so that search results are not polluted.
 This is because the MkDocs `search` plugin is hardcoded in the themes
 javascript sources so there can only be one search index for the whole
 build.
+
+This feature can be disabled using the `search_reconfigure` option.
 
 ## Compatibility with other plugins
 

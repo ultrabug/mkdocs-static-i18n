@@ -66,6 +66,7 @@ class I18n(BasePlugin):
         ("languages", Locale(dict, required=True)),
         ("material_alternate", Type(bool, default=True, required=False)),
         ("nav_translations", Type(dict, default={}, required=False)),
+        ("search_reconfigure", Type(bool, default=True, required=False)),
     )
 
     def __init__(self, *args, **kwargs):
@@ -251,7 +252,7 @@ class I18n(BasePlugin):
                 else:
                     self.material_alternates = config["extra"].get("alternate")
         # Support for the search plugin lang
-        if "search" in config["plugins"]:
+        if self.config["search_reconfigure"] and "search" in config["plugins"]:
             search_langs = config["plugins"]["search"].config["lang"] or []
             for language in self.all_languages:
                 if language in LUNR_LANGUAGES:
@@ -627,7 +628,8 @@ class I18n(BasePlugin):
             # Update the search plugin index with language pages
             if search_plugin:
                 if (
-                    language == self.default_language
+                    self.config["search_reconfigure"]
+                    and language == self.default_language
                     and self.default_language in self.config["languages"]
                 ):
                     self._fix_search_duplicates(language, search_plugin)
