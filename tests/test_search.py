@@ -107,3 +107,51 @@ def test_search_deduplicate_entries_no_directory_urls():
     build(mkdocs_config)
     search_plugin = mkdocs_config["plugins"]["search"]
     assert len(search_plugin.search_index._entries) == 30
+
+
+def test_search_add_missing_lang():
+    mkdocs_config = load_config(
+        "tests/mkdocs_base.yml",
+        theme={"name": "mkdocs"},
+        use_directory_urls=True,
+        docs_dir="../docs/",
+        site_url="http://localhost",
+        extra_javascript=[],
+        plugins={
+            "search": {
+                "lang": ["en"],
+            },
+            "i18n": {
+                "default_language": "en",
+                "languages": {"fr": "français", "en": "english"},
+                "search_reconfigure": True,
+            },
+        },
+    )
+    build(mkdocs_config)
+    search_plugin = mkdocs_config["plugins"]["search"]
+    assert search_plugin.config["lang"] == ["en", "fr"]
+
+
+def test_search_no_add_lang():
+    mkdocs_config = load_config(
+        "tests/mkdocs_base.yml",
+        theme={"name": "mkdocs"},
+        use_directory_urls=True,
+        docs_dir="../docs/",
+        site_url="http://localhost",
+        extra_javascript=[],
+        plugins={
+            "search": {
+                "lang": ["en"],
+            },
+            "i18n": {
+                "default_language": "en",
+                "languages": {"fr": "français", "en": "english"},
+                "search_reconfigure": False,
+            },
+        },
+    )
+    build(mkdocs_config)
+    search_plugin = mkdocs_config["plugins"]["search"]
+    assert search_plugin.config["lang"] == ["en"]
