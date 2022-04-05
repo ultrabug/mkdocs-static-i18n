@@ -62,12 +62,13 @@ MKDOCS_THEMES = ["mkdocs", "readthedocs"]
 class I18n(BasePlugin):
 
     config_scheme = (
-        ("default_language", Locale(str, required=True)),
         ("default_language_only", Type(bool, default=False, required=False)),
+        ("default_language", Locale(str, required=True)),
+        ("folder_per_language", Type(bool, default=False, required=False)),
         ("languages", Locale(dict, required=True)),
         ("material_alternate", Type(bool, default=True, required=False)),
         ("nav_translations", Type(dict, default={}, required=False)),
-        ("folder_per_language", Type(bool, default=False, required=False)),
+        ("search_reconfigure", Type(bool, default=True, required=False)),
     )
 
     def __init__(self, *args, **kwargs):
@@ -253,7 +254,7 @@ class I18n(BasePlugin):
                 else:
                     self.material_alternates = config["extra"].get("alternate")
         # Support for the search plugin lang
-        if "search" in config["plugins"]:
+        if self.config["search_reconfigure"] and "search" in config["plugins"]:
             search_langs = config["plugins"]["search"].config["lang"] or []
             for language in self.all_languages:
                 if language in LUNR_LANGUAGES:
@@ -703,6 +704,7 @@ class I18n(BasePlugin):
             return
 
         dirty = False
+        minify_plugin = config["plugins"].get("minify")
         search_plugin = config["plugins"].get("search")
         with_pdf_plugin = config["plugins"].get("with-pdf")
         if with_pdf_plugin:
@@ -731,6 +733,10 @@ class I18n(BasePlugin):
                         "the 'theme.language' option"
                     )
 
+            # Support mkdocs-minify-plugin
+            if minify_plugin:
+                minify_plugin.on_pre_build(config)
+
             # Include theme specific files
             files.add_files_from_theme(env, config)
 
@@ -746,7 +752,8 @@ class I18n(BasePlugin):
             # Update the search plugin index with language pages
             if search_plugin:
                 if (
-                    language == self.default_language
+                    self.config["search_reconfigure"]
+                    and language == self.default_language
                     and self.default_language in self.config["languages"]
                 ):
                     self._fix_search_duplicates(language, search_plugin)

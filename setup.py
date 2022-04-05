@@ -13,7 +13,7 @@ def read(fname):
 
 setup(
     name="mkdocs-static-i18n",
-    version="0.42",
+    version="0.44",
     author="Ultrabug",
     author_email="ultrabug@ultrabug.net",
     description="MkDocs i18n plugin using static translation markdown files",
@@ -40,4 +40,10 @@ setup(
         "Programming Language :: Python :: 3 :: Only",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
+    project_urls={
+        "Documentation": "https://github.com/ultrabug/mkdocs-static-i18n#readme",
+        "Funding": "https://ultrabug.fr/#support-me",
+        "Source": "https://github.com/ultrabug/mkdocs-static-i18n",
+        "Tracker": "https://github.com/ultrabug/mkdocs-static-i18n/issues",
+    },
 )
