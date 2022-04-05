@@ -59,7 +59,7 @@ class I18nFolderFiles(Files):
         return any(filter(lambda s: Path(s) in expected_src_paths, self.src_paths))
 
     def get_file_from_path(self, path):
-        """ Return a File instance with File.src_path equal to path. """
+        """Return a File instance with File.src_path equal to path."""
         expected_src_path = Path(path)
         expected_src_paths = [
             expected_src_path.with_suffix(f".{self.locale}{expected_src_path.suffix}"),
@@ -72,7 +72,7 @@ class I18nFolderFiles(Files):
             return self.src_paths.get(os.path.normpath(src_path))
 
     def get_localized_page_from_url(self, url, language):
-        """ Return the I18nFolderFile instance from our files that match the given url and language """
+        """Return the I18nFolderFile instance from our files that match the given url and language"""
         if language:
             url = f"{language}/{url}"
         url = url.rstrip(".") or "."
@@ -195,7 +195,7 @@ class I18nFolderFile(File):
         return Path(self.initial_src_path).suffix
 
     def _get_name(self):
-        """ Return the name of the file without it's extension. """
+        """Return the name of the file without it's extension."""
         return (
             "index"
             if self.non_i18n_src_path.name in ("index", "README")
@@ -203,7 +203,7 @@ class I18nFolderFile(File):
         )
 
     def _get_dest_path(self, use_directory_urls):
-        """ Return destination path based on source path. """
+        """Return destination path based on source path."""
         parent, _ = os.path.split(self.src_path)
         if self.is_documentation_page():
             if use_directory_urls is False or self.name == "index":
@@ -217,7 +217,7 @@ class I18nFolderFile(File):
             return os.path.join(parent, self.dest_name)
 
     def _get_url(self, use_directory_urls):
-        """ Return url based in destination path. """
+        """Return url based in destination path."""
         url = str(self.dest_path).replace(os.path.sep, "/")
         dirname, filename = os.path.split(url)
         if use_directory_urls and filename == "index.html":
@@ -227,13 +227,13 @@ class I18nFolderFile(File):
                 url = dirname + "/"
         if self.dest_language:
             if url == ".":
-                url = self.dest_language + "/"
+                url += "/"
             else:
-                url = self.dest_language + "/" + url
+                url = "/" + url
         return urlquote(url)
 
     def url_relative_to(self, other):
-        """ Return url for file relative to other i18n file. """
+        """Return url for file relative to other i18n file."""
         return utils.get_relative_url(
             self.url,
             other.url

@@ -1,7 +1,6 @@
 import logging
 from collections import defaultdict
 from copy import deepcopy
-from json.tool import main
 from pathlib import Path
 
 from mkdocs import __version__ as mkdocs_version
@@ -425,39 +424,46 @@ class I18n(BasePlugin):
         for fileobj in files:
 
             file_locale = Path(fileobj.src_path).parts[0]
-            print(file_locale)
 
             if file_locale not in self.all_languages:
-                log.warning(
-                    f"Ignoring file {fileobj.src_path} because it is not inside a language folder"
-                )
-                continue
+                if fileobj.is_documentation_page():
+                    log.warning(
+                        f"Ignoring file {fileobj.src_path} because it is not inside a language folder"
+                    )
+            else:
 
-            i18n_ffile = I18nFolderFile(
-                fileobj,
-                file_locale,
-                all_languages=self.all_languages,
-                default_language=self.default_language,
-                docs_dir=config["docs_dir"],
-                site_dir=config["site_dir"],
-                use_directory_urls=config.get("use_directory_urls"),
-            )
-            print(i18n_ffile)
-            self.i18n_files[language].append(i18n_ffile)
-
-            if file_locale == self.default_language:
                 i18n_ffile = I18nFolderFile(
                     fileobj,
-                    "",
+                    file_locale,
                     all_languages=self.all_languages,
                     default_language=self.default_language,
                     docs_dir=config["docs_dir"],
                     site_dir=config["site_dir"],
                     use_directory_urls=config.get("use_directory_urls"),
                 )
-                main_files.append(i18n_ffile)
+                # print(i18n_ffile)
+                self.i18n_files[file_locale].append(i18n_ffile)
 
-        print(list(main_files))
+                if file_locale == self.default_language:
+                    i18n_ffile = I18nFolderFile(
+                        fileobj,
+                        "",
+                        all_languages=self.all_languages,
+                        default_language=self.default_language,
+                        docs_dir=config["docs_dir"],
+                        site_dir=config["site_dir"],
+                        use_directory_urls=config.get("use_directory_urls"),
+                    )
+                    main_files.append(i18n_ffile)
+
+        # these comments are here to help me debug later if needed
+        # print([{p.src_path: p.url} for p in main_files.documentation_pages()])
+        # print([{p.src_path: p.url} for p in self.i18n_files["en"].documentation_pages()])
+        # print([{p.src_path: p.url} for p in self.i18n_files["fr"].documentation_pages()])
+        # print([{p.src_path: p.url} for p in main_files.static_pages()])
+        # print([{p.src_path: p.url} for p in self.i18n_files["en"].static_pages()])
+        # print([{p.src_path: p.url} for p in self.i18n_files["fr"].static_pages()])
+
         return main_files
 
     def _fix_config_navigation(self, language, files):
@@ -508,6 +514,66 @@ class I18n(BasePlugin):
         """
         Translate i18n aware navigation to honor the 'nav_translations' option.
         """
+        if self.config["folder_per_language"] is False:
+            return self._on_nav_with_suffix(nav, config, files)
+        else:
+            return self._on_nav_per_folder(nav, config, files)
+
+    def _on_nav_per_folder(self, nav, config, files):
+        """ """
+        for language, lang_config in self.config["languages"].items():
+            # skip nav generation for languages that we do not build
+            if lang_config["build"] is False:
+                continue
+            if self.i18n_configs[language]["nav"]:
+                self._fix_config_navigation(language, self.i18n_files[language])
+
+            self.i18n_navs[language] = get_navigation(
+                self.i18n_files[language], self.i18n_configs[language]
+            )
+
+            self.i18n_navs[language].items = self.i18n_navs[language].items[0].children
+            for item in self.i18n_navs[language]:
+                if item.is_page and item.url.strip() == f"/{language}/":
+                    print("homepage", item)
+                    self.i18n_navs[language].homepage = item
+                    break
+            else:
+                raise Exception(f"could not find homepage Page(url='/{language}/')")
+
+            # If awesome-pages is used, we want to use it to structurate our
+            # localized navigations as well
+            if "awesome-pages" in config["plugins"]:
+                self.i18n_navs[language] = config["plugins"]["awesome-pages"].on_nav(
+                    self.i18n_navs[language],
+                    config=self.i18n_configs[language],
+                    files=self.i18n_files[language],
+                )
+
+            if self.config["nav_translations"].get(language, {}):
+                if self._maybe_translate_titles(language, self.i18n_navs[language]):
+                    log.info(f"Translated navigation to {language}")
+
+            if language == self.default_language:
+                for section in nav.items:
+                    if section.title == self.default_language.capitalize():
+                        nav.items = section.children
+                        break
+                else:
+                    raise Exception(
+                        f"could not find default version Section(title='{self.default_language.capitalize()}')"
+                    )
+                for item in nav:
+                    if item.is_page and item.url == "":
+                        nav.homepage = item
+                        break
+                else:
+                    raise Exception("could not find default homepage Page(url='')")
+
+        return nav
+
+    def _on_nav_with_suffix(self, nav, config, files):
+        """ """
         for language, lang_config in self.config["languages"].items():
             # skip nav generation for languages that we do not build
             if lang_config["build"] is False:
