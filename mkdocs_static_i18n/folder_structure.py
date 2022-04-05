@@ -5,89 +5,15 @@ from re import compile
 from urllib.parse import quote as urlquote
 
 from mkdocs import utils
-from mkdocs.config.base import ValidationError
-from mkdocs.config.config_options import Type
 from mkdocs.structure.files import File, Files
+from mkdocs.structure.nav import get_navigation
 
 RE_LOCALE = compile(r"(^[a-z]{2}_[A-Z]{2}$)|(^[a-z]{2}$)")
 
 log = logging.getLogger("mkdocs.plugins." + __name__)
 
 
-class Locale(Type):
-    """
-    Locale Config Option
-
-    Validate the locale config option against a given Python type.
-    """
-
-    def _validate_locale(self, value):
-        # we allow the special case of the default language
-        if value == "default":
-            return
-        if not RE_LOCALE.match(value):
-            raise ValidationError(
-                "Language code values must be either ISO-639-1 lower case "
-                "or represented with they territory/region/county codes, "
-                f"received '{value}' expected forms examples: 'en' or 'en_US'."
-            )
-
-    def _get_lang_dict_value(self, lang_key, lang_value):
-        """
-        Normalize the 'languages' option dict with backward compatibility.
-
-        We support legacy:
-
-            languages:
-              en: English
-              fr: Français
-
-        And the new way:
-
-            languages:
-              en:
-                name: English
-                build: true
-              fr:
-                name: Français
-                build: true
-        """
-        allowed_keys = set(["name", "link", "build", "site_name"])
-        lang_config = {
-            "build": True,
-            "link": f"./{lang_key}/" if lang_key != "default" else "./",
-            "name": lang_key,
-            "site_name": None,
-        }
-        if isinstance(lang_value, str):
-            lang_config["name"] = lang_value
-        elif isinstance(lang_value, dict):
-            unsupported_keys = set(lang_value.keys()).difference(allowed_keys)
-            if unsupported_keys:
-                log.warning(
-                    f"'plugins.i18n.languages.{lang_key}' unsupported options: {','.join(unsupported_keys)}"
-                )
-            for key in lang_config:
-                if key in lang_value:
-                    lang_config[key] = lang_value[key]
-        return lang_config
-
-    def run_validation(self, value):
-        value = super().run_validation(value)
-        # default_language
-        if isinstance(value, str):
-            self._validate_locale(value)
-        # languages
-        if isinstance(value, dict):
-            languages = {}
-            for lang_key, lang_value in value.items():
-                self._validate_locale(lang_key)
-                languages[lang_key] = self._get_lang_dict_value(lang_key, lang_value)
-            value = languages
-        return value
-
-
-class I18nFiles(Files):
+class I18nFolderFiles(Files):
     """
     This class extends MkDocs' Files class to support links and assets that
     have a translated locale suffix.
@@ -102,10 +28,10 @@ class I18nFiles(Files):
 
     def append(self, file):
         """
-        Since i18nFile find their own language versions, we need to avoid adding
+        Since I18nFolderFile find their own language versions, we need to avoid adding
         them multiple times when a localized version of a file is considered.
 
-        The first i18nFile is sufficient to cover all their possible localized versions.
+        The first I18nFolderFile is sufficient to cover all their possible localized versions.
         """
         for inside_file in [*self._files]:
             if inside_file.dest_path == file.dest_path:
@@ -145,7 +71,7 @@ class I18nFiles(Files):
             return self.src_paths.get(os.path.normpath(src_path))
 
     def get_localized_page_from_url(self, url, language):
-        """Return the I18nFile instance from our files that match the given url and language"""
+        """Return the I18nFolderFile instance from our files that match the given url and language"""
         if language:
             url = f"{language}/{url}"
         url = url.rstrip(".") or "."
@@ -156,7 +82,7 @@ class I18nFiles(Files):
                 return file
 
 
-class I18nFile(File):
+class I18nFolderFile(File):
     """
     This is a i18n aware version of a mkdocs.structure.files.File
     """
@@ -188,45 +114,23 @@ class I18nFile(File):
         self.initial_src_path = file_from.src_path
         self.locale_suffix = None
 
-        # the name without any suffix
-        self.name = self._get_name()
+        # the name
+        self.name = Path(self.initial_src_path).name
 
-        # find src_path
-        expected_paths = [
-            (
-                language,
-                Path(docs_dir)
-                / Path(f"{self.non_i18n_src_path}.{language}{self.suffix}"),
-            ),
-            (
-                default_language,
-                Path(docs_dir)
-                / Path(f"{self.non_i18n_src_path}.{default_language}{self.suffix}"),
-            ),
-            (None, Path(docs_dir) / Path(f"{self.non_i18n_src_path}{self.suffix}")),
-        ]
-        for locale_suffix, expected_path in expected_paths:
-            if Path(expected_path).exists():
+        if language == "":
+            # default version file
+            self.locale = self.default_language
 
-                self.src_path = expected_path.relative_to(self.docs_dir)
-                self.abs_src_path = Path(self.docs_dir) / Path(self.src_path)
-                #
-                self.locale_suffix = locale_suffix
-                if self.locale_suffix:
-                    self.dest_name = Path(self.name).with_suffix(
-                        Path(self.name).suffix + self.suffix
-                    )
-                else:
-                    self.dest_name = Path(expected_path).name
-                #
-                self.dest_path = self._get_dest_path(use_directory_urls)
-                self.abs_dest_path = (
-                    Path(self.site_dir)
-                    / Path(self.dest_language)
-                    / Path(self.dest_path)
-                )
-                break
+            self.src_path = file_from.src_path
+            self.abs_src_path = file_from.abs_src_path
+            #
+            self.dest_path = Path(self.initial_dest_path).relative_to(self.locale)
+            self.abs_dest_path = Path(self.site_dir) / Path(self.dest_path)
+            #
+            self.dest_name = self.name
         else:
+            self.locale = language
+
             self.src_path = file_from.src_path
             self.abs_src_path = file_from.abs_src_path
             #
@@ -249,7 +153,7 @@ class I18nFile(File):
 
     def __repr__(self):
         return (
-            f"I18nFile(src_path='{self.src_path}', abs_src_path='{self.abs_src_path}',"
+            f"I18nFolderFile(src_path='{self.src_path}', abs_src_path='{self.abs_src_path}',"
             f" dest_path='{self.dest_path}', abs_dest_path='{self.abs_dest_path}',"
             f" name='{self.name}', locale_suffix='{self.locale_suffix}',"
             f" dest_language='{self.dest_language}', dest_name='{self.dest_name}',"
@@ -322,9 +226,9 @@ class I18nFile(File):
                 url = dirname + "/"
         if self.dest_language:
             if url == ".":
-                url = self.dest_language + "/"
-            else:
-                url = self.dest_language + "/" + url
+                url += "/"
+            # else:
+            #     url = "/" + url
         return urlquote(url)
 
     def url_relative_to(self, other):
@@ -332,6 +236,131 @@ class I18nFile(File):
         return utils.get_relative_url(
             self.url,
             other.url
-            if (isinstance(other, File) or isinstance(other, I18nFile))
+            if (isinstance(other, File) or isinstance(other, I18nFolderFile))
             else other,
         )
+
+
+def on_files(self, files, config):
+    """"""
+    main_files = I18nFolderFiles([])
+    main_files.default_locale = self.default_language
+    main_files.locale = self.default_language
+    for language in self.all_languages:
+        self.i18n_files[language] = I18nFolderFiles([])
+        self.i18n_files[language].default_locale = self.default_language
+        self.i18n_files[language].locale = language
+
+    for fileobj in files:
+
+        file_locale = Path(fileobj.src_path).parts[0]
+
+        if file_locale not in self.all_languages:
+            if fileobj.is_documentation_page():
+                log.warning(
+                    f"Ignoring file {fileobj.src_path} because it is not inside a language folder"
+                )
+        else:
+
+            i18n_ffile = I18nFolderFile(
+                fileobj,
+                file_locale,
+                all_languages=self.all_languages,
+                default_language=self.default_language,
+                docs_dir=config["docs_dir"],
+                site_dir=config["site_dir"],
+                use_directory_urls=config.get("use_directory_urls"),
+            )
+            self.i18n_files[file_locale].append(i18n_ffile)
+
+            if file_locale == self.default_language:
+                i18n_ffile = I18nFolderFile(
+                    fileobj,
+                    "",
+                    all_languages=self.all_languages,
+                    default_language=self.default_language,
+                    docs_dir=config["docs_dir"],
+                    site_dir=config["site_dir"],
+                    use_directory_urls=config.get("use_directory_urls"),
+                )
+                main_files.append(i18n_ffile)
+
+    # these comments are here to help me debug later if needed
+    # print([{p.src_path: p.url} for p in main_files.documentation_pages()])
+    # print([{p.src_path: p.url} for p in self.i18n_files["en"].documentation_pages()])
+    # print([{p.src_path: p.url} for p in self.i18n_files["fr"].documentation_pages()])
+    # print([{p.src_path: p.url} for p in main_files.static_pages()])
+    # print([{p.src_path: p.url} for p in self.i18n_files["en"].static_pages()])
+    # print([{p.src_path: p.url} for p in self.i18n_files["fr"].static_pages()])
+
+    # populate pages alternates
+    # main default version
+    for page in main_files.documentation_pages():
+        for language in self.all_languages:
+            # do not list languages not being built as alternates
+            if self.config["languages"].get(language, {}).get("build", False) is False:
+                continue
+            alternate = self.i18n_files[language].get_localized_page_from_url(
+                page.url, language
+            )
+            if alternate:
+                page.alternates[language] = alternate
+            else:
+                log.warning(
+                    f"could not find '{language}' alternate for the default version of page '{page.src_path}'"
+                )
+
+    return main_files
+
+
+def on_nav(self, nav, config, files):
+    """ """
+    for language, lang_config in self.config["languages"].items():
+        # skip nav generation for languages that we do not build
+        if lang_config["build"] is False:
+            continue
+        if self.i18n_configs[language]["nav"]:
+            self._fix_config_navigation(language, self.i18n_files[language])
+
+        self.i18n_navs[language] = get_navigation(
+            self.i18n_files[language], self.i18n_configs[language]
+        )
+
+        self.i18n_navs[language].items = self.i18n_navs[language].items[0].children
+        for item in self.i18n_navs[language]:
+            if item.is_page and item.url.strip() == f"{language}/":
+                self.i18n_navs[language].homepage = item
+                break
+        else:
+            raise Exception(f"could not find homepage Page(url='{language}/')")
+
+        # If awesome-pages is used, we want to use it to structurate our
+        # localized navigations as well
+        if "awesome-pages" in config["plugins"]:
+            self.i18n_navs[language] = config["plugins"]["awesome-pages"].on_nav(
+                self.i18n_navs[language],
+                config=self.i18n_configs[language],
+                files=self.i18n_files[language],
+            )
+
+        if self.config["nav_translations"].get(language, {}):
+            if self._maybe_translate_titles(language, self.i18n_navs[language]):
+                log.info(f"Translated navigation to {language}")
+
+        if language == self.default_language:
+            for section in nav.items:
+                if section.title == self.default_language.capitalize():
+                    nav.items = section.children
+                    break
+            else:
+                raise Exception(
+                    f"could not find default version Section(title='{self.default_language.capitalize()}')"
+                )
+            for item in nav:
+                if item.is_page and item.url == "":
+                    nav.homepage = item
+                    break
+            else:
+                raise Exception("could not find default homepage Page(url='')")
+
+    return nav
