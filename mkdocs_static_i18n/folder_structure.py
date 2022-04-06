@@ -328,11 +328,15 @@ def on_nav(self, nav, config, files):
 
         self.i18n_navs[language].items = self.i18n_navs[language].items[0].children
         for item in self.i18n_navs[language]:
-            if item.is_page and item.url.strip() == f"{language}/":
+            if config["use_directory_urls"] is True:
+                expected_url = f"{language}/"
+            else:
+                expected_url = f"{language}/index.html"
+            if item.is_page and item.url.strip() == expected_url:
                 self.i18n_navs[language].homepage = item
                 break
         else:
-            raise Exception(f"could not find homepage Page(url='{language}/')")
+            raise Exception(f"could not find homepage Page(url='{expected_url}')")
 
         # If awesome-pages is used, we want to use it to structurate our
         # localized navigations as well
@@ -357,10 +361,16 @@ def on_nav(self, nav, config, files):
                     f"could not find default version Section(title='{self.default_language.capitalize()}')"
                 )
             for item in nav:
-                if item.is_page and item.url == "":
+                if config["use_directory_urls"] is True:
+                    expected_url = ""
+                else:
+                    expected_url = "index.html"
+                if item.is_page and item.url == expected_url:
                     nav.homepage = item
                     break
             else:
-                raise Exception("could not find default homepage Page(url='')")
+                raise Exception(
+                    f"could not find default homepage Page(url='{expected_url}')"
+                )
 
     return nav
