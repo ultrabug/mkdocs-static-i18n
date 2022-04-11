@@ -113,11 +113,24 @@ class I18nFolderFile(File):
         self.initial_dest_path = file_from.dest_path
         self.initial_src_path = file_from.src_path
         self.locale_suffix = None
+        self.root_folder = Path(file_from.src_path).parts[0]
 
         # the name
         self.name = Path(self.initial_src_path).name
 
-        if language == "":
+        if self.root_folder not in self.all_languages:
+            # non localized root folder, file should be copied as-is
+            # in the destination language path
+            self.locale = self.dest_language
+
+            self.src_path = file_from.src_path
+            self.abs_src_path = file_from.abs_src_path
+            #
+            self.dest_path = Path(self.locale) / Path(file_from.dest_path)
+            self.abs_dest_path = Path(self.site_dir) / Path(self.dest_path)
+            #
+            self.dest_name = self.name
+        elif language == "":
             # default version file
             self.locale = self.default_language
 
@@ -129,7 +142,8 @@ class I18nFolderFile(File):
             #
             self.dest_name = self.name
         else:
-            self.locale = language
+            # in localized folder file
+            self.locale = self.dest_language
 
             self.src_path = file_from.src_path
             self.abs_src_path = file_from.abs_src_path
@@ -256,10 +270,31 @@ def on_files(self, files, config):
         file_locale = Path(fileobj.src_path).parts[0]
 
         if file_locale not in self.all_languages:
-            if fileobj.is_documentation_page():
-                log.warning(
-                    f"Ignoring file {fileobj.src_path} because it is not inside a language folder"
+            if config["docs_dir"] in fileobj.abs_src_path:
+                i18n_ffile = I18nFolderFile(
+                    fileobj,
+                    "",
+                    all_languages=self.all_languages,
+                    default_language=self.default_language,
+                    docs_dir=config["docs_dir"],
+                    site_dir=config["site_dir"],
+                    use_directory_urls=config.get("use_directory_urls"),
                 )
+                main_files.append(i18n_ffile)
+                for language in self.all_languages:
+                    i18n_ffile = I18nFolderFile(
+                        fileobj,
+                        language,
+                        all_languages=self.all_languages,
+                        default_language=self.default_language,
+                        docs_dir=config["docs_dir"],
+                        site_dir=config["site_dir"],
+                        use_directory_urls=config.get("use_directory_urls"),
+                    )
+                    self.i18n_files[language].append(i18n_ffile)
+            else:
+                # file is bundled by theme
+                continue
         else:
 
             i18n_ffile = I18nFolderFile(
