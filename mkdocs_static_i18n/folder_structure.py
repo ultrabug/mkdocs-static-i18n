@@ -48,11 +48,9 @@ class I18nFolderFiles(Files):
         version of the file, if present.
         """
         expected_src_path = Path(path)
+        root_folder = expected_src_path.parts[0]
         expected_src_paths = [
-            expected_src_path.with_suffix(f".{self.locale}{expected_src_path.suffix}"),
-            expected_src_path.with_suffix(
-                f".{self.default_locale}{expected_src_path.suffix}"
-            ),
+            expected_src_path.relative_to(root_folder),
             expected_src_path,
         ]
         return any(filter(lambda s: Path(s) in expected_src_paths, self.src_paths))
@@ -60,11 +58,9 @@ class I18nFolderFiles(Files):
     def get_file_from_path(self, path):
         """Return a File instance with File.src_path equal to path."""
         expected_src_path = Path(path)
+        root_folder = expected_src_path.parts[0]
         expected_src_paths = [
-            expected_src_path.with_suffix(f".{self.locale}{expected_src_path.suffix}"),
-            expected_src_path.with_suffix(
-                f".{self.default_locale}{expected_src_path.suffix}"
-            ),
+            expected_src_path.relative_to(root_folder),
             expected_src_path,
         ]
         for src_path in filter(lambda s: Path(s) in expected_src_paths, self.src_paths):
