@@ -162,7 +162,7 @@ def test_plugin_use_directory_urls_per_folder():
             "search": {},
             "i18n": {
                 "default_language": "en",
-                "folder_per_language": True,
+                "docs_structure": "folder",
                 "languages": {"fr": "français", "en": "english"},
             },
         },
@@ -213,7 +213,7 @@ def test_plugin_no_use_directory_urls_per_folder():
             "search": {},
             "i18n": {
                 "default_language": "en",
-                "folder_per_language": True,
+                "docs_structure": "folder",
                 "languages": {"fr": "français", "en": "english"},
             },
         },
@@ -300,7 +300,7 @@ def test_plugin_use_directory_urls_no_default_language_folder_structure():
             "search": {},
             "i18n": {
                 "default_language": "en",
-                "folder_per_language": True,
+                "docs_structure": "folder",
                 "languages": {"fr": "français"},
             },
         },
@@ -351,7 +351,7 @@ def test_plugin_no_use_directory_urls_no_default_language_folder_structure():
             "search": {},
             "i18n": {
                 "default_language": "en",
-                "folder_per_language": True,
+                "docs_structure": "folder",
                 "languages": {"fr": "français"},
             },
         },
@@ -426,7 +426,7 @@ def test_plugin_use_directory_urls_default_language_only_folder_structure():
             "i18n": {
                 "default_language_only": True,
                 "default_language": "en",
-                "folder_per_language": True,
+                "docs_structure": "folder",
                 "languages": {"fr": "français", "en": "english"},
             },
         },
@@ -479,7 +479,7 @@ def test_plugin_no_use_directory_urls_default_language_only_folder_structure():
             "i18n": {
                 "default_language_only": True,
                 "default_language": "en",
-                "folder_per_language": True,
+                "docs_structure": "folder",
                 "languages": {"fr": "français", "en": "english"},
             },
         },

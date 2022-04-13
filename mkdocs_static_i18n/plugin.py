@@ -5,7 +5,7 @@ from pathlib import Path
 
 from mkdocs import __version__ as mkdocs_version
 from mkdocs.commands.build import _build_page, _populate_page
-from mkdocs.config.config_options import Type
+from mkdocs.config.config_options import Choice, Type
 from mkdocs.plugins import BasePlugin
 
 import mkdocs_static_i18n.folder_structure as folder_structure
@@ -62,7 +62,10 @@ class I18n(BasePlugin):
     config_scheme = (
         ("default_language_only", Type(bool, default=False, required=False)),
         ("default_language", Locale(str, required=True)),
-        ("folder_per_language", Type(bool, default=False, required=False)),
+        (
+            "docs_structure",
+            Choice(["folder", "suffix"], default="suffix", required=False),
+        ),
         ("languages", Locale(dict, required=True)),
         ("material_alternate", Type(bool, default=True, required=False)),
         ("nav_translations", Type(dict, default={}, required=False)),
@@ -307,7 +310,7 @@ class I18n(BasePlugin):
         Construct the main + lang specific file tree which will be used to
         generate the navigation for the default site and per language.
         """
-        if self.config["folder_per_language"] is False:
+        if self.config["docs_structure"] == "suffix":
             return suffix_structure.on_files(self, files, config)
         else:
             return folder_structure.on_files(self, files, config)
@@ -360,7 +363,7 @@ class I18n(BasePlugin):
         """
         Translate i18n aware navigation to honor the 'nav_translations' option.
         """
-        if self.config["folder_per_language"] is False:
+        if self.config["docs_structure"] == "suffix":
             return suffix_structure.on_nav(self, nav, config, files)
         else:
             return folder_structure.on_nav(self, nav, config, files)

@@ -26,7 +26,7 @@ plugins:
   - i18n:
       default_language: !ENV [DEFAULT_LANGUAGE, "en"]
       default_language_only: !ENV [DEFAULT_LANGUAGE_ONLY, false]
-      # folder_per_language: true
+      docs_structure: suffix
       languages:
         default:
           name: Default (en)
