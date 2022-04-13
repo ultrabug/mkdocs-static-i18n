@@ -47,21 +47,15 @@ class I18nFolderFiles(Files):
         mkdocs.structure.pages / path_to_url() method to point to the localized
         version of the file, if present.
         """
-        expected_src_path = Path(path)
-        root_folder = expected_src_path.parts[0]
-        expected_src_paths = [
-            expected_src_path.relative_to(root_folder),
-            expected_src_path,
-        ]
-        return any(filter(lambda s: Path(s) in expected_src_paths, self.src_paths))
+        return True if self.get_file_from_path(path) else False
 
     def get_file_from_path(self, path):
         """Return a File instance with File.src_path equal to path."""
         expected_src_path = Path(path)
         root_folder = expected_src_path.parts[0]
         expected_src_paths = [
-            expected_src_path.relative_to(root_folder),
             expected_src_path,
+            expected_src_path.relative_to(root_folder),
         ]
         for src_path in filter(lambda s: Path(s) in expected_src_paths, self.src_paths):
             return self.src_paths.get(os.path.normpath(src_path))

@@ -7,7 +7,7 @@ def test_search_add_lang():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={
@@ -28,7 +28,7 @@ def test_search_entries():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={
@@ -51,7 +51,7 @@ def test_search_entries_no_directory_urls():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={
@@ -72,7 +72,7 @@ def test_search_deduplicate_entries():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={
@@ -93,7 +93,7 @@ def test_search_deduplicate_entries_no_directory_urls():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={
@@ -114,7 +114,7 @@ def test_search_add_missing_lang():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={
@@ -138,7 +138,7 @@ def test_search_no_add_lang():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={

@@ -2,7 +2,7 @@ site_name: MkDocs static i18n plugin demo
 site_url: https://ultrabug.github.io/mkdocs-static-i18n
 repo_url: https://github.com/ultrabug/mkdocs-static-i18n
 
-docs_dir: tests/lang_per_folder
+docs_dir: tests/docs_suffix_structure
 
 theme:
   name: material
@@ -26,7 +26,7 @@ plugins:
   - i18n:
       default_language: !ENV [DEFAULT_LANGUAGE, "en"]
       default_language_only: !ENV [DEFAULT_LANGUAGE_ONLY, false]
-      folder_per_language: true
+      # folder_per_language: true
       languages:
         default:
           name: Default (en)

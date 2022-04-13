@@ -10,7 +10,7 @@ def test_plugin_single_language_en():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
     )
@@ -25,7 +25,7 @@ def test_plugin_single_language_fr():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
     )
@@ -40,7 +40,7 @@ def test_plugin_theme_sitemap():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
     )

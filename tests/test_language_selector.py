@@ -16,7 +16,7 @@ def test_plugin_language_selector_use_directory_urls():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={
@@ -36,7 +36,7 @@ def test_plugin_language_selector_no_use_directory_urls():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={
@@ -56,7 +56,7 @@ def test_plugin_language_selector_single_default_language():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={"i18n": {"default_language": "fr", "languages": {"fr": "français"}}},
@@ -71,7 +71,7 @@ def test_plugin_language_selector_use_directory_urls_default():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={
