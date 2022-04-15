@@ -56,6 +56,7 @@ class I18nFolderFiles(Files):
         expected_src_paths = [
             expected_src_path,
             expected_src_path.relative_to(root_folder),
+            Path(self.locale) / Path(expected_src_path),
         ]
         for src_path in filter(lambda s: Path(s) in expected_src_paths, self.src_paths):
             return self.src_paths.get(os.path.normpath(src_path))
