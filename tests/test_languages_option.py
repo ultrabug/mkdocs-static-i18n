@@ -6,7 +6,7 @@ def test_plugin_languages_backward_compat_1():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={
@@ -39,7 +39,7 @@ def test_plugin_languages_backward_compat_2():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={"i18n": {"default_language": "en", "languages": {"en": "english"}}},
@@ -61,7 +61,7 @@ def test_plugin_languages_backward_compat_3():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={"i18n": {"default_language": "en", "languages": {"fr": "français"}}},
@@ -89,7 +89,7 @@ def test_plugin_languages_backward_compat_4():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={
@@ -122,7 +122,7 @@ def test_plugin_languages_backward_compat_5():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={
@@ -163,7 +163,7 @@ def test_plugin_languages_backward_compat_6():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={
@@ -204,7 +204,7 @@ def test_plugin_languages_backward_compat_7():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={
@@ -237,7 +237,7 @@ def test_plugin_languages_backward_compat_8():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={
@@ -274,7 +274,7 @@ def test_plugin_languages_backward_compat_9():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={
@@ -311,7 +311,7 @@ def test_plugin_languages_backward_compat_10():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={
@@ -347,7 +347,7 @@ def test_plugin_languages_backward_compat_11():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={
@@ -383,7 +383,7 @@ def test_plugin_languages_backward_compat_12():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={
@@ -412,7 +412,7 @@ def test_plugin_languages_backward_compat_13():
         "tests/mkdocs_base.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="../docs/",
+        docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
         extra_javascript=[],
         plugins={

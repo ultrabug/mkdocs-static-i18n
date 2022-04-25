@@ -1,4 +1,4 @@
-# Page d'accueil (french version)
+# Sujet 1 (french version)
 
 !!! tip "Astuce"
     **Utilisez le sélecteur de langue dans la barre de titre** pour passer d'une version localisée à l'autre de ce site de démonstration. Ce sélecteur fait partie de [mkdocs-material >= 7.1.0](https://squidfunk.github.io/mkdocs-material/setup/changing-the-language/#site-language-selector) et est **configuré automatiquement par ce plugin** ou peut être défini de manière statique depuis le [fichier mkdocs.yml](https://github.com/ultrabug/mkdocs-static-i18n/blob/main/mkdocs.yml).
@@ -14,11 +14,11 @@ générée que vous voyez en ce moment:
 docs
 ├── image.en.png
 ├── image.fr.png  <-- this image file is used on the /fr version
-├── index.fr.md  <-- this file is used on the /fr version
+├── index.fr.md
 ├── index.md
 ├── topic1
 │   ├── named_file.en.md
-│   └── named_file.fr.md
+│   └── named_file.fr.md  <-- this file is used on the /fr version
 └── topic2
     ├── index.en.md
     └── index.md
@@ -36,10 +36,10 @@ site
 │       └── index.html
 ├── fr
 │   ├── image.png  <-- you see this image on the /fr version
-│   ├── index.html  <-- you are here on the /fr version
+│   ├── index.html
 │   ├── topic1
 │   │   └── named_file
-│   │       └── index.html
+│   │       └── index.html  <-- you are here on the /fr version
 │   └── topic2
 │       └── index.html
 ├── image.png
@@ -53,7 +53,7 @@ site
 
 ## Localisation automatique des médias / liens / assets
 
-![localized image](image.png)
+![localized image](../image.png)
 
 La source de cette image est dynamiquement localisée bien qu'elle soit
 référencée dans la source du markdown par `![localized image](image.png)`.
@@ -61,11 +61,6 @@ Cela démontre que ce plugin vous permet de ne pas vous préoccuper du nom
 des fichiers dans vos liens, médias et contenus statiques : utilisez leurs
 noms sans extension localisée et concentrez-vous sur la traduction de vos
 contenus !
-
-Bien entendu, les images peuvent aussi ne pas être localisées comme l'image
-ci-dessous qui est utilisée par toutes les versions :
-
-![non localized image](assets/image_non_localized.png)
 
 ---
 

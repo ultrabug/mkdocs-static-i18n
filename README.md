@@ -4,6 +4,8 @@
 
 *An MkDocs plugin that helps you support multiple language versions of your site / documentation.*
 
+*Like what you :eyes:? Using this plugin? Give it a :star:!*
+
 The `mkdocs-static-i18n` plugin allows you to support multiple languages of your documentation by adding static translation files to your existing documentation pages.
 
 Multi language support is just **one `.<language>.md` file away**!
@@ -14,16 +16,30 @@ Localized images/medias/assets are just **one `.<language>.<extension>` file awa
 
 If you want to see how it looks, [check out the demo documentation here](https://ultrabug.github.io/mkdocs-static-i18n/).
 
-*Like what you :eyes:? Give it a :star:!*
-
 ## Language detection logic
 
 This plugin is made to be as simple as possible and will generate a default version of your website + one version per configured language on the `<language>/` path.
 
+Your translations can be detected using a **suffix based docs structure** (default) or a **folder based docs structure**. This is controlled by the [docs_structure](#docs_structure) option.
+
+Since demonstrations are better than words, [check out the demo documentation here](https://ultrabug.github.io/mkdocs-static-i18n/) which showcases the logic.
+
+### Suffix based docs structure
+
+The **default** behavior is to use a **suffix based docs structure** to handle your translations:
+
 - the `default` version will use any `.md` documentation file first and fallback to any `.<default_language>.md` file found
 - the `/<language>` language versions will use any `.<language>.md` documentation file first and fallback to any `.<default_language>.md` file before fallbacking to any default `.md` file found
 
-Since demonstrations are better than words, [check out the demo documentation here](https://ultrabug.github.io/mkdocs-static-i18n/) which showcases the logic.
+### Folder based docs structure
+
+The optional behavior is to use a **folder based structure** to handle your translations:
+
+- each of your configured language should have a folder with their name at the root of `docs_dir`, which of course includes the default language of your choice
+- then you just structurate your `.md` documentation files in their respective folder structure
+- any folder relative to `docs_dir` which is not a language folder will be copied as-is and their files will serve as language agnostic (think of non localized images)
+
+See a [using a folder per language structure](#using-a-folder-per-language-structure) section for more details.
 
 ## Installation
 
@@ -51,6 +67,16 @@ This **boolean** (true/false) option is used to [speed up the build process whil
 
 ```yaml
 default_language_only: false
+```
+
+### docs_structure
+
+- default: `suffix`
+
+This **(fixed) string** (can be either 'suffix' or 'folder') option is used to select which [language detection logic](#language-detection-logic) should be used to build the localized versions of your documentation.
+
+```yaml
+docs_structure: folder
 ```
 
 ### languages
@@ -459,6 +485,74 @@ The plugin exports some useful i18n variables that you can access through the pa
 - `i18n_page_file_locale`: the locale suffix of the source file used to render the page
 
 Those context [variables can be accessed using Jinja2 notation](https://jinja.palletsprojects.com/en/latest/templates/#variables), like `{{ i18n_page_locale }}` in your theme overrides.
+
+## Using a folder per language structure
+
+The `mkdocs-static-i18n` plugin can be configured to work with a **language per folder based structure** where you create a folder per language your want to support translations for.
+
+For example, the given folder structure:
+
+```
+docs_folder_structure
+├── assets
+│   └── image_non_localized.png
+├── en
+│   ├── image.png
+│   ├── index.md
+│   ├── topic1
+│   │   └── named_file.md
+│   └── topic2
+│       └── README.md
+└── fr
+    ├── image.png
+    ├── index.md
+    ├── topic1
+    │   └── named_file.md
+    └── topic2
+        └── README.md
+```
+
+With the following `mkdocs.yml` configuration:
+
+```yaml
+plugins:
+  - i18n:
+      default_language: en
+      docs_structure: folder
+      languages:
+        en:
+          name: English
+        fr:
+          name: Français
+```
+
+Will build:
+
+```
+site
+├── assets
+│   └── image_non_localized.png
+├── en
+│   ├── image.png
+│   ├── index.html
+│   ├── topic1
+│   │   └── index.html
+│   └── topic2
+│       └── index.html
+├── fr
+│   ├── image.png
+│   ├── index.html
+│   ├── topic1
+│   │   └── index.html
+│   └── topic2
+│       └── index.html
+├── image.png
+├── index.html
+├── topic1
+│   └── index.html
+└── topic2
+    └── index.html
+```
 
 ## See it in action
 
