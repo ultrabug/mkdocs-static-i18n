@@ -90,9 +90,11 @@ class I18nFolderFile(File):
     ) -> None:
         # preserved from mkdocs.structure.files.File
         # since they are not calculated
-        self.page = file_from.page
+        self.abs_src_path = file_from.abs_src_path
         self.docs_dir = docs_dir
+        self.page = file_from.page
         self.site_dir = site_dir
+        self.src_path = file_from.src_path
 
         # i18n addons
         self.all_languages = all_languages
@@ -108,41 +110,24 @@ class I18nFolderFile(File):
 
         # the name
         self.name = Path(self.initial_src_path).name
+        self.dest_name = self.name
 
         if self.root_folder not in self.all_languages:
             # non localized root folder, file should be copied as-is
             # in the destination language path
             self.locale = self.dest_language
-
-            self.src_path = file_from.src_path
-            self.abs_src_path = file_from.abs_src_path
-            #
             self.dest_path = Path(self.locale) / Path(file_from.dest_path)
             self.abs_dest_path = Path(self.site_dir) / Path(self.dest_path)
-            #
-            self.dest_name = self.name
         elif language == "":
             # default version file
             self.locale = self.default_language
-
-            self.src_path = file_from.src_path
-            self.abs_src_path = file_from.abs_src_path
-            #
             self.dest_path = Path(self.initial_dest_path).relative_to(self.locale)
             self.abs_dest_path = Path(self.site_dir) / Path(self.dest_path)
-            #
-            self.dest_name = self.name
         else:
             # in localized folder file
             self.locale = self.dest_language
-
-            self.src_path = file_from.src_path
-            self.abs_src_path = file_from.abs_src_path
-            #
             self.dest_path = file_from.dest_path
             self.abs_dest_path = file_from.abs_dest_path
-            #
-            self.dest_name = self.name
 
         # set url
         self.url = self._get_url(use_directory_urls)
