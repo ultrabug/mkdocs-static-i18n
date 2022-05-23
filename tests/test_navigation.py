@@ -1,6 +1,8 @@
 from copy import deepcopy
 from pathlib import Path
 
+from mkdocs.commands.build import build
+from mkdocs.config.base import load_config
 from mkdocs.structure.files import get_files
 from mkdocs.structure.nav import get_navigation
 
@@ -70,3 +72,99 @@ def test_plugin_translated_nav(config_plugin_translated_nav):
     en_config["nav"] = EN_TRANSLATED_NAV
     en_nav = get_navigation(i18n_plugin.i18n_files["en"], en_config)
     assert i18n_plugin.i18n_navs["en"].__repr__() == en_nav.__repr__()
+
+
+def test_homepage_detection_folder_no_use_directory():
+    mkdocs_config = load_config(
+        "tests/mkdocs_base.yml",
+        theme={"name": "mkdocs"},
+        use_directory_urls=False,
+        docs_dir="docs_folder_structure/",
+        site_url="http://localhost",
+        extra_javascript=[],
+        plugins={
+            "search": {},
+            "i18n": {
+                "default_language_only": True,
+                "default_language": "en",
+                "docs_structure": "folder",
+                "languages": {"fr": "français", "en": "english"},
+            },
+        },
+    )
+    build(mkdocs_config)
+    i18n_plugin = mkdocs_config["plugins"]["i18n"]
+    for lang in i18n_plugin.config["languages"]:
+        assert i18n_plugin.i18n_navs[lang].homepage is not None
+
+
+def test_homepage_detection_folder_use_directory():
+    mkdocs_config = load_config(
+        "tests/mkdocs_base.yml",
+        theme={"name": "mkdocs"},
+        use_directory_urls=True,
+        docs_dir="docs_folder_structure/",
+        site_url="http://localhost",
+        extra_javascript=[],
+        plugins={
+            "search": {},
+            "i18n": {
+                "default_language_only": True,
+                "default_language": "en",
+                "docs_structure": "folder",
+                "languages": {"fr": "français", "en": "english"},
+            },
+        },
+    )
+    build(mkdocs_config)
+    i18n_plugin = mkdocs_config["plugins"]["i18n"]
+    for lang in i18n_plugin.config["languages"]:
+        assert i18n_plugin.i18n_navs[lang].homepage is not None
+
+
+def test_homepage_detection_suffix_no_use_directory():
+    mkdocs_config = load_config(
+        "tests/mkdocs_base.yml",
+        theme={"name": "mkdocs"},
+        use_directory_urls=False,
+        docs_dir="docs_suffix_structure/",
+        site_url="http://localhost",
+        extra_javascript=[],
+        plugins={
+            "search": {},
+            "i18n": {
+                "default_language_only": True,
+                "default_language": "en",
+                "docs_structure": "suffix",
+                "languages": {"fr": "français", "en": "english"},
+            },
+        },
+    )
+    build(mkdocs_config)
+    i18n_plugin = mkdocs_config["plugins"]["i18n"]
+    for lang in i18n_plugin.config["languages"]:
+        assert i18n_plugin.i18n_navs[lang].homepage is not None
+
+
+def test_homepage_detection_suffix_use_directory():
+    mkdocs_config = load_config(
+        "tests/mkdocs_base.yml",
+        theme={"name": "mkdocs"},
+        use_directory_urls=True,
+        docs_dir="docs_suffix_structure/",
+        site_url="http://localhost",
+        extra_javascript=[],
+        plugins={
+            "search": {},
+            "i18n": {
+                "default_language_only": True,
+                "default_language": "en",
+                "docs_structure": "suffix",
+                "languages": {"fr": "français", "en": "english"},
+            },
+        },
+    )
+    build(mkdocs_config)
+    i18n_plugin = mkdocs_config["plugins"]["i18n"]
+    for lang in i18n_plugin.config["languages"]:
+        assert i18n_plugin.i18n_navs[lang].homepage is not None

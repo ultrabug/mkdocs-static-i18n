@@ -385,4 +385,12 @@ def on_nav(self, nav, config, files):
             if self._maybe_translate_titles(language, self.i18n_navs[language]):
                 log.info(f"Translated navigation to {language}")
 
+        # detect and set nav homepage
+        for page in self.i18n_files[language].documentation_pages():
+            if page.url in (f"{language}/", f"{language}/index.html"):
+                self.i18n_navs[language].homepage = page
+                break
+        else:
+            log.warning(f"could not find homepage for locale '{language}'")
+
     return nav
