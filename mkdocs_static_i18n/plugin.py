@@ -181,6 +181,43 @@ class I18n(BasePlugin):
                 self.all_languages.append(language)
         if self.default_language not in self.all_languages:
             self.all_languages.insert(0, self.default_language)
+        # Get our placement index in the plugins config list
+        try:
+            i18n_index = list(config["plugins"].keys()).index("i18n")
+        except ValueError:
+            i18n_index = -1
+        # Make sure with-pdf is controlled by us, see #110
+        if "with-pdf" in config["plugins"]:
+            with_pdf_index = list(config["plugins"].keys()).index("with-pdf")
+            if with_pdf_index > i18n_index:
+                config["plugins"]["with-pdf"].on_config(config)
+            for events in config["plugins"].events.values():
+                config["plugins"].move_to_end("with-pdf", last=False)
+                for idx, event in enumerate(list(events)):
+                    try:
+                        if str(event.__module__) == "mkdocs_with_pdf.plugin":
+                            events.pop(idx)
+                    except AttributeError:
+                        # partials don't have a module
+                        pass
+        # Make sure awesome-pages is always called before us, see #65
+        # We will only control it for the main language, localized PDF are
+        # generated on the 'on_post_build' method
+        if "awesome-pages" in config["plugins"]:
+            awesome_index = list(config["plugins"].keys()).index("awesome-pages")
+            if awesome_index > i18n_index:
+                config["plugins"].move_to_end("awesome-pages", last=False)
+                for events in config["plugins"].events.values():
+                    for idx, event in enumerate(list(events)):
+                        try:
+                            if (
+                                str(event.__module__)
+                                == "mkdocs_awesome_pages_plugin.plugin"
+                            ):
+                                events.insert(0, events.pop(idx))
+                        except AttributeError:
+                            # partials don't have a module
+                            pass
         # Make a localized copy of the config, the plugins are mutualized
         # We remove it from the config before (deep)copying it
         plugins = config.pop("plugins")
@@ -281,20 +318,6 @@ class I18n(BasePlugin):
                     f"{list(self.config['nav_translations'].keys())}"
                 )
                 self.config["nav_translations"] = {}
-        # Make sure awesome-pages is always called first, see #65
-        if "awesome-pages" in config["plugins"]:
-            config["plugins"].move_to_end("awesome-pages", last=False)
-            for events in config["plugins"].events.values():
-                for idx, event in enumerate(list(events)):
-                    try:
-                        if (
-                            str(event.__module__)
-                            == "mkdocs_awesome_pages_plugin.plugin"
-                        ):
-                            events.insert(0, events.pop(idx))
-                    except AttributeError:
-                        # partials don't have a module
-                        pass
         # Install a i18n aware version of sitemap.xml if not provided by the user
         if not Path(
             Path(config["theme"]._vars.get("custom_dir", ".")) / Path("sitemap.xml")
@@ -364,9 +387,14 @@ class I18n(BasePlugin):
         Translate i18n aware navigation to honor the 'nav_translations' option.
         """
         if self.config["docs_structure"] == "suffix":
-            return suffix_structure.on_nav(self, nav, config, files)
+            nav = suffix_structure.on_nav(self, nav, config, files)
         else:
-            return folder_structure.on_nav(self, nav, config, files)
+            nav = folder_structure.on_nav(self, nav, config, files)
+        # Manually trigger with-pdf on_nav, see #110
+        with_pdf_plugin = config["plugins"].get("with-pdf")
+        if with_pdf_plugin:
+            with_pdf_plugin.on_nav(nav, config, files)
+        return nav
 
     def _fix_search_duplicates(self, language, search_plugin):
         """
@@ -460,6 +488,16 @@ class I18n(BasePlugin):
 
         return context
 
+    def on_post_page(self, output, page, config):
+        """
+        Some plugins we control ourselves need this event.
+        """
+        # Manually trigger with-pdf on_nav, see #110
+        with_pdf_plugin = config["plugins"].get("with-pdf")
+        if with_pdf_plugin:
+            with_pdf_plugin.on_post_page(output, page, config)
+        return output
+
     def on_post_build(self, config):
         """
         Derived from mkdocs commands build function.
@@ -475,6 +513,7 @@ class I18n(BasePlugin):
         search_plugin = config["plugins"].get("search")
         with_pdf_plugin = config["plugins"].get("with-pdf")
         if with_pdf_plugin:
+            with_pdf_plugin.on_post_build(config)
             with_pdf_output_path = with_pdf_plugin.config["output_path"]
         for language, language_config in self.config["languages"].items():
             # Language build disabled by the user, skip
