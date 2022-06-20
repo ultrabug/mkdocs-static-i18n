@@ -361,6 +361,10 @@ def on_files(self, files, config):
 
 def on_nav(self, nav, config, files):
     """ """
+    # translate default nav, see #113
+    if self._maybe_translate_titles(self.default_language, nav):
+        log.info(f"Translated default navigation to {self.default_language}")
+
     for language, lang_config in self.config["languages"].items():
         # skip nav generation for languages that we do not build
         if lang_config["build"] is False:

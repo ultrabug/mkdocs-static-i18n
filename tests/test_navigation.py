@@ -168,3 +168,115 @@ def test_homepage_detection_suffix_use_directory():
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
     for lang in i18n_plugin.config["languages"]:
         assert i18n_plugin.i18n_navs[lang].homepage is not None
+
+
+def test_plugin_translated_default_nav_suffix():
+    mkdocs_config = load_config(
+        "tests/mkdocs_base.yml",
+        theme={"name": "mkdocs"},
+        use_directory_urls=False,
+        docs_dir="docs_suffix_structure/",
+        site_url="http://localhost",
+        extra_javascript=[],
+        plugins={
+            "search": {},
+            "i18n": {
+                "default_language_only": True,
+                "default_language": "fr",
+                "docs_structure": "suffix",
+                "languages": {"fr": "français", "en": "english"},
+                "nav_translations": {
+                    "en": {
+                        "Home": "EN Home",
+                        "Named File": "EN Named File",
+                        "Topic1": "EN Topic1",
+                        "Topic2": "EN Topic2",
+                    },
+                    "fr": {
+                        "Home": "Accueil",
+                        "Named File": "Fichier Nommé",
+                        "Topic1": "Sujet1",
+                        "Topic2": "Sujet2",
+                    },
+                },
+            },
+        },
+    )
+    i18n_plugin = mkdocs_config["plugins"]["i18n"]
+    files = get_files(mkdocs_config)
+    config = i18n_plugin.on_config(mkdocs_config)
+    files = i18n_plugin.on_files(files, config)
+    nav = get_navigation(files, config)
+    nav = i18n_plugin.on_nav(nav, config, files)
+    i18n_plugin.on_post_build(config)
+    #
+    expected_titles = set(
+        mkdocs_config["plugins"]["i18n"].config["nav_translations"]["fr"].values()
+    )
+
+    def assert_title(item, expected_titles):
+        if item.title:
+            assert item.title in expected_titles
+
+    for item in nav:
+        if item.title:
+            assert_title(item, expected_titles)
+        if item.children:
+            for item in item.children:
+                assert_title(item, expected_titles)
+
+
+def test_plugin_translated_default_nav_folder():
+    mkdocs_config = load_config(
+        "tests/mkdocs_base.yml",
+        theme={"name": "mkdocs"},
+        use_directory_urls=False,
+        docs_dir="docs_folder_structure/",
+        site_url="http://localhost",
+        extra_javascript=[],
+        plugins={
+            "search": {},
+            "i18n": {
+                "default_language_only": True,
+                "default_language": "fr",
+                "docs_structure": "folder",
+                "languages": {"fr": "français", "en": "english"},
+                "nav_translations": {
+                    "en": {
+                        "Home": "EN Home",
+                        "Named File": "EN Named File",
+                        "Topic1": "EN Topic1",
+                        "Topic2": "EN Topic2",
+                    },
+                    "fr": {
+                        "Home": "Accueil",
+                        "Named File": "Fichier Nommé",
+                        "Topic1": "Sujet1",
+                        "Topic2": "Sujet2",
+                    },
+                },
+            },
+        },
+    )
+    i18n_plugin = mkdocs_config["plugins"]["i18n"]
+    files = get_files(mkdocs_config)
+    config = i18n_plugin.on_config(mkdocs_config)
+    files = i18n_plugin.on_files(files, config)
+    nav = get_navigation(files, config)
+    nav = i18n_plugin.on_nav(nav, config, files)
+    i18n_plugin.on_post_build(config)
+    #
+    expected_titles = set(
+        mkdocs_config["plugins"]["i18n"].config["nav_translations"]["fr"].values()
+    )
+
+    def assert_title(item, expected_titles):
+        if item.title:
+            assert item.title in expected_titles
+
+    for item in nav:
+        if item.title:
+            assert_title(item, expected_titles)
+        if item.children:
+            for item in item.children:
+                assert_title(item, expected_titles)
