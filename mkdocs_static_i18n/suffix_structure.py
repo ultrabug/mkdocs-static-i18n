@@ -33,10 +33,10 @@ class I18nFiles(Files):
 
         The first i18nFile is sufficient to cover all their possible localized versions.
         """
-        for inside_file in [*self._files]:
+        for inside_file in self:
             if inside_file.dest_path == file.dest_path:
                 return
-        self._files.append(file)
+        super().append(file)
 
     def __contains__(self, path):
         """
@@ -75,7 +75,7 @@ class I18nFiles(Files):
         if language:
             url = f"{language}/{url}"
         url = url.rstrip(".") or "."
-        for file in self._files:
+        for file in self:
             if not file.is_documentation_page():
                 continue
             if file.url == url:
