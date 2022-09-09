@@ -258,7 +258,9 @@ class I18n(BasePlugin):
                             {
                                 "name": f"{self.default_language_options['name']}",
                                 "link": f"{self.default_language_options['link']}{link_suffix}",
-                                "fixed_link": self.default_language_options["fixed_link"],
+                                "fixed_link": self.default_language_options[
+                                    "fixed_link"
+                                ],
                                 "lang": self.default_language,
                             }
                         )

@@ -43,7 +43,12 @@ def test_plugin_language_selector_no_use_directory_urls():
     result = i18n_plugin.on_config(mkdocs_config, force=True)
     assert result["extra"]["alternate"] == [
         {"name": "english", "link": "./index.html", "fixed_link": None, "lang": "en"},
-        {"name": "français", "link": "./fr/index.html", "fixed_link": None, "lang": "fr"},
+        {
+            "name": "français",
+            "link": "./fr/index.html",
+            "fixed_link": None,
+            "lang": "fr",
+        },
     ]
 
 
