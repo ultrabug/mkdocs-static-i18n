@@ -134,24 +134,24 @@ class I18n(BasePlugin):
             {
                 "name": "default",
                 "link": "./",
+                "fixed_link": None,
                 "build": True,
                 "site_name": config["site_name"],
             },
         )
         if self.default_language_options["name"] == "default":
-            default_language_name = (
-                self.config["languages"]
-                .get(self.default_language, {})
-                .get("name", self.default_language)
+            default_language_config = self.config["languages"].get(
+                self.default_language, {}
             )
-            default_language_site_name = (
-                self.config["languages"]
-                .get(self.default_language, {})
-                .get("site_name", config["site_name"])
+            self.default_language_options["name"] = default_language_config.get(
+                "name", self.default_language
             )
-            self.default_language_options["name"] = default_language_name
-            self.default_language_options["site_name"] = default_language_site_name
-
+            self.default_language_options["site_name"] = default_language_config.get(
+                "site_name", config["site_name"]
+            )
+            self.default_language_options["fixed_link"] = default_language_config.get(
+                "fixed_link", None
+            )
         # when the default language is listed on the languages
         # this means that the user wants a /default_language version
         # of his website
@@ -164,6 +164,7 @@ class I18n(BasePlugin):
             self.config["languages"][self.default_language] = {
                 "name": self.default_language_options["name"],
                 "link": "./",
+                "fixed_link": None,
                 "build": build,
                 "site_name": config["site_name"],
             }
@@ -257,6 +258,7 @@ class I18n(BasePlugin):
                             {
                                 "name": f"{self.default_language_options['name']}",
                                 "link": f"{self.default_language_options['link']}{link_suffix}",
+                                "fixed_link": self.default_language_options["fixed_link"],
                                 "lang": self.default_language,
                             }
                         )
@@ -272,6 +274,7 @@ class I18n(BasePlugin):
                                 {
                                     "name": f"{lang_config['name']}",
                                     "link": f"{lang_config['link']}{link_suffix}",
+                                    "fixed_link": lang_config["fixed_link"],
                                     "lang": language,
                                 }
                             )
@@ -465,13 +468,14 @@ class I18n(BasePlugin):
                     break
 
             for alternate in alternates:
-                if alternate["link"].endswith("/"):
-                    separator = ""
-                else:
-                    separator = "/"
                 if config.get("use_directory_urls") is False:
                     alternate["link"] = alternate["link"].replace("/index.html", "", 1)
-                alternate["link"] += f"{separator}{page_url}"
+                if fixed_link := alternate["fixed_link"]:
+                    alternate["link"] = fixed_link
+                else:
+                    if not alternate["link"].endswith("/"):
+                        alternate["link"] += "/"
+                    alternate["link"] += page_url
             config["extra"]["alternate"] = alternates
 
         # set the localized site_name if any
