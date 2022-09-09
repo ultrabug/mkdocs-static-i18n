@@ -1,0 +1,13 @@
+site_name: MkDocs static i18n plugin tests with fixed link
+site_url: http://localhost
+
+plugins:
+  - i18n:
+      default_language: en
+      languages:
+        en:
+          name: English
+          fixed_link: /en
+        fr:
+          name: Français
+          fixed_link: /fr
