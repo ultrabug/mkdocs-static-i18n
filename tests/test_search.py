@@ -43,7 +43,7 @@ def test_search_entries():
     )
     build(mkdocs_config)
     search_plugin = mkdocs_config["plugins"]["search"]
-    assert len(search_plugin.search_index._entries) == 30
+    assert len(search_plugin.search_index._entries) == 25
 
 
 def test_search_entries_no_directory_urls():
@@ -64,7 +64,7 @@ def test_search_entries_no_directory_urls():
     )
     build(mkdocs_config)
     search_plugin = mkdocs_config["plugins"]["search"]
-    assert len(search_plugin.search_index._entries) == 30
+    assert len(search_plugin.search_index._entries) == 25
 
 
 def test_search_deduplicate_entries():
@@ -85,7 +85,7 @@ def test_search_deduplicate_entries():
     )
     build(mkdocs_config)
     search_plugin = mkdocs_config["plugins"]["search"]
-    assert len(search_plugin.search_index._entries) == 30
+    assert len(search_plugin.search_index._entries) == 25
 
 
 def test_search_deduplicate_entries_no_directory_urls():
@@ -106,7 +106,7 @@ def test_search_deduplicate_entries_no_directory_urls():
     )
     build(mkdocs_config)
     search_plugin = mkdocs_config["plugins"]["search"]
-    assert len(search_plugin.search_index._entries) == 30
+    assert len(search_plugin.search_index._entries) == 25
 
 
 def test_search_add_missing_lang():
