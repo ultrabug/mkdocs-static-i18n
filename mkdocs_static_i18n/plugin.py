@@ -396,7 +396,7 @@ class I18n(BasePlugin):
             with_pdf_plugin.on_nav(nav, config, files)
         return nav
 
-    def _fix_search_duplicates(self, language, search_plugin):
+    def _fix_search_duplicates(self, search_plugin):
         """
         We want to avoid indexing the same pages twice if the default language
         has its own version built as well as the /language version too as this
@@ -405,7 +405,6 @@ class I18n(BasePlugin):
         When this happens, we favor the default language location if its
         content is the same as its /language counterpart.
         """
-        entries = deepcopy(search_plugin.search_index._entries)
         default_lang_entries = filter(
             lambda x: not x["location"].startswith(
                 tuple(self.config["languages"].keys())
@@ -413,21 +412,27 @@ class I18n(BasePlugin):
             search_plugin.search_index._entries,
         )
         target_lang_entries = list(
-            filter(lambda x: x["location"].startswith(f"{language}/"), entries)
+            filter(
+                lambda x: x["location"].startswith(
+                    tuple(self.config["languages"].keys())
+                ),
+                search_plugin.search_index._entries,
+            )
         )
         for default_lang_entry in default_lang_entries:
-            expected_locations = [
-                f"{language}/{default_lang_entry['location']}",
-                f"{language}/{default_lang_entry['location'].rstrip('/')}",
-                f"{language}/{default_lang_entry['location'].replace('/#', '#')}",
-            ]
             duplicated_entries = filter(
-                lambda x: x["location"] in expected_locations
+                lambda x: x["title"] == default_lang_entry["title"]
+                and x["location"].endswith(x["location"])
                 and x["text"] == default_lang_entry["text"],
                 target_lang_entries,
             )
             for duplicated_entry in duplicated_entries:
-                search_plugin.search_index._entries.remove(duplicated_entry)
+                if duplicated_entry in search_plugin.search_index._entries:
+                    log.debug(
+                        f"removed duplicated search entry: {duplicated_entry['title']} "
+                        f"{duplicated_entry['location']}"
+                    )
+                    search_plugin.search_index._entries.remove(duplicated_entry)
 
     def on_page_markdown(self, markdown, page, config, files):
         """
@@ -555,16 +560,6 @@ class I18n(BasePlugin):
             for file in files.documentation_pages():
                 _build_page(file.page, config, files, nav, env, dirty)
 
-            # Update the search plugin index with language pages
-            if search_plugin:
-                if (
-                    self.config["search_reconfigure"]
-                    and language == self.default_language
-                    and self.default_language in self.config["languages"]
-                ):
-                    self._fix_search_duplicates(language, search_plugin)
-                search_plugin.on_post_build(config)
-
             if with_pdf_plugin:
                 with_pdf_plugin.config[
                     "output_path"
@@ -572,3 +567,8 @@ class I18n(BasePlugin):
                 with_pdf_plugin.on_config(config)
                 with_pdf_plugin.on_nav(nav, config, files)
                 with_pdf_plugin.on_post_build(config)
+
+        # Update the search plugin index with language pages
+        if search_plugin:
+            self._fix_search_duplicates(search_plugin)
+            search_plugin.on_post_build(config)

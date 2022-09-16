@@ -390,8 +390,7 @@ contents!**
 This means that your search results can't be contextual to the language
 you are currently browsing.
 
-The `mkdocs-static-i18n` plugin will try to be smart and deduplicate the
-pages from the `default_language` so that search results are not polluted.
+The `mkdocs-static-i18n` plugin will try to be smart and [deduplicate the pages](https://github.com/ultrabug/mkdocs-static-i18n/issues/129) from the `default_language` so that search results are not polluted by redundant content.
 
 This is because the MkDocs `search` plugin is hardcoded in the themes
 javascript sources so there can only be one search index for the whole
