@@ -89,7 +89,7 @@ Allowed options per language:
 
 - `name` (mandatory): the name that should be displayed in the [mkdocs-material language switcher](#using-mkdocs-material-site-language-selector)
 - `link` (default: `./<language>`): the link path to be used in the [mkdocs-material language switcher](#using-mkdocs-material-site-language-selector)
-- `fixed_link` (default: `None`): if specified, when switching to this language, you will be redirected to this link.
+- `fixed_link` (default: `None`): if specified, when switching to this language, you will be redirected to this link
 - `build` (default: `true`): a boolean used to control the build of a `/<language>` path for the given language
 - `site_name` (default: `mkdocs.yml site_name`): the [`site_name` translation for the given language](#translating-site-name)
 
