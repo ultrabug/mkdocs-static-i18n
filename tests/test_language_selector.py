@@ -97,7 +97,7 @@ def test_plugin_language_selector_use_directory_urls_default():
 
 def test_plugin_language_selector_fixed_link():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs_i18n_fixed_link.yml",
         theme={"name": "mkdocs"},
         docs_dir="docs_suffix_structure/",
         site_url="http://localhost",
