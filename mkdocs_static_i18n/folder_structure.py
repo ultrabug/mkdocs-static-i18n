@@ -330,6 +330,9 @@ def on_nav(self, nav, config, files):
     if self._maybe_translate_titles(self.default_language, nav):
         log.info(f"Translated default navigation to {self.default_language}")
 
+    # check if the navigation is manually configured, see #145
+    manual_nav = config.get("nav") is not None
+
     for language, lang_config in self.config["languages"].items():
         # skip nav generation for languages that we do not build
         if lang_config["build"] is False:
@@ -340,18 +343,18 @@ def on_nav(self, nav, config, files):
         self.i18n_navs[language] = get_navigation(
             self.i18n_files[language], self.i18n_configs[language]
         )
-
-        self.i18n_navs[language].items = self.i18n_navs[language].items[0].children
-        for item in self.i18n_navs[language]:
-            if config["use_directory_urls"] is True:
-                expected_url = f"{language}/"
+        if manual_nav is False:
+            self.i18n_navs[language].items = self.i18n_navs[language].items[0].children
+            for item in self.i18n_navs[language]:
+                if config["use_directory_urls"] is True:
+                    expected_url = f"{language}/"
+                else:
+                    expected_url = f"{language}/index.html"
+                if item.is_page and item.url.strip() == expected_url:
+                    self.i18n_navs[language].homepage = item
+                    break
             else:
-                expected_url = f"{language}/index.html"
-            if item.is_page and item.url.strip() == expected_url:
-                self.i18n_navs[language].homepage = item
-                break
-        else:
-            raise Exception(f"could not find homepage Page(url='{expected_url}')")
+                raise Exception(f"could not find homepage Page(url='{expected_url}')")
 
         # If awesome-pages is used, we want to use it to structurate our
         # localized navigations as well
@@ -372,9 +375,10 @@ def on_nav(self, nav, config, files):
                     nav.items = section.children
                     break
             else:
-                raise Exception(
-                    f"could not find default version Section(title='{self.default_language.capitalize()}')"
-                )
+                if manual_nav is False:
+                    raise Exception(
+                        f"could not find default version Section(title='{self.default_language.capitalize()}')"
+                    )
             for item in nav:
                 if config["use_directory_urls"] is True:
                     expected_url = ""
