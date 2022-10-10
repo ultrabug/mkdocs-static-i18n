@@ -409,14 +409,14 @@ class I18n(BasePlugin):
             lambda x: not x["location"].startswith(
                 tuple(self.config["languages"].keys())
             ),
-            search_plugin.search_index._entries,
+            search_plugin.search_index.entries,
         )
         target_lang_entries = list(
             filter(
                 lambda x: x["location"].startswith(
                     tuple(self.config["languages"].keys())
                 ),
-                search_plugin.search_index._entries,
+                search_plugin.search_index.entries,
             )
         )
         for default_lang_entry in default_lang_entries:
@@ -427,12 +427,12 @@ class I18n(BasePlugin):
                 target_lang_entries,
             )
             for duplicated_entry in duplicated_entries:
-                if duplicated_entry in search_plugin.search_index._entries:
+                if duplicated_entry in search_plugin.search_index.entries:
                     log.debug(
                         f"removed duplicated search entry: {duplicated_entry['title']} "
                         f"{duplicated_entry['location']}"
                     )
-                    search_plugin.search_index._entries.remove(duplicated_entry)
+                    search_plugin.search_index.entries.remove(duplicated_entry)
 
     def on_page_markdown(self, markdown, page, config, files):
         """
@@ -571,4 +571,4 @@ class I18n(BasePlugin):
         # Update the search plugin index with language pages
         if search_plugin:
             self._fix_search_duplicates(search_plugin)
-            search_plugin.on_post_build(config)
+            search_plugin.on_post_build(config=config)
