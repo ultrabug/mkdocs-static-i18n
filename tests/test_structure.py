@@ -150,6 +150,36 @@ def test_plugin_use_directory_urls():
     assert sorted(generate_site) == sorted(PLUGIN_USE_DIRECTORY_URLS)
 
 
+def test_plugin_use_directory_urls_static_nav():
+    mkdocs_config = load_config(
+        "tests/mkdocs_base.yml",
+        theme={"name": "mkdocs"},
+        use_directory_urls=True,
+        docs_dir="docs_suffix_structure/",
+        site_url="http://localhost",
+        extra_javascript=[],
+        plugins={
+            "search": {},
+            "i18n": {
+                "default_language": "en",
+                "languages": {"fr": "français", "en": "english"},
+            },
+        },
+        nav=[
+            {
+                "Home": "index.md",
+            }
+        ],
+    )
+    build(mkdocs_config)
+    site_dir = mkdocs_config["site_dir"]
+    generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
+    generate_site.extend(
+        [f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.*")]
+    )
+    assert sorted(generate_site) == sorted(PLUGIN_USE_DIRECTORY_URLS)
+
+
 def test_plugin_use_directory_urls_per_folder():
     mkdocs_config = load_config(
         "tests/mkdocs_base.yml",
@@ -166,6 +196,37 @@ def test_plugin_use_directory_urls_per_folder():
                 "languages": {"fr": "français", "en": "english"},
             },
         },
+    )
+    build(mkdocs_config)
+    site_dir = mkdocs_config["site_dir"]
+    generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
+    generate_site.extend(
+        [f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.*")]
+    )
+    assert sorted(generate_site) == sorted(PLUGIN_USE_DIRECTORY_URLS)
+
+
+def test_plugin_use_directory_urls_per_folder_static_nav():
+    mkdocs_config = load_config(
+        "tests/mkdocs_base.yml",
+        theme={"name": "mkdocs"},
+        use_directory_urls=True,
+        docs_dir="docs_folder_structure/",
+        site_url="http://localhost",
+        extra_javascript=[],
+        plugins={
+            "search": {},
+            "i18n": {
+                "default_language": "en",
+                "docs_structure": "folder",
+                "languages": {"fr": "français", "en": "english"},
+            },
+        },
+        nav=[
+            {
+                "Home": "index.md",
+            }
+        ],
     )
     build(mkdocs_config)
     site_dir = mkdocs_config["site_dir"]
