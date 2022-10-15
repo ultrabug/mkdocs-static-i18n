@@ -477,7 +477,7 @@ class I18n(BasePlugin):
             for alternate in alternates:
                 if config.get("use_directory_urls") is False:
                     alternate["link"] = alternate["link"].replace("/index.html", "", 1)
-                fixed_link = alternate["fixed_link"]
+                fixed_link = alternate.get("fixed_link")
                 if fixed_link:
                     alternate["link"] = fixed_link
                 else:
