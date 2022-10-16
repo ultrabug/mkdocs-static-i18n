@@ -1,3 +1,4 @@
+from mkdocs.commands.build import build
 from mkdocs.config.base import load_config
 
 
@@ -49,6 +50,35 @@ def test_plugin_language_selector_no_use_directory_urls():
             "fixed_link": None,
             "lang": "fr",
         },
+    ]
+
+
+def test_plugin_language_selector_fixed_alternate():
+    mkdocs_config = load_config(
+        "tests/mkdocs_base.yml",
+        theme={"name": "mkdocs"},
+        use_directory_urls=True,
+        docs_dir="docs_suffix_structure/",
+        site_url="http://localhost",
+        extra_javascript=[],
+        extra={
+            "alternate": [
+                {"name": "english", "link": "./default", "lang": "en"},
+                {"name": "français", "link": "./french", "lang": "fr"},
+            ]
+        },
+        plugins={
+            "i18n": {
+                "default_language": "en",
+                "languages": {"fr": "français", "en": "english"},
+            }
+        },
+    )
+    i18n_plugin = mkdocs_config["plugins"]["i18n"]
+    result = i18n_plugin.on_config(mkdocs_config)
+    assert result["extra"]["alternate"] == [
+        {"name": "english", "link": "./default", "lang": "en"},
+        {"name": "français", "link": "./french", "lang": "fr"},
     ]
 
 
@@ -118,3 +148,40 @@ def test_plugin_language_selector_fixed_link():
         {"name": "english", "link": "./", "fixed_link": "/en", "lang": "en"},
         {"name": "français", "link": "./fr/", "fixed_link": "/fr", "lang": "fr"},
     ]
+    build(mkdocs_config)
+
+
+def test_plugin_language_selector_fixed_link_with_static_alternate():
+    mkdocs_config = load_config(
+        "tests/mkdocs_i18n_fixed_link.yml",
+        theme={"name": "mkdocs"},
+        docs_dir="docs_suffix_structure/",
+        site_url="http://localhost",
+        extra_javascript=[],
+        extra={
+            "alternate": [
+                {"name": "english", "link": "./", "lang": "en"},
+                {
+                    "name": "français",
+                    "link": "./fr/",
+                    "lang": "fr",
+                },
+            ],
+        },
+        plugins={
+            "i18n": {
+                "default_language": "en",
+                "languages": {
+                    "fr": {"name": "français", "fixed_link": "/fr"},
+                    "en": {"name": "english", "fixed_link": "/en"},
+                },
+            }
+        },
+    )
+    i18n_plugin = mkdocs_config["plugins"]["i18n"]
+    result = i18n_plugin.on_config(mkdocs_config)
+    assert result["extra"]["alternate"] == [
+        {"name": "english", "link": "./", "lang": "en"},
+        {"name": "français", "link": "./fr/", "lang": "fr"},
+    ]
+    build(mkdocs_config)
