@@ -243,11 +243,11 @@ class I18nFile(File):
         dirname, filename = os.path.split(url)
         if use_directory_urls and filename == "index.html":
             if dirname == "":
-                url = "."
+                url = "./"
             else:
                 url = dirname + "/"
         if self.dest_language:
-            if url == ".":
+            if url in [".", "./"]:
                 url = self.dest_language + "/"
             else:
                 url = self.dest_language + "/" + url
