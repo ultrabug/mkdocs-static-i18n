@@ -344,7 +344,18 @@ def on_nav(self, nav, config, files):
             self.i18n_files[language], self.i18n_configs[language]
         )
         if manual_nav is False:
-            self.i18n_navs[language].items = self.i18n_navs[language].items[0].children
+            if self.i18n_navs[language].items[0].children is None:
+                # the structure is weird, say it but do not crash hard, see #152
+                log.warning(
+                    f"The structure of folder '{config['docs_dir']}/{language}' "
+                    "does not look right, expect navigation or url inconsistencies"
+                )
+            else:
+                # the expected folder structure starts with a [Section(title='LANG')]
+                # so we render our navigation using it as a root
+                self.i18n_navs[language].items = (
+                    self.i18n_navs[language].items[0].children
+                )
             for item in self.i18n_navs[language]:
                 if config["use_directory_urls"] is True:
                     expected_url = f"{language}/"
