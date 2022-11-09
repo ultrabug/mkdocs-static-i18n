@@ -488,6 +488,8 @@ Those context [variables can be accessed using Jinja2 notation](https://jinja.pa
 
 ## Using a folder per language structure
 
+:warning: The **folder structure feature is not as mature as the suffix one** and should be used only for large and complex translation layouts. The folder structure is also very strict about your `docs_dir` layout so make sure you respect it properly.
+
 The `mkdocs-static-i18n` plugin can be configured to work with a **language per folder based structure** where you create a folder per language your want to support translations for.
 
 For example, the given folder structure:
