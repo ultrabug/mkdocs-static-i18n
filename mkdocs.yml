@@ -21,6 +21,14 @@ extra:
 markdown_extensions:
   - admonition
 
+nav:
+  - index.md
+  - Topic1:
+    - topic1/named_file.md
+  - Topic2:
+    - topic2/README.md
+  - British Embassy Paris: https://www.gov.uk/world/organisations/british-embassy-paris
+
 plugins:
   - search
   - i18n:
@@ -43,3 +51,6 @@ plugins:
         fr:
           Topic1: Sujet1
           Topic2: Sujet2
+          British Embassy Paris:
+            translation: L'ambassade du Royaume-Uni à Paris
+            url: https://www.gov.uk/world/organisations/british-embassy-paris.fr

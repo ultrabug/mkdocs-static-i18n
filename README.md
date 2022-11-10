@@ -135,11 +135,16 @@ material_alternate: true
 
 This option is a nested mapping of **language**: **default title**: **translated title** that allows you to [translate the navigation sections of your website](#translating-navigation).
 
+If you include external links in your navigation, using the [mkdocs nav configuration](https://www.mkdocs.org/user-guide/writing-your-docs/#configure-pages-and-navigation), you can assign different external links per language.
+
 ```yaml
 nav_translations:
   fr:
     Topic1: Sujet1
     Topic2: Sujet2
+    British Embassy Paris:
+      translation: L'ambassade du Royaume-Uni à Paris
+      url: https://www.gov.uk/world/organisations/british-embassy-paris.fr
 ```
 
 ### search_reconfigure
@@ -353,10 +358,20 @@ navigation titles easily.
 translation once and it will be used to translate all the sections, links and
 pages which share the same title.
 
+If you use **external links** in your navigation, you can assign different (localized) external links per language. Please notice, that this only applies to external links. Pre-requisite is that you use the using the [mkdocs nav configuration](https://www.mkdocs.org/user-guide/writing-your-docs/#configure-pages-and-navigation) to define your navigation, otherwise no localized link will be assigned.
+
 This example will translate **any** navigation item title from **Topic1** to
 **Sujet1** on the French version of the documentation:
 
 ```yaml
+nav:
+  - index.md
+  - Topic1:
+    - topic1/named_file.md
+  - Topic2:
+    - topic2/README.md
+  - British Embassy Paris: https://www.gov.uk/world/organisations/british-embassy-paris
+
 plugins:
   - i18n:
       default_language: en
@@ -369,6 +384,9 @@ plugins:
         fr:
           Topic1: Sujet1
           Topic2: Sujet2
+          British Embassy Paris:
+            translation: L'ambassade du Royaume-Uni à Paris
+            url: https://www.gov.uk/world/organisations/british-embassy-paris.fr
 ```
 
 ## Localized content can diverge from the default version

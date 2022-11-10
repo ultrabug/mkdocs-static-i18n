@@ -373,13 +373,30 @@ class I18n(BasePlugin):
         if translated_nav:
             for item in items:
                 if hasattr(item, "title") and item.title in translated_nav:
-                    log.debug(
-                        f"Translating {type(item).__name__} title '{item.title}' "
-                        f"({self.default_language}) to "
-                        f"'{translated_nav[item.title]}' ({language})"
-                    )
-                    item.title = translated_nav[item.title]
-                    translated = True
+                    # We need to check if translated_nav.title only has a string value (the translation) or children (translation and optionally url)
+                    trans_item = translated_nav[item.title]
+                    translation = ""
+                    if type(trans_item) is str:
+                        translation = translated_nav[item.title]
+                    elif type(translated_nav[item.title]) is dict and "translation" in translated_nav[item.title]:
+                        translation = translated_nav[item.title]["translation"]
+                    if translation:
+                        log.debug(
+                            f"Translating {type(item).__name__} title '{item.title}' "
+                            f"({self.default_language}) to "
+                            f"'{translation}' ({language})"
+                        )
+                        item.title = translation
+                        translated = True
+
+                    # Check if this is a link and a if a url is provided in translated_nav
+                    if item.is_link and type(trans_item) is dict and "url" in trans_item:
+                        log.debug(
+                            f"Replacing {type(item).__name__} url '{item.url}' "
+                            f"({self.default_language}) with "
+                            f"'{translation}' ({trans_item['url']})"
+                        )
+                        item.url = trans_item["url"]
                 if hasattr(item, "children") and item.children:
                     translated = (
                         self._maybe_translate_titles(language, item.children)
