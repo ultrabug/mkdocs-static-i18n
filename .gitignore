@@ -3,5 +3,6 @@
 dist/
 site/
 .tox/
-.project
-.pydevproject
+/venv
+/build
+.DS_Store
