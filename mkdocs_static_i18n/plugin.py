@@ -123,10 +123,13 @@ class I18n(BasePlugin):
         """
         Configure languages options for the 'default' language
         """
-        # Set the 'site_name' for all configured languages
+        # Set the 'site_name' and 'homepage' for all configured languages
         for language, lang_config in self.config["languages"].items():
             localized_site_name = lang_config["site_name"] or config["site_name"]
             self.config["languages"][language]["site_name"] = localized_site_name
+            localized_homepage = lang_config["homepage"]
+            if localized_homepage:
+                self.config["languages"][language]["homepage"] = localized_homepage
         # the default_language options can be made available for the
         # 'default' / version of the website
         self.default_language_options = self.config["languages"].pop(
@@ -137,6 +140,7 @@ class I18n(BasePlugin):
                 "fixed_link": None,
                 "build": True,
                 "site_name": config["site_name"],
+                "homepage": None,
             },
         )
         if self.default_language_options["name"] == "default":
@@ -148,6 +152,13 @@ class I18n(BasePlugin):
             )
             self.default_language_options["site_name"] = default_language_config.get(
                 "site_name", config["site_name"]
+            )
+            if "extra" in config.keys():
+                default_homepage = config.get("extra").get("homepage", None)
+            else:
+                default_homepage = None
+            self.default_language_options["homepage"] = default_language_config.get(
+                "homepage", default_homepage
             )
             self.default_language_options["fixed_link"] = default_language_config.get(
                 "fixed_link", None
@@ -167,7 +178,27 @@ class I18n(BasePlugin):
                 "fixed_link": None,
                 "build": build,
                 "site_name": config["site_name"],
+                "homepage": config["homepage"],
             }
+
+    def _set_localized_homepages(self, config):
+        """
+        Set the localized homepage
+        """
+        # Set for localized homepage for each listed language
+        for language in self.all_languages:
+            if self.config["languages"][language]["homepage"]:
+                homepage = {"homepage": self.config["languages"][language]["homepage"]}
+                self.i18n_configs[language].update({"extra": homepage})
+        # ... and then in the config file for the default language,
+        # if it is not set by the user
+        if self.config["languages"][self.default_language]["homepage"]:
+            homepage_url = self.config["languages"][self.default_language]["homepage"]
+            if "extra" in config:
+                config["extra"].setdefault("homepage", homepage_url)
+            else:
+                homepage = {"homepage": homepage_url}
+                config.update({"extra": homepage})
 
     def on_config(self, config, **kwargs):
         """
@@ -226,6 +257,8 @@ class I18n(BasePlugin):
             self.i18n_configs[language] = deepcopy(config)
             self.i18n_configs[language]["plugins"] = plugins
         config["plugins"] = plugins
+        # Set the localized homepage
+        self._set_localized_homepages(config)
         # Set theme locale to default language
         if self.default_language != "en":
             if config["theme"].name in MKDOCS_THEMES:
