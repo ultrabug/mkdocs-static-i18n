@@ -7,6 +7,7 @@ nav:
     - Named File: topic1/named_file.en.md
   - Topic2: index.en.md
   - External: https://ultrabug.fr
+  - British Embassy Paris: https://www.gov.uk/world/organisations/british-embassy-paris
 
 plugins:
   - i18n:

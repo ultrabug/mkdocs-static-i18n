@@ -7,6 +7,7 @@ nav:
     - Named File: topic1/named_file.en.md
   - Topic2: index.en.md
   - External: https://ultrabug.fr
+  - British Embassy Paris: https://www.gov.uk/world/organisations/british-embassy-paris
 
 plugins:
   - i18n:
@@ -25,3 +26,6 @@ plugins:
           Named File: Fichier Nommé
           Topic1: Sujet1
           Topic2: Sujet2
+          British Embassy Paris:
+            translation: L'ambassade du Royaume-Uni à Paris
+            url: https://www.gov.uk/world/organisations/british-embassy-paris.fr

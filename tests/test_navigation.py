@@ -11,6 +11,7 @@ EN_STATIC_NAV = [
     {"Topic1": [{"Named File": str(Path("topic1/named_file.en.md"))}]},
     {"Topic2": "index.en.md"},
     {"External": "https://ultrabug.fr"},
+    {"British Embassy Paris": "https://www.gov.uk/world/organisations/british-embassy-paris"},
 ]
 
 
@@ -19,6 +20,7 @@ FR_STATIC_NAV = [
     {"Topic1": [{"Named File": str(Path("topic1/named_file.fr.md"))}]},
     {"Topic2": "index.fr.md"},
     {"External": "https://ultrabug.fr"},
+    {"British Embassy Paris": "https://www.gov.uk/world/organisations/british-embassy-paris"},
 ]
 
 
@@ -27,6 +29,7 @@ EN_TRANSLATED_NAV = [
     {"Translated1": [{"Renamed File": str(Path("topic1/named_file.en.md"))}]},
     {"Translated2": "index.en.md"},
     {"External": "https://ultrabug.fr"},
+    {"British Embassy Paris": "https://www.gov.uk/world/organisations/british-embassy-paris"},
 ]
 
 FR_TRANSLATED_NAV = [
@@ -34,6 +37,7 @@ FR_TRANSLATED_NAV = [
     {"Sujet1": [{"Fichier Nommé": str(Path("topic1/named_file.fr.md"))}]},
     {"Sujet2": "index.fr.md"},
     {"External": "https://ultrabug.fr"},
+    {"L'ambassade du Royaume-Uni à Paris": "https://www.gov.uk/world/organisations/british-embassy-paris.fr"},
 ]
 
 
