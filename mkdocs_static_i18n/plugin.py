@@ -562,7 +562,7 @@ class I18n(BasePlugin):
 
             # Support mkdocs-minify-plugin
             if minify_plugin:
-                minify_plugin.on_pre_build(config)
+                minify_plugin.on_pre_build(config=config)
 
             # Include theme specific files
             files.add_files_from_theme(env, config)
