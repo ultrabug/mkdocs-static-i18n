@@ -279,6 +279,8 @@ class I18n(BasePlugin):
             if hooks:
                 self.i18n_configs[language]["hooks"] = hooks
         config["plugins"] = plugins
+        if hooks:
+            config["hooks"] = hooks
         # Set the localized homepage
         self._set_localized_homepages(config)
         # Set theme locale to default language
