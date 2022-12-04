@@ -228,34 +228,44 @@ class I18n(BasePlugin):
             with_pdf_index = list(config["plugins"].keys()).index("with-pdf")
             if with_pdf_index > i18n_index:
                 config["plugins"]["with-pdf"].on_config(config)
-            for events in config["plugins"].events.values():
-                config["plugins"].move_to_end("with-pdf", last=False)
-                for idx, event in enumerate(list(events)):
-                    try:
-                        if str(event.__module__) == "mkdocs_with_pdf.plugin":
-                            events.pop(idx)
-                    except AttributeError:
-                        # partials don't have a module
-                        pass
-        # Make sure awesome-pages is always called before us, see #65
-        # We will only control it for the main language, localized PDF are
-        # generated on the 'on_post_build' method
-        if "awesome-pages" in config["plugins"]:
-            awesome_index = list(config["plugins"].keys()).index("awesome-pages")
-            if awesome_index > i18n_index:
-                config["plugins"].move_to_end("awesome-pages", last=False)
+            if mkdocs_version >= "1.4":
+                # TODO: drop me after we start using mkdocs plugin prioritization
+                log.warning(
+                    "The 'with-pdf' plugin should be listed AFTER 'i18n' in the 'plugins' option"
+                )
+            else:
                 for events in config["plugins"].events.values():
+                    config["plugins"].move_to_end("with-pdf", last=False)
                     for idx, event in enumerate(list(events)):
                         try:
-                            if (
-                                str(event.__module__)
-                                == "mkdocs_awesome_pages_plugin.plugin"
-                            ):
-                                events.insert(0, events.pop(idx))
+                            if str(event.__module__) == "mkdocs_with_pdf.plugin":
+                                events.pop(idx)
                         except AttributeError:
                             # partials don't have a module
                             pass
-        # Make a localized copy of the config, the plugins are mutualized
+        # Make sure awesome-pages is always called before us, see #65
+        if "awesome-pages" in config["plugins"]:
+            awesome_index = list(config["plugins"].keys()).index("awesome-pages")
+            if awesome_index > i18n_index:
+                if mkdocs_version >= "1.4":
+                    # TODO: drop me after we start using mkdocs plugin prioritization
+                    log.warning(
+                        "The 'awesome-pages' plugin should be listed BEFORE 'i18n' in the 'plugins' option"
+                    )
+                else:
+                    config["plugins"].move_to_end("awesome-pages", last=False)
+                    for events in config["plugins"].events.values():
+                        for idx, event in enumerate(list(events)):
+                            try:
+                                if (
+                                    str(event.__module__)
+                                    == "mkdocs_awesome_pages_plugin.plugin"
+                                ):
+                                    events.insert(0, events.pop(idx))
+                            except AttributeError:
+                                # partials don't have a module
+                                pass
+        # Make a localized copy of the config
         # The hooks are mutualized so we remove them from the config before (deep)copying
         # The plugins are mutualized so we remove them from the config before (deep)copying
         if "hooks" in config:
