@@ -224,6 +224,8 @@ class I18n(BasePlugin):
         except ValueError:
             i18n_index = -1
         # Make sure with-pdf is controlled by us, see #110
+        # We will only control it for the main language, localized PDF are
+        # generated on the 'on_post_build' method
         if "with-pdf" in config["plugins"]:
             with_pdf_index = list(config["plugins"].keys()).index("with-pdf")
             if with_pdf_index > i18n_index:
@@ -627,7 +629,7 @@ class I18n(BasePlugin):
 
             # Support mkdocs-minify-plugin
             if minify_plugin:
-                minify_plugin.on_pre_build(config)
+                minify_plugin.on_pre_build(config=config)
 
             # Include theme specific files
             files.add_files_from_theme(env, config)
