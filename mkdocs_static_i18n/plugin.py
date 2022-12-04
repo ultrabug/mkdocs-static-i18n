@@ -256,11 +256,18 @@ class I18n(BasePlugin):
                             # partials don't have a module
                             pass
         # Make a localized copy of the config, the plugins are mutualized
-        # We remove it from the config before (deep)copying it
+        # The hooks are mutualized so we remove them from the config before (deep)copying
+        # The plugins are mutualized so we remove them from the config before (deep)copying
+        if "hooks" in config:
+            hooks = config.pop("hooks")
+        else:
+            hooks = None
         plugins = config.pop("plugins")
         for language in self.all_languages:
             self.i18n_configs[language] = deepcopy(config)
             self.i18n_configs[language]["plugins"] = plugins
+            if hooks:
+                self.i18n_configs[language]["hooks"] = hooks
         config["plugins"] = plugins
         # Set the localized homepage
         self._set_localized_homepages(config)
