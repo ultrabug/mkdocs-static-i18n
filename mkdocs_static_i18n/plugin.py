@@ -153,13 +153,16 @@ class I18n(BasePlugin):
             self.default_language_options["site_name"] = default_language_config.get(
                 "site_name", config["site_name"]
             )
+            # Check if default homepage is set as extra in configuration
             if "extra" in config.keys():
                 default_homepage = config.get("extra").get("homepage", None)
             else:
                 default_homepage = None
-            self.default_language_options["homepage"] = default_language_config.get(
-                "homepage", default_homepage
-            )
+            # Set the localized homepage if not None
+            if default_homepage:
+                self.default_language_options["homepage"] = default_language_config.get(
+                    "homepage", default_homepage
+                )
             self.default_language_options["fixed_link"] = default_language_config.get(
                 "fixed_link", None
             )
@@ -178,21 +181,23 @@ class I18n(BasePlugin):
                 "fixed_link": None,
                 "build": build,
                 "site_name": config["site_name"],
-                "homepage": config["homepage"],
             }
+            # Append the localized homepage if configured
+            if "homepage" in config.keys() and config["homepage"]:
+                self.config["languages"][self.default_language].update({"homepage": config["homepage"]})
 
     def _set_localized_homepages(self, config):
         """
         Set the localized homepage
         """
-        # Set for localized homepage for each listed language
+        # Set localized homepage for each listed language if configured
         for language in self.all_languages:
-            if self.config["languages"][language]["homepage"]:
+            if "homepage" in self.config["languages"][language].keys() and self.config["languages"][language]["homepage"]:
                 homepage = {"homepage": self.config["languages"][language]["homepage"]}
                 self.i18n_configs[language].update({"extra": homepage})
         # ... and then in the config file for the default language,
         # if it is not set by the user
-        if self.config["languages"][self.default_language]["homepage"]:
+        if "homepage" in self.config["languages"][self.default_language].keys() and self.config["languages"][self.default_language]["homepage"]:
             homepage_url = self.config["languages"][self.default_language]["homepage"]
             if "extra" in config:
                 config["extra"].setdefault("homepage", homepage_url)

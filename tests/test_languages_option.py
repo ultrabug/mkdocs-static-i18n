@@ -22,6 +22,7 @@ def test_plugin_languages_backward_compat_1():
         "en": {
             "name": "english",
             "link": "./en/",
+            "homepage": None,
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
@@ -29,6 +30,7 @@ def test_plugin_languages_backward_compat_1():
         "fr": {
             "name": "français",
             "link": "./fr/",
+            "homepage": None,
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
@@ -52,9 +54,11 @@ def test_plugin_languages_backward_compat_2():
         "en": {
             "name": "english",
             "link": "./en/",
+            "homepage": None,
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
+            "homepage": None,
         },
     }
 
@@ -82,6 +86,7 @@ def test_plugin_languages_backward_compat_3():
         "fr": {
             "name": "français",
             "link": "./fr/",
+            "homepage": None,
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
@@ -117,6 +122,7 @@ def test_plugin_languages_backward_compat_4():
         "fr": {
             "name": "français",
             "link": "./fr/",
+            "homepage": None,
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
@@ -153,6 +159,7 @@ def test_plugin_languages_backward_compat_5():
         "en": {
             "name": "english",
             "link": "./en/",
+            "homepage": None,
             "fixed_link": None,
             "build": True,
             "site_name": "English site name",
@@ -160,6 +167,7 @@ def test_plugin_languages_backward_compat_5():
         "fr": {
             "name": "français",
             "link": "./fr/",
+            "homepage": None,
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
@@ -196,6 +204,7 @@ def test_plugin_languages_backward_compat_6():
         "en": {
             "name": "english",
             "link": "./en/",
+            "homepage": None,
             "fixed_link": None,
             "build": False,
             "site_name": "MkDocs static i18n plugin tests",
@@ -203,6 +212,7 @@ def test_plugin_languages_backward_compat_6():
         "fr": {
             "name": "français",
             "link": "/fr",
+            "homepage": None,
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
@@ -231,6 +241,7 @@ def test_plugin_languages_backward_compat_7():
         "en": {
             "name": "english",
             "link": "./en/",
+            "homepage": None,
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
@@ -238,6 +249,7 @@ def test_plugin_languages_backward_compat_7():
         "fr": {
             "name": "français",
             "link": "./fr/",
+            "homepage": None,
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
@@ -270,6 +282,7 @@ def test_plugin_languages_backward_compat_8():
         "en": {
             "name": "english",
             "link": "./en/",
+            "homepage": None,
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
@@ -277,6 +290,7 @@ def test_plugin_languages_backward_compat_8():
         "fr": {
             "name": "français",
             "link": "./fr/",
+            "homepage": None,
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
@@ -309,6 +323,7 @@ def test_plugin_languages_backward_compat_9():
         "en": {
             "name": "english",
             "link": "./en/",
+            "homepage": None,
             "fixed_link": None,
             "build": False,
             "site_name": "MkDocs static i18n plugin tests",
@@ -316,6 +331,7 @@ def test_plugin_languages_backward_compat_9():
         "fr": {
             "name": "français",
             "link": "./fr/",
+            "homepage": None,
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
@@ -354,6 +370,7 @@ def test_plugin_languages_backward_compat_10():
         "fr": {
             "name": "français",
             "link": "./fr/",
+            "homepage": None,
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
@@ -392,6 +409,7 @@ def test_plugin_languages_backward_compat_11():
         "fr": {
             "name": "français",
             "link": "./fr/",
+            "homepage": None,
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
@@ -462,6 +480,7 @@ def test_plugin_languages_backward_compat_13():
         "en": {
             "name": "english",
             "link": "./en/",
+            "homepage": None,
             "fixed_link": None,
             "build": True,
             "site_name": "English site name",
@@ -469,6 +488,7 @@ def test_plugin_languages_backward_compat_13():
         "fr": {
             "name": "français",
             "link": "./fr/",
+            "homepage": None,
             "fixed_link": None,
             "build": True,
             "site_name": "Site en Français",

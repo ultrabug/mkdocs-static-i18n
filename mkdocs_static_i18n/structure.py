@@ -51,10 +51,10 @@ class Locale(Type):
         lang_config = {
             "build": True,
             "link": f"./{lang_key}/" if lang_key != "default" else "./",
+            "homepage": None,
             "fixed_link": None,
             "name": lang_key,
             "site_name": None,
-            "homepage": None,
         }
         if isinstance(lang_value, str):
             lang_config["name"] = lang_value
