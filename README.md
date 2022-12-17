@@ -400,7 +400,7 @@ pages which share the same title.
 
 If you use **external links** in your navigation, you can assign different
 (localized) external links per language. Please notice, that this only applies
-to external links. Pre-requisite is that you use the using the
+to external links. Pre-requisite is that you use the
 [mkdocs nav configuration](https://www.mkdocs.org/user-guide/writing-your-docs/#configure-pages-and-navigation) to define your navigation, otherwise no localized link will be assigned.
 
 This example will translate **any** navigation item title from **Topic1** to
