@@ -154,6 +154,7 @@ class I18n(BasePlugin):
                 "site_name", config["site_name"]
             )
             # Check if default homepage is set as extra in configuration
+            # (only relevant for the material template)
             if "extra" in config.keys():
                 default_homepage = config.get("extra").get("homepage", None)
             else:

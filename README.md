@@ -92,7 +92,7 @@ Allowed options per language:
 - `fixed_link` (default: `None`): if specified, when switching to this language, you will be redirected to this link
 - `build` (default: `true`): a boolean used to control the build of a `/<language>` path for the given language
 - `site_name` (default: `mkdocs.yml site_name`): the [`site_name` translation for the given language](#translating-site-name)
-- `homepage` (default: `None`): if specified, the [URL of the homepage logo](#localizing-the-homepage-logo-link) will be set to this URL, e.g., for linking to other localized homepages
+- `homepage` (default: `None`) - only relevant for the material template: if specified, the [URL of the homepage logo](#localizing-the-homepage-logo-link) will be set to this URL, e.g., for linking to other localized homepages
 
 Feature rich `languages` options usage:
 
@@ -356,7 +356,10 @@ plugins:
 
 ## Localizing the homepage logo link
 
-Using the `homepage` option for a given language, you can localize the link
+If you use the [material](https://squidfunk.github.io/mkdocs-material/)
+template, you can localize your homepage logo link.
+
+Using the `homepage` option for a given language, will localize the link
 your homepage logo is pointing to. A possible use case for this is that you
 need the logo to link to external sites, which themselves are localized, and
 you want to make sure that the user is presented the external homepage in the
