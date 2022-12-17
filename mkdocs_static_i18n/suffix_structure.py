@@ -75,6 +75,10 @@ class I18nFiles(Files):
         if language:
             url = f"{language}/{url}"
         url = url.rstrip(".") or "."
+        # TODO: when we bump to mkdocs > 1.4 we can (finally) normalize
+        # the url convention again
+        if url.endswith("/./"):
+            url = url[:-2]
         for file in self:
             if not file.is_documentation_page():
                 continue
