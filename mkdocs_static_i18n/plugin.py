@@ -7,6 +7,7 @@ from mkdocs import __version__ as mkdocs_version
 from mkdocs.commands.build import _build_page, _populate_page
 from mkdocs.config.config_options import Choice, Type
 from mkdocs.plugins import BasePlugin
+from mkdocs.utils import markdown_extensions
 
 import mkdocs_static_i18n.folder_structure as folder_structure
 import mkdocs_static_i18n.suffix_structure as suffix_structure
@@ -187,6 +188,10 @@ class I18n(BasePlugin):
             i18n_index = list(config["plugins"].keys()).index("i18n")
         except ValueError:
             i18n_index = -1
+        # TODO: Make sure mkdocs-jupyter is always called before us
+        # Allow ipynb and py format as documentation_page
+        if "mkdocs-jupyter" in config["plugins"]:
+            markdown_extensions.extend([".ipynb", ".py"])
         # Make sure with-pdf is controlled by us, see #110
         # We will only control it for the main language, localized PDF are
         # generated on the 'on_post_build' method
