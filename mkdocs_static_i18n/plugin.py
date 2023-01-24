@@ -11,7 +11,7 @@ from mkdocs.plugins import BasePlugin
 
 import mkdocs_static_i18n.folder_structure as folder_structure
 import mkdocs_static_i18n.suffix_structure as suffix_structure
-from mkdocs_static_i18n import __file__ as installation_path
+from mkdocs_static_i18n import __file__ as installation_path, utils
 from mkdocs_static_i18n.structure import Locale
 
 try:
@@ -319,8 +319,9 @@ class I18n(BasePlugin):
                 else:
                     self.material_alternates = config["extra"].get("alternate")
         # Support for the search plugin lang
-        if self.config["search_reconfigure"] and "search" in config["plugins"]:
-            search_langs = config["plugins"]["search"].config["lang"] or []
+        search_plugin = utils.get_plugin("search", config)
+        if self.config["search_reconfigure"] and search_plugin:
+            search_langs = search_plugin.config["lang"] or []
             for language in self.all_languages:
                 if language in LUNR_LANGUAGES:
                     if language not in search_langs:
@@ -432,18 +433,24 @@ class I18n(BasePlugin):
         When this happens, we favor the default language location if its
         content is the same as its /language counterpart.
         """
+        attribute_name = "_entries" if hasattr(search_plugin.search_index, "_entries") else "entries"
+        try:
+            search_index_entries = getattr(search_plugin.search_index, attribute_name)
+        except AttributeError:
+            log.warning(f"Can't access the search index entries in {search_plugin}.")
+            return
         default_lang_entries = filter(
             lambda x: not x["location"].startswith(
                 tuple(self.config["languages"].keys())
             ),
-            search_plugin.search_index._entries,
+            search_index_entries,
         )
         target_lang_entries = list(
             filter(
                 lambda x: x["location"].startswith(
                     tuple(self.config["languages"].keys())
                 ),
-                search_plugin.search_index._entries,
+                search_index_entries,
             )
         )
         for default_lang_entry in default_lang_entries:
@@ -454,12 +461,12 @@ class I18n(BasePlugin):
                 target_lang_entries,
             )
             for duplicated_entry in duplicated_entries:
-                if duplicated_entry in search_plugin.search_index._entries:
+                if duplicated_entry in search_index_entries:
                     log.debug(
                         f"removed duplicated search entry: {duplicated_entry['title']} "
                         f"{duplicated_entry['location']}"
                     )
-                    search_plugin.search_index._entries.remove(duplicated_entry)
+                    search_index_entries.remove(duplicated_entry)
 
     @plugins.event_priority(-100)
     def on_env(self, env, config, files, **kwargs):
@@ -558,7 +565,7 @@ class I18n(BasePlugin):
 
         dirty = False
         minify_plugin = config["plugins"].get("minify")
-        search_plugin = config["plugins"].get("search")
+        search_plugin = utils.get_plugin("search", config)
         with_pdf_plugin = config["plugins"].get("with-pdf")
         if with_pdf_plugin:
             with_pdf_plugin.on_post_build(config)
@@ -614,4 +621,4 @@ class I18n(BasePlugin):
         # Update the search plugin index with language pages
         if search_plugin:
             self._fix_search_duplicates(search_plugin)
-            search_plugin.on_post_build(config)
+            search_plugin.on_post_build(config=config)
