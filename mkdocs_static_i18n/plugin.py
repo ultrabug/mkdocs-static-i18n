@@ -4,6 +4,7 @@ from copy import deepcopy
 from pathlib import Path
 
 from mkdocs import __version__ as mkdocs_version
+from mkdocs import plugins
 from mkdocs.commands.build import _build_page, _populate_page
 from mkdocs.config.config_options import Choice, Type
 from mkdocs.plugins import BasePlugin
@@ -460,6 +461,20 @@ class I18n(BasePlugin):
                     )
                     search_plugin.search_index._entries.remove(duplicated_entry)
 
+    @plugins.event_priority(-100)
+    def on_env(self, env, config, files, **kwargs):
+        """
+        Copy the main env because it can have been altered by hooks.
+
+        Since hooks are injected as plugins, we need to make sure to
+        run last using event_priority.
+
+        See #178.
+        """
+        for language in self.config["languages"].keys():
+            self.i18n_configs[language]["env"] = env
+        return env
+
     def on_page_markdown(self, markdown, page, config, files):
         """
         Use the 'page_markdown' event to translate page titles as well
@@ -557,7 +572,7 @@ class I18n(BasePlugin):
             log.info(f"Building {language} documentation")
 
             config = self.i18n_configs[language]
-            env = self.i18n_configs[language]["theme"].get_env()
+            env = self.i18n_configs[language]["env"]
             files = self.i18n_files[language]
             nav = self.i18n_navs[language]
 
