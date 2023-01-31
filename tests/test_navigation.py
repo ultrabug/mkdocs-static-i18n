@@ -1,4 +1,4 @@
-from copy import deepcopy
+from copy import copy
 from pathlib import Path
 
 from mkdocs.commands.build import build
@@ -46,6 +46,8 @@ def test_plugin_static_nav(config_plugin_static_nav):
     files = i18n_plugin.on_files(files, config)
     nav = get_navigation(files, config)
     nav = i18n_plugin.on_nav(nav, config, files)
+    env = config.theme.get_env()
+    env = i18n_plugin.on_env(env, config, files)
     i18n_plugin.on_post_build(config)
     #
     assert i18n_plugin.i18n_configs["en"]["nav"] == EN_STATIC_NAV
@@ -61,14 +63,16 @@ def test_plugin_translated_nav(config_plugin_translated_nav):
     files = i18n_plugin.on_files(files, config)
     nav = get_navigation(files, config)
     nav = i18n_plugin.on_nav(nav, config, files)
+    env = config.theme.get_env()
+    env = i18n_plugin.on_env(env, config, files)
     i18n_plugin.on_post_build(config)
     #
-    fr_config = deepcopy(i18n_plugin.i18n_configs["fr"])
+    fr_config = copy(i18n_plugin.i18n_configs["fr"])
     fr_config["nav"] = FR_TRANSLATED_NAV
     fr_nav = get_navigation(i18n_plugin.i18n_files["fr"], fr_config)
     assert i18n_plugin.i18n_navs["fr"].__repr__() == fr_nav.__repr__()
     #
-    en_config = deepcopy(i18n_plugin.i18n_configs["en"])
+    en_config = copy(i18n_plugin.i18n_configs["en"])
     en_config["nav"] = EN_TRANSLATED_NAV
     en_nav = get_navigation(i18n_plugin.i18n_files["en"], en_config)
     assert i18n_plugin.i18n_navs["en"].__repr__() == en_nav.__repr__()
