@@ -23,6 +23,7 @@ class I18nFolderFiles(Files):
     to use instead of the link / asset referenced in the markdown source.
     """
 
+    default_locale = None
     locale = None
     translated = False
 
@@ -57,7 +58,9 @@ class I18nFolderFiles(Files):
             expected_src_path,
             expected_src_path.relative_to(root_folder),
             Path(self.locale) / Path(expected_src_path),
+            Path(self.default_locale) / Path(expected_src_path),
         ]
+        print(expected_src_paths)
         for src_path in filter(lambda s: Path(s) in expected_src_paths, self.src_paths):
             return self.src_paths.get(os.path.normpath(src_path))
 
@@ -95,6 +98,7 @@ class I18nFolderFile(File):
         self.page = file_from.page
         self.site_dir = site_dir
         self.src_path = file_from.src_path
+        self.file_from = file_from
 
         # i18n addons
         self.all_languages = all_languages
@@ -230,6 +234,14 @@ class I18nFolderFile(File):
             else other,
         )
 
+    def to_locale(self, from_locale, language):
+        """Return the i18n file object as another language"""
+        self.url = self.url.replace(f"{from_locale}/", f"{language}/", 1)
+        self.dest_path = self.dest_path.replace(f"{from_locale}/", f"{language}/", 1)
+        self.abs_dest_path = self.abs_dest_path.replace(
+            f"{from_locale}/", f"{language}/", 1
+        )
+
 
 def on_files(self, files, config):
     """"""
@@ -304,6 +316,27 @@ def on_files(self, files, config):
     # print([{p.src_path: p.url} for p in self.i18n_files["en"].static_pages()])
     # print([{p.src_path: p.url} for p in self.i18n_files["fr"].static_pages()])
 
+    for page in main_files.documentation_pages():
+        for language in self.all_languages:
+            # do not list languages not being built as alternates
+            if self.config["languages"].get(language, {}).get("build", False) is False:
+                continue
+            alternate = self.i18n_files[language].get_localized_page_from_url(
+                page.url, language
+            )
+            if not alternate:
+                i18n_ffile = I18nFolderFile(
+                    page.file_from,
+                    language,
+                    all_languages=self.all_languages,
+                    default_language=self.default_language,
+                    docs_dir=config["docs_dir"],
+                    site_dir=config["site_dir"],
+                    use_directory_urls=config.get("use_directory_urls"),
+                )
+                i18n_ffile.to_locale(page.locale, language)
+                self.i18n_files[language].append(i18n_ffile)
+
     # populate pages alternates
     # main default version
     for page in main_files.documentation_pages():
@@ -322,6 +355,22 @@ def on_files(self, files, config):
                 )
 
     return main_files
+
+
+# def explore_nav(item, language=None):
+#     if language is None:
+#         return
+#     if item.is_page:
+#         print(item, item.file.locale)
+#     elif item.is_link:
+#         if not item.url.startswith(language):
+#             item.url = "/" + item.url
+#         print(item, item.url)
+#     else:
+#         print(item)
+#     if item.children:
+#         for i in item.children:
+#             explore_nav(i, language=language)
 
 
 def on_nav(self, nav, config, files):
@@ -343,6 +392,8 @@ def on_nav(self, nav, config, files):
         self.i18n_navs[language] = get_navigation(
             self.i18n_files[language], self.i18n_configs[language]
         )
+        if language == "pt":
+            print(self.i18n_navs[language])
         if manual_nav is False:
             if self.i18n_navs[language].items[0].children is None:
                 # the structure is weird, say it but do not crash hard, see #152
