@@ -58,9 +58,11 @@ class I18nFolderFiles(Files):
             expected_src_path,
             expected_src_path.relative_to(root_folder),
             Path(self.locale) / Path(expected_src_path),
+            Path(self.locale) / Path(expected_src_path.relative_to(root_folder)),
             Path(self.default_locale) / Path(expected_src_path),
+            Path(self.default_locale)
+            / Path(expected_src_path.relative_to(root_folder)),
         ]
-        print(expected_src_paths)
         for src_path in filter(lambda s: Path(s) in expected_src_paths, self.src_paths):
             return self.src_paths.get(os.path.normpath(src_path))
 
@@ -316,9 +318,11 @@ def on_files(self, files, config):
     # print([{p.src_path: p.url} for p in self.i18n_files["en"].static_pages()])
     # print([{p.src_path: p.url} for p in self.i18n_files["fr"].static_pages()])
 
+    # issue #175: make sure we populate our files with the default version
+    # of a localized page when using a static navigation
     for page in main_files.documentation_pages():
         for language in self.all_languages:
-            # do not list languages not being built as alternates
+            # skip if language build is disabled
             if self.config["languages"].get(language, {}).get("build", False) is False:
                 continue
             alternate = self.i18n_files[language].get_localized_page_from_url(
@@ -357,22 +361,6 @@ def on_files(self, files, config):
     return main_files
 
 
-# def explore_nav(item, language=None):
-#     if language is None:
-#         return
-#     if item.is_page:
-#         print(item, item.file.locale)
-#     elif item.is_link:
-#         if not item.url.startswith(language):
-#             item.url = "/" + item.url
-#         print(item, item.url)
-#     else:
-#         print(item)
-#     if item.children:
-#         for i in item.children:
-#             explore_nav(i, language=language)
-
-
 def on_nav(self, nav, config, files):
     """ """
     # translate default nav, see #113
@@ -392,8 +380,6 @@ def on_nav(self, nav, config, files):
         self.i18n_navs[language] = get_navigation(
             self.i18n_files[language], self.i18n_configs[language]
         )
-        if language == "pt":
-            print(self.i18n_navs[language])
         if manual_nav is False:
             if self.i18n_navs[language].items[0].children is None:
                 # the structure is weird, say it but do not crash hard, see #152
