@@ -4,7 +4,7 @@ from re import compile
 from mkdocs.config.base import ValidationError
 from mkdocs.config.config_options import Type
 
-RE_LOCALE = compile(r"(^[a-z]{2}_[A-Z]{2}$)|(^[a-z]{2}$)")
+RE_LOCALE = compile(r"(^[a-z]{2}(-[A-Za-z]{4})?(-[A-Z]{2})?$)|(^[a-z]{2}_[A-Z]{2}$)")
 
 log = logging.getLogger("mkdocs.plugins." + __name__)
 
