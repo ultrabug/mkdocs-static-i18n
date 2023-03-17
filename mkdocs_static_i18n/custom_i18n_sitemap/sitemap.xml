@@ -1,15 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-{%- for file in pages -%}
-    {% if not file.page.is_link %}
+{%- for file in pages %}
+    {%- if not file.page.is_link %}
+        {%- if file.page.canonical_url %}
+            {%- set loc_content = file.page.canonical_url | e %}
+        {%- elif file.page.abs_url %}
+            {%- set loc_content = file.page.abs_url | e %}
+        {%- else %}
+            {%- set loc_content = config.site_url ~ file.url %}
+        {%- endif %}
     <url>
-         <loc>{% if file.page.canonical_url %}{{ file.page.canonical_url|e }}{% elif file.page.abs_url %}{{ file.page.abs_url|e }}{% else %}{{ config.site_url }}{{ file.url }}{% endif %}</loc>
-         {% if file.page.update_date %}<lastmod>{{file.page.update_date}}</lastmod>{% endif %}
-         <changefreq>daily</changefreq>
-         {% for locale, i18n_file in file.alternates.items() -%}
-         {% if i18n_file %}<xhtml:link rel="alternate" hreflang="{{ locale }}" href="{% if i18n_file.page.canonical_url %}{{ i18n_file.page.canonical_url|e }}{% else %}{{ config.site_url }}{{ i18n_file.url }}{% endif %}"/>{% endif %}
-         {% endfor %}
+        <loc>{{ loc_content }}</loc>
+        {%- if file.page.update_date %}
+        <lastmod>{{file.page.update_date}}</lastmod>
+        {%- endif %}
+        <changefreq>daily</changefreq>
+        {%- for locale, i18n_file in file.alternates.items() %}
+            {%- if i18n_file %}
+                {%- if i18n_file.page.canonical_url %}
+                    {%- set link_href = i18n_file.page.canonical_url | e %}
+                {%- else %}
+                    {%- set link_href = config.site_url ~ i18n_file.url %}
+                {%- endif %}
+        <xhtml:link rel="alternate" hreflang="{{ locale }}" href="{{ link_href }}"/>
+            {%- endif %}
+        {%- endfor %}
     </url>
-    {%- endif -%}
-{% endfor %}
+    {%- endif %}
+{%- endfor %}
 </urlset>
