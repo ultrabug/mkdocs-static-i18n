@@ -1,14 +1,11 @@
 import logging
 import os
 from pathlib import Path
-from re import compile
 from urllib.parse import quote as urlquote
 
 from mkdocs import utils
 from mkdocs.structure.files import File, Files
 from mkdocs.structure.nav import get_navigation
-
-RE_LOCALE = compile(r"(^[a-z]{2}_[A-Z]{2}$)|(^[a-z]{2}$)")
 
 log = logging.getLogger("mkdocs.plugins." + __name__)
 
