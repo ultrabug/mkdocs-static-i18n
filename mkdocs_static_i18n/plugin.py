@@ -3,6 +3,7 @@ from collections import defaultdict
 from copy import deepcopy
 from pathlib import Path
 
+from jinja2.ext import loopcontrols
 from mkdocs import __version__ as mkdocs_version
 from mkdocs import plugins
 from mkdocs.commands.build import _build_page, _populate_page
@@ -456,6 +457,10 @@ class I18n(BasePlugin):
 
         See #178.
         """
+
+        # Add extension to allow the "continue" clause in the sitemap template loops.
+        env.add_extension(loopcontrols)
+
         for language in self.config["languages"].keys():
             self.i18n_configs[language]["env"] = env
         return env

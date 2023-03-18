@@ -1,37 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 {%- for file in pages %}
-    {%- if not file.page.is_link %}
-        {%- for loc_file in file.alternates.values() %}
-            {%- if loc_file %}
-                {%- if loc_file.page.canonical_url %}
-                    {%- set loc_content = loc_file.page.canonical_url | e %}
-                {%- elif loc_file.page.abs_url %}
-                    {%- set loc_content = loc_file.page.abs_url | e %}
-                {%- else %}
-                    {%- set loc_content = config.site_url ~ loc_file.url %}
-                {%- endif %}
+    {%- if file.page.is_link %}
+        {%- continue %}
+    {%- endif %}
+
+    {%- for loc_file in file.alternates.values() %}
+        {%- if not loc_file %}
+            {%- continue %}
+        {%- endif %}
+
+        {%- if loc_file.page.canonical_url %}
+            {%- set loc_content = loc_file.page.canonical_url | e %}
+        {%- elif loc_file.page.abs_url %}
+            {%- set loc_content = loc_file.page.abs_url | e %}
+        {%- else %}
+            {%- set loc_content = config.site_url ~ loc_file.url %}
+        {%- endif %}
+
+    {#-
+        Warning! Don't align the XML tags based on the Jinja2 statements.
+        It will cause a whitespace misalignment in the output.
+    #}
     <url>
         <loc>{{ loc_content }}</loc>
-                {%- if file.page.update_date %}
+        {%- if file.page.update_date %}
         <lastmod>{{file.page.update_date}}</lastmod>
-                {%- endif %}
+        {%- endif %}
         <changefreq>daily</changefreq>
-                {%- for locale, link_file in file.alternates.items() %}
-                    {%- if link_file %}
-                        {%- if link_file.page.canonical_url %}
-                            {%- set link_href = link_file.page.canonical_url | e %}
-                        {%- elif link_file.page.abs_url %}
-                            {%- set link_href = link_file.page.abs_url | e %}
-                        {%- else %}
-                            {%- set link_href = config.site_url ~ link_file.url %}
-                        {%- endif %}
-        <xhtml:link rel="alternate" hreflang="{{ locale }}" href="{{ link_href }}"/>
-                    {%- endif %}
-                {%- endfor %}
-    </url>
+        {%- for locale, link_file in file.alternates.items() %}
+            {%- if not link_file %}
+                {%- continue %}
             {%- endif %}
+
+            {%- if link_file.page.canonical_url %}
+                {%- set link_href = link_file.page.canonical_url | e %}
+            {%- elif link_file.page.abs_url %}
+                {%- set link_href = link_file.page.abs_url | e %}
+            {%- else %}
+                {%- set link_href = config.site_url ~ link_file.url %}
+            {%- endif %}
+        <xhtml:link rel="alternate" hreflang="{{ locale }}" href="{{ link_href }}"/>
         {%- endfor %}
-    {%- endif %}
+    </url>
+    {%- endfor %}
 {%- endfor %}
 </urlset>
