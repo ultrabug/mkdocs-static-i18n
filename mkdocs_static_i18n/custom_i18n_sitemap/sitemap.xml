@@ -5,27 +5,22 @@
         {%- continue %}
     {%- endif %}
 
-    {%- for loc_file in file.alternates.values() %}
-        {%- if not loc_file %}
-            {%- continue %}
-        {%- endif %}
-
-        {%- if loc_file.page.canonical_url %}
-            {%- set loc_content = loc_file.page.canonical_url | e %}
-        {%- elif loc_file.page.abs_url %}
-            {%- set loc_content = loc_file.page.abs_url | e %}
-        {%- else %}
-            {%- set loc_content = config.site_url ~ loc_file.url %}
-        {%- endif %}
+    {%- if file.page.canonical_url %}
+        {%- set main_loc = file.page.canonical_url | e %}
+    {%- elif file.page.abs_url %}
+        {%- set main_loc = file.page.abs_url | e %}
+    {%- else %}
+        {%- set main_loc = config.site_url ~ file.url %}
+    {%- endif %}
 
     {#-
         Warning! Don't align the XML tags based on the Jinja2 statements.
-        It will cause a whitespace misalignment in the output.
+        It will cause whitespace misalignment in the output.
     #}
     <url>
-        <loc>{{ loc_content }}</loc>
+        <loc>{{ main_loc }}</loc>
         {%- if file.page.update_date %}
-        <lastmod>{{file.page.update_date}}</lastmod>
+        <lastmod>{{ file.page.update_date }}</lastmod>
         {%- endif %}
         <changefreq>daily</changefreq>
         {%- for locale, link_file in file.alternates.items() %}
@@ -42,6 +37,46 @@
             {%- endif %}
         <xhtml:link rel="alternate" hreflang="{{ locale }}" href="{{ link_href }}"/>
         {%- endfor %}
+        <xhtml:link rel="alternate" hreflang="x-default" href="{{ main_loc }}"/>
+    </url>
+    {%- for loc_file in file.alternates.values() %}
+        {%- if not loc_file %}
+            {%- continue %}
+        {%- endif %}
+
+        {%- if loc_file.page.canonical_url %}
+            {%- set lang_loc = loc_file.page.canonical_url | e %}
+        {%- elif loc_file.page.abs_url %}
+            {%- set lang_loc = loc_file.page.abs_url | e %}
+        {%- else %}
+            {%- set lang_loc = config.site_url ~ loc_file.url %}
+        {%- endif %}
+
+    {#-
+        Warning! Don't align the XML tags based on the Jinja2 statements.
+        It will cause whitespace misalignment in the output.
+    #}
+    <url>
+        <loc>{{ lang_loc }}</loc>
+        {%- if loc_file.page.update_date %}
+        <lastmod>{{ loc_file.page.update_date }}</lastmod>
+        {%- endif %}
+        <changefreq>daily</changefreq>
+        {%- for locale, link_file in file.alternates.items() %}
+            {%- if not link_file %}
+                {%- continue %}
+            {%- endif %}
+
+            {%- if link_file.page.canonical_url %}
+                {%- set link_href = link_file.page.canonical_url | e %}
+            {%- elif link_file.page.abs_url %}
+                {%- set link_href = link_file.page.abs_url | e %}
+            {%- else %}
+                {%- set link_href = config.site_url ~ link_file.url %}
+            {%- endif %}
+        <xhtml:link rel="alternate" hreflang="{{ locale }}" href="{{ link_href }}"/>
+        {%- endfor %}
+        <xhtml:link rel="alternate" hreflang="x-default" href="{{ main_loc }}"/>
     </url>
     {%- endfor %}
 {%- endfor %}
