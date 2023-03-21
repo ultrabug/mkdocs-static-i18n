@@ -14,6 +14,7 @@
     {%- endif %}
 
     {%- set default_locale = file.page.locale %}
+    {%- set flag = namespace(added_default=false) %}
 
     {#-
         Warning! Don't align the XML tags based on the Jinja2 statements.
@@ -25,7 +26,6 @@
         <lastmod>{{ file.page.update_date }}</lastmod>
     {%- endif %}
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="{{ default_locale }}" href="{{ default_href }}"/>
     {%- for i18n_locale, i18n_alt in file.alternates.items() %}
         {%- if not i18n_alt %}
             {%- continue %}
@@ -42,6 +42,11 @@
         {#- If the default language is the same as the alternate, then skip the alternate #}
         {%- if default_href == i18n_href %}
             {%- continue %}
+        {%- endif %}
+
+        {%- if not flag.added_default %}
+        <xhtml:link rel="alternate" hreflang="{{ default_locale }}" href="{{ default_href }}"/>
+            {%- set flag.added_default = True %}
         {%- endif %}
         <xhtml:link rel="alternate" hreflang="{{ i18n_locale }}" href="{{ i18n_href }}"/>
     {%- endfor %}
