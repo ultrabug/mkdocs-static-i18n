@@ -19,24 +19,24 @@
     #}
     <url>
         <loc>{{ main_loc }}</loc>
-        {%- if file.page.update_date %}
+    {%- if file.page.update_date %}
         <lastmod>{{ file.page.update_date }}</lastmod>
-        {%- endif %}
+    {%- endif %}
         <changefreq>daily</changefreq>
-        {%- for locale, link_file in file.alternates.items() %}
-            {%- if not link_file %}
-                {%- continue %}
-            {%- endif %}
+    {%- for locale, link_file in file.alternates.items() %}
+        {%- if not link_file %}
+            {%- continue %}
+        {%- endif %}
 
-            {%- if link_file.page.canonical_url %}
-                {%- set link_href = link_file.page.canonical_url | e %}
-            {%- elif link_file.page.abs_url %}
-                {%- set link_href = link_file.page.abs_url | e %}
-            {%- else %}
-                {%- set link_href = config.site_url ~ link_file.url %}
-            {%- endif %}
+        {%- if link_file.page.canonical_url %}
+            {%- set link_href = link_file.page.canonical_url | e %}
+        {%- elif link_file.page.abs_url %}
+            {%- set link_href = link_file.page.abs_url | e %}
+        {%- else %}
+            {%- set link_href = config.site_url ~ link_file.url %}
+        {%- endif %}
         <xhtml:link rel="alternate" hreflang="{{ locale }}" href="{{ link_href }}"/>
-        {%- endfor %}
+    {%- endfor %}
         <xhtml:link rel="alternate" hreflang="x-default" href="{{ main_loc }}"/>
     </url>
     {%- for loc_file in file.alternates.values() %}
