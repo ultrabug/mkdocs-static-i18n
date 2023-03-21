@@ -6,50 +6,63 @@
     {%- endif %}
 
     {%- if file.page.canonical_url %}
-        {%- set main_loc = file.page.canonical_url | e %}
+        {%- set default_href = file.page.canonical_url | e %}
     {%- elif file.page.abs_url %}
-        {%- set main_loc = file.page.abs_url | e %}
+        {%- set default_href = file.page.abs_url | e %}
     {%- else %}
-        {%- set main_loc = config.site_url ~ file.url %}
+        {%- set default_href = config.site_url ~ file.url %}
     {%- endif %}
+
+    {%- set default_locale = file.page.locale %}
 
     {#-
         Warning! Don't align the XML tags based on the Jinja2 statements.
         It will cause whitespace misalignment in the output.
     #}
     <url>
-        <loc>{{ main_loc }}</loc>
+        <loc>{{ default_href }}</loc>
     {%- if file.page.update_date %}
         <lastmod>{{ file.page.update_date }}</lastmod>
     {%- endif %}
         <changefreq>daily</changefreq>
-    {%- for locale, link_file in file.alternates.items() %}
-        {%- if not link_file %}
+        <xhtml:link rel="alternate" hreflang="{{ default_locale }}" href="{{ default_href }}"/>
+    {%- for i18n_locale, i18n_alt in file.alternates.items() %}
+        {%- if not i18n_alt %}
             {%- continue %}
         {%- endif %}
 
-        {%- if link_file.page.canonical_url %}
-            {%- set link_href = link_file.page.canonical_url | e %}
-        {%- elif link_file.page.abs_url %}
-            {%- set link_href = link_file.page.abs_url | e %}
+        {%- if i18n_alt.page.canonical_url %}
+            {%- set i18n_href = i18n_alt.page.canonical_url | e %}
+        {%- elif i18n_alt.page.abs_url %}
+            {%- set i18n_href = i18n_alt.page.abs_url | e %}
         {%- else %}
-            {%- set link_href = config.site_url ~ link_file.url %}
+            {%- set i18n_href = config.site_url ~ i18n_alt.url %}
         {%- endif %}
-        <xhtml:link rel="alternate" hreflang="{{ locale }}" href="{{ link_href }}"/>
+
+        {#- If the default language is the same as the alternate, then skip the alternate #}
+        {%- if default_href == i18n_href %}
+            {%- continue %}
+        {%- endif %}
+        <xhtml:link rel="alternate" hreflang="{{ i18n_locale }}" href="{{ i18n_href }}"/>
     {%- endfor %}
-        <xhtml:link rel="alternate" hreflang="x-default" href="{{ main_loc }}"/>
     </url>
-    {%- for loc_file in file.alternates.values() %}
-        {%- if not loc_file %}
+
+    {%- for alternate in file.alternates.values() %}
+        {%- if not alternate %}
             {%- continue %}
         {%- endif %}
 
-        {%- if loc_file.page.canonical_url %}
-            {%- set lang_loc = loc_file.page.canonical_url | e %}
-        {%- elif loc_file.page.abs_url %}
-            {%- set lang_loc = loc_file.page.abs_url | e %}
+        {%- if alternate.page.canonical_url %}
+            {%- set alt_href = alternate.page.canonical_url | e %}
+        {%- elif alternate.page.abs_url %}
+            {%- set alt_href = alternate.page.abs_url | e %}
         {%- else %}
-            {%- set lang_loc = config.site_url ~ loc_file.url %}
+            {%- set alt_href = config.site_url ~ alternate.url %}
+        {%- endif %}
+
+        {#- If the default language is the same as the alternate, then skip the alternate #}
+        {%- if default_href == alt_href %}
+            {%- continue %}
         {%- endif %}
 
     {#-
@@ -57,26 +70,31 @@
         It will cause whitespace misalignment in the output.
     #}
     <url>
-        <loc>{{ lang_loc }}</loc>
-        {%- if loc_file.page.update_date %}
-        <lastmod>{{ loc_file.page.update_date }}</lastmod>
+        <loc>{{ alt_href }}</loc>
+        {%- if alternate.page.update_date %}
+        <lastmod>{{ alternate.page.update_date }}</lastmod>
         {%- endif %}
         <changefreq>daily</changefreq>
-        {%- for locale, link_file in file.alternates.items() %}
-            {%- if not link_file %}
+        <xhtml:link rel="alternate" hreflang="{{ default_locale }}" href="{{ default_href }}"/>
+        {%- for i18n_locale, i18n_alt in file.alternates.items() %}
+            {%- if not i18n_alt %}
                 {%- continue %}
             {%- endif %}
 
-            {%- if link_file.page.canonical_url %}
-                {%- set link_href = link_file.page.canonical_url | e %}
-            {%- elif link_file.page.abs_url %}
-                {%- set link_href = link_file.page.abs_url | e %}
+            {%- if i18n_alt.page.canonical_url %}
+                {%- set i18n_href = i18n_alt.page.canonical_url | e %}
+            {%- elif i18n_alt.page.abs_url %}
+                {%- set i18n_href = i18n_alt.page.abs_url | e %}
             {%- else %}
-                {%- set link_href = config.site_url ~ link_file.url %}
+                {%- set i18n_href = config.site_url ~ i18n_alt.url %}
             {%- endif %}
-        <xhtml:link rel="alternate" hreflang="{{ locale }}" href="{{ link_href }}"/>
+
+            {#- If the default language is the same as the alternate, then skip the alternate #}
+            {%- if default_href == i18n_href %}
+                {%- continue %}
+            {%- endif %}
+        <xhtml:link rel="alternate" hreflang="{{ i18n_locale }}" href="{{ i18n_href }}"/>
         {%- endfor %}
-        <xhtml:link rel="alternate" hreflang="x-default" href="{{ main_loc }}"/>
     </url>
     {%- endfor %}
 {%- endfor %}
