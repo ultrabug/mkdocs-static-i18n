@@ -4,7 +4,7 @@ from re import compile
 from mkdocs.config.base import ValidationError
 from mkdocs.config.config_options import Type
 
-RE_LOCALE = compile(r"(^[a-z]{2}_[A-Z]{2}$)|(^[a-z]{2}$)")
+RE_LOCALE = compile(r"(^[a-z]{2}(-[A-Za-z]{4})?(-[A-Z]{2})?$)|(^[a-z]{2}_[A-Z]{2}$)")
 
 log = logging.getLogger("mkdocs.plugins." + __name__)
 
@@ -23,8 +23,8 @@ class Locale(Type):
         if not RE_LOCALE.match(value):
             raise ValidationError(
                 "Language code values must be either ISO-639-1 lower case "
-                "or represented with they territory/region/county codes, "
-                f"received '{value}' expected forms examples: 'en' or 'en_US'."
+                "or represented with their territory/region/country codes, "
+                f"received '{value}' expected forms examples: 'en' or 'en-US' or 'en_US'."
             )
 
     def _get_lang_dict_value(self, lang_key, lang_value):
