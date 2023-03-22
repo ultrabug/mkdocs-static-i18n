@@ -37,8 +37,27 @@ FR_TRANSLATED_NAV = [
 ]
 
 
-def test_plugin_static_nav(config_plugin_static_nav):
-    config = config_plugin_static_nav
+def test_plugin_static_nav():
+    config = load_config(
+        "tests/mkdocs.yml",
+        theme={"name": "mkdocs"},
+        docs_dir="docs_suffix_structure/",
+        nav=[
+            {"Home": "index.md"},
+            {"Topic1": [{"Named File": "topic1/named_file.en.md"}]},
+            {"Topic2": "index.en.md"},
+            {"External": "https://ultrabug.fr"},
+        ],
+        plugins={
+            "i18n": {
+                "default_language": "en",
+                "languages": {
+                    "fr": {"name": "français"},
+                    "en": {"name": "english"},
+                },
+            }
+        },
+    )
     i18n_plugin = config["plugins"]["i18n"]
     #
     files = get_files(config)
@@ -54,8 +73,41 @@ def test_plugin_static_nav(config_plugin_static_nav):
     assert i18n_plugin.i18n_configs["fr"]["nav"] == FR_STATIC_NAV
 
 
-def test_plugin_translated_nav(config_plugin_translated_nav):
-    config = config_plugin_translated_nav
+def test_plugin_translated_nav():
+    config = load_config(
+        "tests/mkdocs.yml",
+        theme={"name": "mkdocs"},
+        docs_dir="docs_suffix_structure/",
+        nav=[
+            {"Home": "index.md"},
+            {"Topic1": [{"Named File": "topic1/named_file.en.md"}]},
+            {"Topic2": "index.en.md"},
+            {"External": "https://ultrabug.fr"},
+        ],
+        plugins={
+            "i18n": {
+                "default_language": "en",
+                "languages": {
+                    "fr": {"name": "français"},
+                    "en": {"name": "english"},
+                },
+                "nav_translations": {
+                    "en": {
+                        "Home": "The Home",
+                        "Named File": "Renamed File",
+                        "Topic1": "Translated1",
+                        "Topic2": "Translated2",
+                    },
+                    "fr": {
+                        "Home": "Accueil",
+                        "Named File": "Fichier Nommé",
+                        "Topic1": "Sujet1",
+                        "Topic2": "Sujet2",
+                    },
+                },
+            }
+        },
+    )
     i18n_plugin = config["plugins"]["i18n"]
     #
     files = get_files(config)
@@ -80,12 +132,10 @@ def test_plugin_translated_nav(config_plugin_translated_nav):
 
 def test_homepage_detection_folder_no_use_directory():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
         docs_dir="docs_folder_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -104,12 +154,10 @@ def test_homepage_detection_folder_no_use_directory():
 
 def test_homepage_detection_folder_use_directory():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_folder_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -128,12 +176,10 @@ def test_homepage_detection_folder_use_directory():
 
 def test_homepage_detection_suffix_no_use_directory():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -152,12 +198,10 @@ def test_homepage_detection_suffix_no_use_directory():
 
 def test_homepage_detection_suffix_use_directory():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -176,12 +220,10 @@ def test_homepage_detection_suffix_use_directory():
 
 def test_plugin_translated_default_nav_suffix():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -232,12 +274,10 @@ def test_plugin_translated_default_nav_suffix():
 
 def test_plugin_translated_default_nav_folder():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
         docs_dir="docs_folder_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {

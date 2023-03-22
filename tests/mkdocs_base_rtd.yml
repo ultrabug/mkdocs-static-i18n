@@ -1,5 +1,0 @@
-site_name: MkDocs static i18n plugin tests
-site_url: http://localhost
-
-theme:
-  name: readthedocs

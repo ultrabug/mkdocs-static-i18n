@@ -39,13 +39,10 @@ NO_USE_DIRECTORY_URLS = [
 
 def test_build_use_directory_urls():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
-        plugins={},
     )
     build(mkdocs_config)
     site_dir = mkdocs_config["site_dir"]
@@ -58,13 +55,10 @@ def test_build_use_directory_urls():
 
 def test_build_no_use_directory_urls():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
-        plugins={},
     )
     build(mkdocs_config)
     site_dir = mkdocs_config["site_dir"]
@@ -127,12 +121,10 @@ PLUGIN_NO_USE_DIRECTORY_URLS = [
 
 def test_plugin_use_directory_urls():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -152,12 +144,10 @@ def test_plugin_use_directory_urls():
 
 def test_plugin_use_directory_urls_static_nav():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -182,12 +172,10 @@ def test_plugin_use_directory_urls_static_nav():
 
 def test_plugin_use_directory_urls_per_folder():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_folder_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -208,12 +196,10 @@ def test_plugin_use_directory_urls_per_folder():
 
 def test_plugin_use_directory_urls_per_folder_static_nav():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_folder_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -239,12 +225,10 @@ def test_plugin_use_directory_urls_per_folder_static_nav():
 
 def test_plugin_no_use_directory_urls():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -264,12 +248,10 @@ def test_plugin_no_use_directory_urls():
 
 def test_plugin_no_use_directory_urls_per_folder():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
         docs_dir="docs_folder_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -326,12 +308,10 @@ PLUGIN_NO_USE_DIRECTORY_URLS_NO_DEFAULT = [
 
 def test_plugin_use_directory_urls_no_default_language():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -351,12 +331,10 @@ def test_plugin_use_directory_urls_no_default_language():
 
 def test_plugin_use_directory_urls_no_default_language_folder_structure():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_folder_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -377,12 +355,10 @@ def test_plugin_use_directory_urls_no_default_language_folder_structure():
 
 def test_plugin_no_use_directory_urls_no_default_language():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -402,12 +378,10 @@ def test_plugin_no_use_directory_urls_no_default_language():
 
 def test_plugin_no_use_directory_urls_no_default_language_folder_structure():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
         docs_dir="docs_folder_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -450,12 +424,10 @@ PLUGIN_NO_USE_DIRECTORY_URLS_DEFAULT_ONLY = [
 
 def test_plugin_use_directory_urls_default_language_only():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -476,12 +448,10 @@ def test_plugin_use_directory_urls_default_language_only():
 
 def test_plugin_use_directory_urls_default_language_only_folder_structure():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_folder_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -503,12 +473,10 @@ def test_plugin_use_directory_urls_default_language_only_folder_structure():
 
 def test_plugin_no_use_directory_urls_default_language_only():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -529,12 +497,10 @@ def test_plugin_no_use_directory_urls_default_language_only():
 
 def test_plugin_no_use_directory_urls_default_language_only_folder_structure():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
         docs_dir="docs_folder_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {

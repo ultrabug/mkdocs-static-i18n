@@ -3,12 +3,10 @@ from mkdocs.config.base import load_config
 
 def test_plugin_languages_backward_compat_1():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "i18n": {
                 "default_language": "en",
@@ -38,12 +36,10 @@ def test_plugin_languages_backward_compat_1():
 
 def test_plugin_languages_backward_compat_2():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={"i18n": {"default_language": "en", "languages": {"en": "english"}}},
     )
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
@@ -61,12 +57,10 @@ def test_plugin_languages_backward_compat_2():
 
 def test_plugin_languages_backward_compat_3():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={"i18n": {"default_language": "en", "languages": {"fr": "français"}}},
     )
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
@@ -91,12 +85,10 @@ def test_plugin_languages_backward_compat_3():
 
 def test_plugin_languages_backward_compat_4():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "i18n": {
                 "default_language": "en",
@@ -126,12 +118,10 @@ def test_plugin_languages_backward_compat_4():
 
 def test_plugin_languages_backward_compat_5():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "i18n": {
                 "default_language": "en",
@@ -169,12 +159,10 @@ def test_plugin_languages_backward_compat_5():
 
 def test_plugin_languages_backward_compat_6():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "i18n": {
                 "default_language": "en",
@@ -212,12 +200,10 @@ def test_plugin_languages_backward_compat_6():
 
 def test_plugin_languages_backward_compat_7():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "i18n": {
                 "default_language": "en",
@@ -247,12 +233,10 @@ def test_plugin_languages_backward_compat_7():
 
 def test_plugin_languages_backward_compat_8():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "i18n": {
                 "default_language": "en",
@@ -286,12 +270,10 @@ def test_plugin_languages_backward_compat_8():
 
 def test_plugin_languages_backward_compat_9():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "i18n": {
                 "default_language": "en",
@@ -325,12 +307,10 @@ def test_plugin_languages_backward_compat_9():
 
 def test_plugin_languages_backward_compat_10():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "i18n": {
                 "default_language": "en",
@@ -363,12 +343,10 @@ def test_plugin_languages_backward_compat_10():
 
 def test_plugin_languages_backward_compat_11():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "i18n": {
                 "default_language": "en",
@@ -401,12 +379,10 @@ def test_plugin_languages_backward_compat_11():
 
 def test_plugin_languages_backward_compat_12():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "i18n": {
                 "default_language": "fr",
@@ -431,12 +407,10 @@ def test_plugin_languages_backward_compat_12():
 
 def test_plugin_languages_backward_compat_13():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "i18n": {
                 "default_language": "en",
