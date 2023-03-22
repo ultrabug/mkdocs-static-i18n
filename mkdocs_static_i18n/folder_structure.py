@@ -20,6 +20,7 @@ class I18nFolderFiles(Files):
     to use instead of the link / asset referenced in the markdown source.
     """
 
+    default_locale = None
     locale = None
     translated = False
 
@@ -54,6 +55,10 @@ class I18nFolderFiles(Files):
             expected_src_path,
             expected_src_path.relative_to(root_folder),
             Path(self.locale) / Path(expected_src_path),
+            Path(self.locale) / Path(expected_src_path.relative_to(root_folder)),
+            Path(self.default_locale) / Path(expected_src_path),
+            Path(self.default_locale)
+            / Path(expected_src_path.relative_to(root_folder)),
         ]
         for src_path in filter(lambda s: Path(s) in expected_src_paths, self.src_paths):
             return self.src_paths.get(os.path.normpath(src_path))
@@ -92,6 +97,7 @@ class I18nFolderFile(File):
         self.page = file_from.page
         self.site_dir = site_dir
         self.src_path = file_from.src_path
+        self.file_from = file_from
 
         # i18n addons
         self.all_languages = all_languages
@@ -227,6 +233,14 @@ class I18nFolderFile(File):
             else other,
         )
 
+    def to_locale(self, from_locale, language):
+        """Return the i18n file object as another language"""
+        self.url = self.url.replace(f"{from_locale}/", f"{language}/", 1)
+        self.dest_path = self.dest_path.replace(f"{from_locale}/", f"{language}/", 1)
+        self.abs_dest_path = self.abs_dest_path.replace(
+            f"{from_locale}/", f"{language}/", 1
+        )
+
 
 def on_files(self, files, config):
     """"""
@@ -300,6 +314,29 @@ def on_files(self, files, config):
     # print([{p.src_path: p.url} for p in main_files.static_pages()])
     # print([{p.src_path: p.url} for p in self.i18n_files["en"].static_pages()])
     # print([{p.src_path: p.url} for p in self.i18n_files["fr"].static_pages()])
+
+    # issue #175: make sure we populate our files with the default version
+    # of a localized page when using a static navigation
+    for page in main_files.documentation_pages():
+        for language in self.all_languages:
+            # skip if language build is disabled
+            if self.config["languages"].get(language, {}).get("build", False) is False:
+                continue
+            alternate = self.i18n_files[language].get_localized_page_from_url(
+                page.url, language
+            )
+            if not alternate:
+                i18n_ffile = I18nFolderFile(
+                    page.file_from,
+                    language,
+                    all_languages=self.all_languages,
+                    default_language=self.default_language,
+                    docs_dir=config["docs_dir"],
+                    site_dir=config["site_dir"],
+                    use_directory_urls=config.get("use_directory_urls"),
+                )
+                i18n_ffile.to_locale(page.locale, language)
+                self.i18n_files[language].append(i18n_ffile)
 
     # populate pages alternates
     # main default version
