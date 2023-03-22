@@ -59,7 +59,6 @@ MKDOCS_THEMES = ["mkdocs", "readthedocs"]
 
 
 class I18n(BasePlugin):
-
     config_scheme = (
         ("default_language_only", Type(bool, default=False, required=False)),
         ("default_language", Locale(str, required=True)),

@@ -253,7 +253,6 @@ def on_files(self, files, config):
         self.i18n_files[language].locale = language
 
     for fileobj in files:
-
         file_locale = Path(fileobj.src_path).parts[0]
 
         if file_locale not in self.all_languages:
@@ -283,7 +282,6 @@ def on_files(self, files, config):
                 # file is bundled by theme
                 continue
         else:
-
             i18n_ffile = I18nFolderFile(
                 fileobj,
                 file_locale,

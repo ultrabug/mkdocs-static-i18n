@@ -134,7 +134,6 @@ class I18nFile(File):
         ]
         for locale_suffix, expected_path in expected_paths:
             if Path(expected_path).exists():
-
                 self.src_path = expected_path.relative_to(self.docs_dir)
                 self.abs_src_path = Path(self.docs_dir) / Path(self.src_path)
                 #
@@ -275,7 +274,6 @@ def on_files(self, files, config):
         self.i18n_files[language].locale = language
 
     for fileobj in files:
-
         main_i18n_file = I18nFile(
             fileobj,
             "",
