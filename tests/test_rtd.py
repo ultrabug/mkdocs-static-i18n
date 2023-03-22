@@ -1,9 +1,30 @@
 from pathlib import Path
 
 from mkdocs.commands.build import build
+from mkdocs.config.base import load_config
 
 
-def test_rtd_fontfiles(config_base_rtd, config_plugin_rtd):
+def test_rtd_fontfiles():
+    config_base_rtd = load_config(
+        "tests/mkdocs.yml",
+        theme={"name": "readthedocs"},
+        use_directory_urls=True,
+        docs_dir="docs_suffix_structure/",
+    )
+
+    config_plugin_rtd = load_config(
+        "tests/mkdocs.yml",
+        theme={"name": "readthedocs"},
+        use_directory_urls=True,
+        docs_dir="docs_suffix_structure/",
+        plugins={
+            "i18n": {
+                "default_language": "en",
+                "languages": {"fr": "français", "en": "english"},
+            },
+        },
+    )
+
     base_site_dir = config_base_rtd["site_dir"]
     i18n_site_dir = config_plugin_rtd["site_dir"]
 

@@ -4,12 +4,10 @@ from mkdocs.config.base import load_config
 
 def test_plugin_language_selector_use_directory_urls():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "i18n": {
                 "default_language": "en",
@@ -27,12 +25,10 @@ def test_plugin_language_selector_use_directory_urls():
 
 def test_plugin_language_selector_no_use_directory_urls():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "i18n": {
                 "default_language": "en",
@@ -55,12 +51,10 @@ def test_plugin_language_selector_no_use_directory_urls():
 
 def test_plugin_language_selector_fixed_alternate():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         extra={
             "alternate": [
                 {"name": "english", "link": "./default", "lang": "en"},
@@ -84,12 +78,10 @@ def test_plugin_language_selector_fixed_alternate():
 
 def test_plugin_language_selector_single_default_language():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={"i18n": {"default_language": "fr", "languages": {"fr": "français"}}},
     )
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
@@ -99,12 +91,10 @@ def test_plugin_language_selector_single_default_language():
 
 def test_plugin_language_selector_use_directory_urls_default():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "i18n": {
                 "default_language": "en",
@@ -127,11 +117,9 @@ def test_plugin_language_selector_use_directory_urls_default():
 
 def test_plugin_language_selector_fixed_link():
     mkdocs_config = load_config(
-        "tests/mkdocs_i18n_fixed_link.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "i18n": {
                 "default_language": "en",
@@ -153,11 +141,9 @@ def test_plugin_language_selector_fixed_link():
 
 def test_plugin_language_selector_fixed_link_with_static_alternate():
     mkdocs_config = load_config(
-        "tests/mkdocs_i18n_fixed_link.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         extra={
             "alternate": [
                 {"name": "english", "link": "./", "lang": "en"},

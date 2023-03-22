@@ -1,15 +1,32 @@
+from mkdocs.config.base import load_config
 from mkdocs.structure.files import get_files
 
 
-def test_urls_no_use_directory_urls(config_base, config_plugin):
-    config_base["use_directory_urls"] = False
-    files = get_files(config_base)
+def test_urls_no_use_directory_urls():
+    mkdocs_config = load_config(
+        "tests/mkdocs.yml",
+        theme={"name": "mkdocs"},
+        use_directory_urls=False,
+        docs_dir="docs_suffix_structure/",
+    )
+    files = get_files(mkdocs_config)
     #
-    config_plugin["use_directory_urls"] = False
-    i18n_plugin = config_plugin["plugins"]["i18n"]
+    mkdocs_i18n_config = load_config(
+        "tests/mkdocs.yml",
+        theme={"name": "mkdocs"},
+        use_directory_urls=False,
+        docs_dir="docs_suffix_structure/",
+        plugins={
+            "i18n": {
+                "default_language": "en",
+                "languages": {"fr": "français", "en": "english"},
+            },
+        },
+    )
+    i18n_plugin = mkdocs_i18n_config["plugins"]["i18n"]
     #
-    i18n_plugin.on_config(config_plugin)
-    i18n_files = i18n_plugin.on_files(get_files(config_plugin), config_plugin)
+    i18n_plugin.on_config(mkdocs_i18n_config)
+    i18n_files = i18n_plugin.on_files(get_files(mkdocs_i18n_config), mkdocs_i18n_config)
     #
     mkdocs_urls = set()
     for page in files.documentation_pages():
@@ -20,15 +37,31 @@ def test_urls_no_use_directory_urls(config_base, config_plugin):
     assert mkdocs_urls == plugin_urls
 
 
-def test_urls_use_directory_urls(config_base, config_plugin):
-    config_base["use_directory_urls"] = True
-    files = get_files(config_base)
+def test_urls_use_directory_urls():
+    mkdocs_config = load_config(
+        "tests/mkdocs.yml",
+        theme={"name": "mkdocs"},
+        use_directory_urls=True,
+        docs_dir="docs_suffix_structure/",
+    )
+    files = get_files(mkdocs_config)
     #
-    config_plugin["use_directory_urls"] = True
-    i18n_plugin = config_plugin["plugins"]["i18n"]
+    mkdocs_i18n_config = load_config(
+        "tests/mkdocs.yml",
+        theme={"name": "mkdocs"},
+        use_directory_urls=True,
+        docs_dir="docs_suffix_structure/",
+        plugins={
+            "i18n": {
+                "default_language": "en",
+                "languages": {"fr": "français", "en": "english"},
+            },
+        },
+    )
+    i18n_plugin = mkdocs_i18n_config["plugins"]["i18n"]
     #
-    i18n_plugin.on_config(config_plugin)
-    i18n_files = i18n_plugin.on_files(get_files(config_plugin), config_plugin)
+    i18n_plugin.on_config(mkdocs_i18n_config)
+    i18n_files = i18n_plugin.on_files(get_files(mkdocs_i18n_config), mkdocs_i18n_config)
     #
     mkdocs_urls = set()
     for page in files.documentation_pages():

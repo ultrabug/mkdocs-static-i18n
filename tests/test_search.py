@@ -4,12 +4,10 @@ from mkdocs.config.base import load_config
 
 def test_search_add_lang():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -25,12 +23,10 @@ def test_search_add_lang():
 
 def test_search_entries():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -48,12 +44,10 @@ def test_search_entries():
 
 def test_search_entries_no_directory_urls():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -69,12 +63,10 @@ def test_search_entries_no_directory_urls():
 
 def test_search_deduplicate_entries():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -90,12 +82,10 @@ def test_search_deduplicate_entries():
 
 def test_search_deduplicate_entries_no_directory_urls():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {},
             "i18n": {
@@ -111,12 +101,10 @@ def test_search_deduplicate_entries_no_directory_urls():
 
 def test_search_add_missing_lang():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {
                 "lang": ["en"],
@@ -135,12 +123,10 @@ def test_search_add_missing_lang():
 
 def test_search_no_add_lang():
     mkdocs_config = load_config(
-        "tests/mkdocs_base.yml",
+        "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
-        site_url="http://localhost",
-        extra_javascript=[],
         plugins={
             "search": {
                 "lang": ["en"],
