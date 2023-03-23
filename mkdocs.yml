@@ -21,17 +21,18 @@ extra:
 markdown_extensions:
   - admonition
 
+# nav:
+#   - Home: index.md
+#   - Topic1: topic1/named_file.md
+#   - Topic2: topic2/README.md
+
 plugins:
   - search
   - i18n:
-      default_language: !ENV [DEFAULT_LANGUAGE, "en"]
-      default_language_only: !ENV [DEFAULT_LANGUAGE_ONLY, false]
       docs_structure: suffix
       languages:
-        default:
-          name: Default (en)
-          build: true
         en:
+          default: true
           name: English
           build: true
           site_name: "MkDocs static i18n plugin demo (en)"
@@ -39,7 +40,19 @@ plugins:
           name: Français
           build: true
           site_name: "Démo du plugin MkDocs static i18n (fr)"
-      nav_translations:
-        fr:
-          Topic1: Sujet1
-          Topic2: Sujet2
+          theme:
+            palette:
+              primary: red
+          nav_translations:
+            Topic1: Sujet1 Traduit
+            Topic2: Sujet2 Traduit
+        de:
+          name: German
+          build: true
+          site_name: "Das plugin MkDocs static i18n (de)"
+          theme:
+            palette:
+              primary: yellow
+          nav:
+            - Home: index.md
+            - Das Topic 2: topic2/README.md

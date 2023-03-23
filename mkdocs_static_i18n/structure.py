@@ -27,57 +27,57 @@ class Locale(Type):
                 f"received '{value}' expected forms examples: 'en' or 'en-US' or 'en_US'."
             )
 
-    def _get_lang_dict_value(self, lang_key, lang_value):
+    def _get_lang_dict_value(self, lang_key, lang_values):
         """
-        Normalize the 'languages' option dict with backward compatibility.
-
-        We support legacy:
-
-            languages:
-              en: English
-              fr: Français
-
-        And the new way:
-
-            languages:
-              en:
-                name: English
-                build: true
-              fr:
-                name: Français
-                build: true
+        languages:
+          en:
+            build: true
+            default: true
+            name: English
+          fr:
+            build: true
+            name: Français
         """
-        allowed_keys = set(["name", "link", "build", "site_name", "fixed_link"])
+        validate_types = {
+            "build": bool,
+            "default": bool,
+            "fixed_link": str,
+            "link": str,
+            "name": str,
+        }
         lang_config = {
+            "default": False,
             "build": True,
-            "link": f"./{lang_key}/" if lang_key != "default" else "./",
+            "link": f"./{lang_key}/",
             "fixed_link": None,
             "name": lang_key,
-            "site_name": None,
         }
-        if isinstance(lang_value, str):
-            lang_config["name"] = lang_value
-        elif isinstance(lang_value, dict):
-            unsupported_keys = set(lang_value.keys()).difference(allowed_keys)
-            if unsupported_keys:
-                log.warning(
-                    f"'plugins.i18n.languages.{lang_key}' unsupported options: {','.join(unsupported_keys)}"
-                )
-            for key in lang_config:
-                if key in lang_value:
-                    lang_config[key] = lang_value[key]
+        if isinstance(lang_values, dict):
+            for key, value in lang_values.items():
+                lang_config[key] = value
+            for key, expected_type in validate_types.items():
+                if type(lang_config.get(key)) not in [type(None), expected_type]:
+                    raise Exception(
+                        f"language config {key} unexpected type {type(lang_config.get(key))}"
+                    )
+            if lang_config["default"] is True:
+                lang_config["link"] = "./"
+        else:
+            raise Exception("language config should be a dict")
         return lang_config
 
     def run_validation(self, value):
         value = super().run_validation(value)
-        # default_language
-        if isinstance(value, str):
-            self._validate_locale(value)
         # languages
         if isinstance(value, dict):
             languages = {}
-            for lang_key, lang_value in value.items():
+            default_count = 0
+            for lang_key, lang_values in value.items():
                 self._validate_locale(lang_key)
-                languages[lang_key] = self._get_lang_dict_value(lang_key, lang_value)
+                languages[lang_key] = self._get_lang_dict_value(lang_key, lang_values)
+                default_count += int(languages[lang_key]["default"])
+            assert default_count < 2
             value = languages
+        else:
+            raise Exception("languages should be a dict")
         return value
