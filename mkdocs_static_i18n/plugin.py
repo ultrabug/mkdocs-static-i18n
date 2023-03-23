@@ -59,6 +59,16 @@ MKDOCS_THEMES = ["mkdocs", "readthedocs"]
 
 
 class I18n(BasePlugin):
+    """
+    We use 'event_priority' to make sure that we are last plugin to be executed
+    because we need to make sure that we react to other plugins' behavior
+    properly.
+
+    Current plugins we heard of and require that we control their order:
+        - awesome-pages: this plugin should run before us
+        - with-pdf: this plugin is triggerd by us on the appropriate on_* events
+    """
+
     config_scheme = (
         ("default_language_only", Type(bool, default=False, required=False)),
         ("default_language", Locale(str, required=True)),
@@ -169,6 +179,7 @@ class I18n(BasePlugin):
                 "site_name": config["site_name"],
             }
 
+    @plugins.event_priority(-100)
     def on_config(self, config, **kwargs):
         """
         Enrich configuration with language specific knowledge.
@@ -182,55 +193,18 @@ class I18n(BasePlugin):
                 self.all_languages.append(language)
         if self.default_language not in self.all_languages:
             self.all_languages.insert(0, self.default_language)
-        # Get our placement index in the plugins config list
-        try:
-            i18n_index = list(config["plugins"].keys()).index("i18n")
-        except ValueError:
-            i18n_index = -1
         # Make sure with-pdf is controlled by us, see #110
-        # We will only control it for the main language, localized PDF are
-        # generated on the 'on_post_build' method
+        # We remove all events and will trigger them ourselves
+        # TODO: can we totally get rid of this?
         if "with-pdf" in config["plugins"]:
-            with_pdf_index = list(config["plugins"].keys()).index("with-pdf")
-            if with_pdf_index > i18n_index:
-                config["plugins"]["with-pdf"].on_config(config)
-            if mkdocs_version >= "1.4":
-                # TODO: drop me after we start using mkdocs plugin prioritization
-                log.warning(
-                    "The 'with-pdf' plugin should be listed AFTER 'i18n' in the 'plugins' option"
-                )
-            else:
-                for events in config["plugins"].events.values():
-                    config["plugins"].move_to_end("with-pdf", last=False)
-                    for idx, event in enumerate(list(events)):
-                        try:
-                            if str(event.__module__) == "mkdocs_with_pdf.plugin":
-                                events.pop(idx)
-                        except AttributeError:
-                            # partials don't have a module
-                            pass
-        # Make sure awesome-pages is always called before us, see #65
-        if "awesome-pages" in config["plugins"]:
-            awesome_index = list(config["plugins"].keys()).index("awesome-pages")
-            if awesome_index > i18n_index:
-                if mkdocs_version >= "1.4":
-                    # TODO: drop me after we start using mkdocs plugin prioritization
-                    log.warning(
-                        "The 'awesome-pages' plugin should be listed BEFORE 'i18n' in the 'plugins' option"
-                    )
-                else:
-                    config["plugins"].move_to_end("awesome-pages", last=False)
-                    for events in config["plugins"].events.values():
-                        for idx, event in enumerate(list(events)):
-                            try:
-                                if (
-                                    str(event.__module__)
-                                    == "mkdocs_awesome_pages_plugin.plugin"
-                                ):
-                                    events.insert(0, events.pop(idx))
-                            except AttributeError:
-                                # partials don't have a module
-                                pass
+            for events in config["plugins"].events.values():
+                for idx, event in enumerate(list(events)):
+                    try:
+                        if str(event.__module__) == "mkdocs_with_pdf.plugin":
+                            events.pop(idx)
+                    except AttributeError:
+                        # partials don't have a module
+                        pass
         # Make a localized copy of the config
         # The hooks are mutualized so we remove them from the config before (deep)copying
         # The plugins are mutualized so we remove them from the config before (deep)copying
@@ -354,6 +328,7 @@ class I18n(BasePlugin):
             config["theme"].dirs.insert(0, str(custom_i18n_sitemap_dir))
         return config
 
+    @plugins.event_priority(-100)
     def on_files(self, files, config):
         """
         Construct the main + lang specific file tree which will be used to
@@ -408,6 +383,7 @@ class I18n(BasePlugin):
                     )
         return translated
 
+    @plugins.event_priority(-100)
     def on_nav(self, nav, config, files):
         """
         Translate i18n aware navigation to honor the 'nav_translations' option.
@@ -474,6 +450,7 @@ class I18n(BasePlugin):
             self.i18n_configs[language]["env"] = env
         return env
 
+    @plugins.event_priority(-100)
     def on_page_markdown(self, markdown, page, config, files):
         """
         Use the 'page_markdown' event to translate page titles as well
@@ -489,6 +466,7 @@ class I18n(BasePlugin):
             self._maybe_translate_titles(page.locale, [page])
         return markdown
 
+    @plugins.event_priority(-100)
     def on_page_context(self, context, page, config, nav):
         """
         Make the language switcher contextual to the current page.
@@ -535,6 +513,7 @@ class I18n(BasePlugin):
 
         return context
 
+    @plugins.event_priority(-100)
     def on_post_page(self, output, page, config):
         """
         Some plugins we control ourselves need this event.
@@ -545,6 +524,7 @@ class I18n(BasePlugin):
             with_pdf_plugin.on_post_page(output, page, config)
         return output
 
+    @plugins.event_priority(-100)
     def on_post_build(self, config):
         """
         Derived from mkdocs commands build function.
