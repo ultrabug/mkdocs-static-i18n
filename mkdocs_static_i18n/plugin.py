@@ -11,7 +11,8 @@ from mkdocs.plugins import BasePlugin
 
 import mkdocs_static_i18n.folder_structure as folder_structure
 import mkdocs_static_i18n.suffix_structure as suffix_structure
-from mkdocs_static_i18n import __file__ as installation_path, utils
+from mkdocs_static_i18n import __file__ as installation_path
+from mkdocs_static_i18n import utils
 from mkdocs_static_i18n.structure import Locale
 
 try:
@@ -432,7 +433,9 @@ class I18n(BasePlugin):
         When this happens, we favor the default language location if its
         content is the same as its /language counterpart.
         """
-        attribute_name = "_entries" if hasattr(search_plugin.search_index, "_entries") else "entries"
+        attribute_name = (
+            "_entries" if hasattr(search_plugin.search_index, "_entries") else "entries"
+        )
         try:
             search_index_entries = getattr(search_plugin.search_index, attribute_name)
         except AttributeError:
