@@ -27,7 +27,7 @@
     {%- endif %}
         <changefreq>daily</changefreq>
     {%- for i18n_locale, i18n_alt in file.alternates.items() %}
-        {%- if not i18n_alt %}
+        {%- if not i18n_alt or i18n_locale == default_locale %}
             {%- continue %}
         {%- endif %}
 
@@ -52,8 +52,8 @@
     {%- endfor %}
     </url>
 
-    {%- for alternate in file.alternates.values() %}
-        {%- if not alternate %}
+    {%- for alternate_locale, alternate in file.alternates.items() %}
+        {%- if not alternate or alternate_locale == default_locale %}
             {%- continue %}
         {%- endif %}
 
@@ -82,7 +82,7 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="{{ default_locale }}" href="{{ default_href }}"/>
         {%- for i18n_locale, i18n_alt in file.alternates.items() %}
-            {%- if not i18n_alt %}
+            {%- if not i18n_alt or i18n_locale == default_locale %}
                 {%- continue %}
             {%- endif %}
 
