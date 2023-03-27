@@ -25,7 +25,7 @@ setup(
     platforms="any",
     packages=find_packages(),
     include_package_data=True,
-    install_requires=["mkdocs>=1.4.2"],
+    install_requires=["mkdocs>=1.2.4"],
     entry_points={"mkdocs.plugins": ["i18n = mkdocs_static_i18n.plugin:I18n"]},
     python_requires=">=3.7",
     classifiers=[

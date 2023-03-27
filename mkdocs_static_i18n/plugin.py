@@ -4,7 +4,18 @@ from copy import deepcopy
 from pathlib import Path
 
 from mkdocs import __version__ as mkdocs_version
-from mkdocs import plugins
+
+try:
+    from mkdocs.plugins import event_priority
+except ImportError:
+
+    def event_priority(priority):
+        def internal(func):
+            return func
+
+        return internal
+
+
 from mkdocs.commands.build import _build_page, _populate_page
 from mkdocs.config.config_options import Choice, Type
 from mkdocs.plugins import BasePlugin
@@ -180,7 +191,7 @@ class I18n(BasePlugin):
                 "site_name": config["site_name"],
             }
 
-    @plugins.event_priority(-100)
+    @event_priority(-100)
     def on_config(self, config, **kwargs):
         """
         Enrich configuration with language specific knowledge.
@@ -330,7 +341,7 @@ class I18n(BasePlugin):
             config["theme"].dirs.insert(0, str(custom_i18n_sitemap_dir))
         return config
 
-    @plugins.event_priority(-100)
+    @event_priority(-100)
     def on_files(self, files, config):
         """
         Construct the main + lang specific file tree which will be used to
@@ -385,7 +396,7 @@ class I18n(BasePlugin):
                     )
         return translated
 
-    @plugins.event_priority(-100)
+    @event_priority(-100)
     def on_nav(self, nav, config, files):
         """
         Translate i18n aware navigation to honor the 'nav_translations' option.
@@ -446,7 +457,7 @@ class I18n(BasePlugin):
                     )
                     search_index_entries.remove(duplicated_entry)
 
-    @plugins.event_priority(-100)
+    @event_priority(-100)
     def on_env(self, env, config, files, **kwargs):
         """
         Copy the main env because it can have been altered by hooks.
@@ -460,7 +471,7 @@ class I18n(BasePlugin):
             self.i18n_configs[language]["env"] = env
         return env
 
-    @plugins.event_priority(-100)
+    @event_priority(-100)
     def on_page_markdown(self, markdown, page, config, files):
         """
         Use the 'page_markdown' event to translate page titles as well
@@ -476,7 +487,7 @@ class I18n(BasePlugin):
             self._maybe_translate_titles(page.locale, [page])
         return markdown
 
-    @plugins.event_priority(-100)
+    @event_priority(-100)
     def on_page_context(self, context, page, config, nav):
         """
         Make the language switcher contextual to the current page.
@@ -523,7 +534,7 @@ class I18n(BasePlugin):
 
         return context
 
-    @plugins.event_priority(-100)
+    @event_priority(-100)
     def on_post_page(self, output, page, config):
         """
         Some plugins we control ourselves need this event.
@@ -534,7 +545,7 @@ class I18n(BasePlugin):
             with_pdf_plugin.on_post_page(output, page, config)
         return output
 
-    @plugins.event_priority(-100)
+    @event_priority(-100)
     def on_post_build(self, config):
         """
         Derived from mkdocs commands build function.

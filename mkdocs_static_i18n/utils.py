@@ -1,14 +1,13 @@
 """Utility functions that aren't limited to any scenario."""
 from typing import Dict, Optional, TypeVar
 
-from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.plugins import BasePlugin
 
 Plugin = TypeVar("Plugin", bound=BasePlugin)
 """Plugin Instance Type"""
 
 
-def get_plugin(name: str, config: MkDocsConfig) -> Optional[Plugin]:
+def get_plugin(name: str, config) -> Optional[Plugin]:
     """Returns a plugin instance"""
 
     plugins: Dict[str, BasePlugin] = config["plugins"]
