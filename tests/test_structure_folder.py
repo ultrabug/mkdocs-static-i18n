@@ -5,35 +5,37 @@ from mkdocs.config.base import load_config
 
 USE_DIRECTORY_URLS = [
     Path("404.html"),
-    Path("image.en.png"),
-    Path("image.fr.png"),
+    Path("assets/image_non_localized.png"),
+    Path("french_only/index.fr/index.html"),
     Path("image.en.fake"),
+    Path("image.en.png"),
     Path("image.fr.fake"),
+    Path("image.fr.png"),
     Path("index.fr/index.html"),
     Path("index.html"),
-    Path("assets/image_non_localized.png"),
     Path("topic1/named_file.en/index.html"),
     Path("topic1/named_file.fr/index.html"),
-    Path("topic2/README.en/index.html"),
-    Path("topic2/index.html"),
     Path("topic2/1.1.filename.fr.html"),
     Path("topic2/1.1.filename.html"),
+    Path("topic2/index.html"),
+    Path("topic2/README.fr/index.html"),
 ]
 NO_USE_DIRECTORY_URLS = [
     Path("404.html"),
-    Path("image.en.png"),
-    Path("image.fr.png"),
+    Path("assets/image_non_localized.png"),
+    Path("french_only/index.fr.html"),
     Path("image.en.fake"),
+    Path("image.en.png"),
     Path("image.fr.fake"),
+    Path("image.fr.png"),
     Path("index.fr.html"),
     Path("index.html"),
-    Path("assets/image_non_localized.png"),
     Path("topic1/named_file.en.html"),
     Path("topic1/named_file.fr.html"),
-    Path("topic2/README.en.html"),
-    Path("topic2/index.html"),
     Path("topic2/1.1.filename.fr.html"),
     Path("topic2/1.1.filename.html"),
+    Path("topic2/index.html"),
+    Path("topic2/README.fr.html"),
 ]
 
 
@@ -78,13 +80,6 @@ PLUGIN_USE_DIRECTORY_URLS = [
     Path("topic1/named_file/index.html"),
     Path("topic2/index.html"),
     Path("topic2/1.1.filename.html"),
-    Path("en/index.html"),
-    Path("en/image.png"),
-    Path("en/image.fake"),
-    Path("en/assets/image_non_localized.png"),
-    Path("en/topic1/named_file/index.html"),
-    Path("en/topic2/index.html"),
-    Path("en/topic2/1.1.filename.html"),
     Path("fr/index.html"),
     Path("fr/image.png"),
     Path("fr/image.fake"),
@@ -92,6 +87,7 @@ PLUGIN_USE_DIRECTORY_URLS = [
     Path("fr/topic1/named_file/index.html"),
     Path("fr/topic2/index.html"),
     Path("fr/topic2/1.1.filename.html"),
+    Path("fr/french_only/index.html"),
 ]
 PLUGIN_NO_USE_DIRECTORY_URLS = [
     Path("404.html"),
@@ -102,13 +98,6 @@ PLUGIN_NO_USE_DIRECTORY_URLS = [
     Path("topic1/named_file.html"),
     Path("topic2/index.html"),
     Path("topic2/1.1.filename.html"),
-    Path("en/index.html"),
-    Path("en/image.png"),
-    Path("en/image.fake"),
-    Path("en/assets/image_non_localized.png"),
-    Path("en/topic1/named_file.html"),
-    Path("en/topic2/index.html"),
-    Path("en/topic2/1.1.filename.html"),
     Path("fr/index.html"),
     Path("fr/image.png"),
     Path("fr/image.fake"),
@@ -116,6 +105,7 @@ PLUGIN_NO_USE_DIRECTORY_URLS = [
     Path("fr/topic1/named_file.html"),
     Path("fr/topic2/index.html"),
     Path("fr/topic2/1.1.filename.html"),
+    Path("fr/french_only/index.html"),
 ]
 
 
@@ -128,8 +118,10 @@ def test_plugin_use_directory_urls():
         plugins={
             "search": {},
             "i18n": {
-                "default_language": "en",
-                "languages": {"fr": "français", "en": "english"},
+                "languages": {
+                    "en": {"name": "english", "default": True},
+                    "fr": {"name": "français"},
+                },
             },
         },
     )
@@ -151,8 +143,10 @@ def test_plugin_use_directory_urls_static_nav():
         plugins={
             "search": {},
             "i18n": {
-                "default_language": "en",
-                "languages": {"fr": "français", "en": "english"},
+                "languages": {
+                    "en": {"name": "english", "default": True},
+                    "fr": {"name": "français"},
+                },
             },
         },
         nav=[
@@ -179,9 +173,11 @@ def test_plugin_use_directory_urls_per_folder():
         plugins={
             "search": {},
             "i18n": {
-                "default_language": "en",
                 "docs_structure": "folder",
-                "languages": {"fr": "français", "en": "english"},
+                "languages": {
+                    "en": {"name": "english", "default": True},
+                    "fr": {"name": "français"},
+                },
             },
         },
     )
@@ -203,9 +199,11 @@ def test_plugin_use_directory_urls_per_folder_static_nav():
         plugins={
             "search": {},
             "i18n": {
-                "default_language": "en",
                 "docs_structure": "folder",
-                "languages": {"fr": "français", "en": "english"},
+                "languages": {
+                    "en": {"name": "english", "default": True},
+                    "fr": {"name": "français"},
+                },
             },
         },
         nav=[
@@ -232,8 +230,10 @@ def test_plugin_no_use_directory_urls():
         plugins={
             "search": {},
             "i18n": {
-                "default_language": "en",
-                "languages": {"fr": "français", "en": "english"},
+                "languages": {
+                    "en": {"name": "english", "default": True},
+                    "fr": {"name": "français"},
+                },
             },
         },
     )
@@ -255,9 +255,11 @@ def test_plugin_no_use_directory_urls_per_folder():
         plugins={
             "search": {},
             "i18n": {
-                "default_language": "en",
                 "docs_structure": "folder",
-                "languages": {"fr": "français", "en": "english"},
+                "languages": {
+                    "en": {"name": "english", "default": True},
+                    "fr": {"name": "français"},
+                },
             },
         },
     )

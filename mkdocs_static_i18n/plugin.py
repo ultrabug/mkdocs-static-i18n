@@ -189,6 +189,7 @@ class I18n(BasePlugin):
         # the site_dir to be cleaned up on each build() call
         from mkdocs import utils
 
+        mkdocs_utils_clean_directory = utils.clean_directory
         utils.clean_directory = lambda x: x
 
         for locale in self.build_languages:
@@ -207,3 +208,7 @@ class I18n(BasePlugin):
                     f"{locale}/{with_pdf_output_path}"
                 ).as_posix()
                 with_pdf_plugin.on_post_build(config)
+
+        # remove monkey patching in case some other builds are triggered
+        # on the same site (tests, ci...)
+        utils.clean_directory = mkdocs_utils_clean_directory

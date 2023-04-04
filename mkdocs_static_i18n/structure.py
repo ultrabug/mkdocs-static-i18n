@@ -17,9 +17,6 @@ class Locale(Type):
     """
 
     def _validate_locale(self, value):
-        # we allow the special case of the default language
-        if value == "default":
-            return
         if not RE_LOCALE.match(value):
             raise ValidationError(
                 "Language code values must be either ISO-639-1 lower case "
@@ -76,7 +73,8 @@ class Locale(Type):
                 self._validate_locale(lang_key)
                 languages[lang_key] = self._get_lang_dict_value(lang_key, lang_values)
                 default_count += int(languages[lang_key]["default"])
-            assert default_count < 2
+            if default_count != 1:
+                raise Exception("languages should contain one 'default: true' option")
             value = languages
         else:
             raise Exception("languages should be a dict")

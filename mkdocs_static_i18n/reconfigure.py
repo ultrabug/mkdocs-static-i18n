@@ -289,7 +289,7 @@ def reconfigure_page_context(i18n_plugin, context, page, i18n_config, nav):
         if PurePath(page.url) == PurePath("."):
             return context
         alternates = []
-        for current_alternate in i18n_config["extra"]["alternate"]:
+        for current_alternate in i18n_config["extra"].get("alternate", {}):
             new_alternate = {}
             new_alternate.update(**current_alternate)
             # page is part of the localized language path

@@ -42,6 +42,10 @@ def reconfigure_file(
             if file_dest_path.parent.name in ["index", "README"]:
                 file_dest_path = file_dest_path.parent.parent / file_dest_path.name
 
+    # README.html should be renamed to index.html
+    if file_dest_path.name.endswith("README.html"):
+        file_dest_path = file_dest_path.with_name("index.html")
+
     if locale_site_dir:
         file.dest_path = Path(locale_site_dir) / file_dest_path
     else:
