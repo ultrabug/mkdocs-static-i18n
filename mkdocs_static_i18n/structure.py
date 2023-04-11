@@ -54,13 +54,13 @@ class Locale(Type):
                 lang_config[key] = value
             for key, expected_type in validate_types.items():
                 if type(lang_config.get(key)) not in [type(None), expected_type]:
-                    raise Exception(
+                    raise ValidationError(
                         f"language config {key} unexpected type {type(lang_config.get(key))}"
                     )
             if lang_config["default"] is True:
                 lang_config["link"] = "./"
         else:
-            raise Exception("language config should be a dict")
+            raise ValidationError("language config should be a dict")
         return lang_config
 
     def run_validation(self, value):
@@ -74,8 +74,10 @@ class Locale(Type):
                 languages[lang_key] = self._get_lang_dict_value(lang_key, lang_values)
                 default_count += int(languages[lang_key]["default"])
             if default_count != 1:
-                raise Exception("languages should contain one 'default: true' option")
+                raise ValidationError(
+                    "languages should contain one 'default: true' option"
+                )
             value = languages
         else:
-            raise Exception("languages should be a dict")
+            raise ValidationError("languages should be a dict")
         return value
