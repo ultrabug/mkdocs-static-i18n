@@ -65,7 +65,6 @@ class I18n(BasePlugin):
         self.i18n_dest_uris = {}
         self.i18n_configs = {}
         self.i18n_files = defaultdict(list)
-        self.i18n_navs = {}
         self.material_alternates = None
         self.search_plugin = (None, None)
         self.site_dir = None

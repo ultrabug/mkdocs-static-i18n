@@ -242,9 +242,29 @@ def reconfigure_navigation(i18n_plugin, nav, mkdocs_config, i18n_files):
         if hasattr(item, "title") and item.title in nav_translations:
             item.title = nav_translations[item.title]
             translated_items += 1
+        # translation should be recursive to children
+        if hasattr(item, "children") and item.children:
+            reconfigure_navigation(
+                i18n_plugin, item.children, mkdocs_config, i18n_files
+            )
         # is that the localized content homepage?
-        if nav.homepage is None and hasattr(item, "url") and item.url:
-            if item.url == f"{i18n_plugin.current_language}/":
+        if (
+            hasattr(nav, "homepage")
+            and nav.homepage is None
+            and hasattr(item, "url")
+            and item.url
+        ):
+            if mkdocs_config.use_directory_urls is True:
+                expected_homepage_urls = [
+                    f"{i18n_plugin.current_language}/",
+                    f"/{i18n_plugin.current_language}/",
+                ]
+            else:
+                expected_homepage_urls = [
+                    f"{i18n_plugin.current_language}/index.html",
+                    f"/{i18n_plugin.current_language}/index.html",
+                ]
+            if item.url in expected_homepage_urls:
                 nav.homepage = item
     if translated_items:
         log.info(
@@ -252,7 +272,7 @@ def reconfigure_navigation(i18n_plugin, nav, mkdocs_config, i18n_files):
             f"{'s' if translated_items > 1 else ''} to '{i18n_plugin.current_language}'"
         )
     # report missing homepage
-    if nav.homepage is None:
+    if hasattr(nav, "homepage") and nav.homepage is None:
         log.warning(
             f"Could not find a homepage for locale '{i18n_plugin.current_language}'"
         )
