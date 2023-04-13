@@ -139,7 +139,6 @@ def test_plugin_translated_nav():
         nav = get_navigation(files, config)
         nav = i18n_plugin.on_nav(nav, config, files)
         for page in nav.pages:
-            print(page)
             assert page.title in TRANSLATED_NAV_DIRECTORY_URLS[language]
             assert page.abs_url == TRANSLATED_NAV_DIRECTORY_URLS[language][page.title]
         assert nav.homepage is not None
