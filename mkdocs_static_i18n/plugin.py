@@ -51,7 +51,7 @@ class I18n(BasePlugin):
         ("fallback_to_default", Type(bool, default=True, required=False)),
         ("languages", Locale(dict, required=True)),
         ("material_alternate", Type(bool, default=True, required=False)),
-        ("search_reconfigure", Type(bool, default=True, required=False)),
+        ("reconfigure_search", Type(bool, default=True, required=False)),
     )
 
     def __init__(self, *args, **kwargs):
@@ -62,11 +62,11 @@ class I18n(BasePlugin):
         self.current_language = None
         self.default_language = None
         self.i18n_alternates = {}
-        self.i18n_dest_uris = {}
         self.i18n_configs = {}
+        self.i18n_dest_uris = {}
         self.i18n_files = defaultdict(list)
         self.material_alternates = None
-        self.search_plugin = (None, None)
+        self.search_entries = []
         self.site_dir = None
 
     @property
@@ -74,7 +74,7 @@ class I18n(BasePlugin):
         return self.current_language == self.default_language
 
     @plugins.event_priority(-100)
-    def on_config(self, config: MkDocsConfig, **kwargs):
+    def on_config(self, config: MkDocsConfig):
         """
         Enrich configuration with language specific knowledge.
         """
@@ -173,6 +173,10 @@ class I18n(BasePlugin):
         """
         We build every language on its own directory.
         """
+
+        # memorize locale search entries
+        reconfigure.extend_search_entries(self, config)
+
         if self.building is False:
             self.building = True
         else:
@@ -207,6 +211,9 @@ class I18n(BasePlugin):
                     f"{locale}/{with_pdf_output_path}"
                 ).as_posix()
                 with_pdf_plugin.on_post_build(config)
+
+        # rebuild and deduplicate the search index
+        reconfigure.reconfigure_search_index(self, config)
 
         # remove monkey patching in case some other builds are triggered
         # on the same site (tests, ci...)

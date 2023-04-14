@@ -12,7 +12,7 @@ def test_plugin_single_language_en():
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
     )
-    result = plugin.on_config(config, force=True)
+    result = plugin.on_config(config)
     assert str(result["theme"]["locale"]) == "en"
 
 
@@ -25,7 +25,7 @@ def test_plugin_single_language_fr():
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
     )
-    result = plugin.on_config(config, force=True)
+    result = plugin.on_config(config)
     assert str(result["theme"]["locale"]) == "fr"
 
 
@@ -38,5 +38,5 @@ def test_plugin_theme_sitemap():
         use_directory_urls=True,
         docs_dir="docs_suffix_structure/",
     )
-    result = plugin.on_config(config, force=True)
+    result = plugin.on_config(config)
     assert result["theme"].dirs[0].endswith("custom_i18n_sitemap")

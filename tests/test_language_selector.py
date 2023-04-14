@@ -18,7 +18,7 @@ def test_plugin_language_selector_use_directory_urls():
         },
     )
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
-    result = i18n_plugin.on_config(mkdocs_config, force=True)
+    result = i18n_plugin.on_config(mkdocs_config)
     assert result["extra"]["alternate"] == [
         {"name": "english", "link": "./", "fixed_link": None, "lang": "en"},
         {"name": "français", "link": "./fr/", "fixed_link": None, "lang": "fr"},
@@ -41,7 +41,7 @@ def test_plugin_language_selector_no_use_directory_urls():
         },
     )
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
-    result = i18n_plugin.on_config(mkdocs_config, force=True)
+    result = i18n_plugin.on_config(mkdocs_config)
     assert result["extra"]["alternate"] == [
         {"name": "english", "link": "./index.html", "fixed_link": None, "lang": "en"},
         {
@@ -97,7 +97,7 @@ def test_plugin_language_selector_single_default_language():
         },
     )
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
-    result = i18n_plugin.on_config(mkdocs_config, force=True)
+    result = i18n_plugin.on_config(mkdocs_config)
     assert result["extra"] == {}
 
 
@@ -116,7 +116,7 @@ def test_plugin_language_selector_fixed_link():
         },
     )
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
-    result = i18n_plugin.on_config(mkdocs_config, force=True)
+    result = i18n_plugin.on_config(mkdocs_config)
     assert result["extra"]["alternate"] == [
         {"name": "english", "link": "./", "fixed_link": "/en", "lang": "en"},
         {"name": "français", "link": "./fr/", "fixed_link": "/fr", "lang": "fr"},

@@ -4,6 +4,7 @@ from mkdocs.commands.build import build
 from mkdocs.config.base import load_config
 
 USE_DIRECTORY_URLS = [
+    Path('english_default/index.en/index.html'),
     Path("404.html"),
     Path("assets/image_non_localized.png"),
     Path("french_only/index.fr/index.html"),
@@ -21,6 +22,7 @@ USE_DIRECTORY_URLS = [
     Path("topic2/README.fr/index.html"),
 ]
 NO_USE_DIRECTORY_URLS = [
+    Path('english_default/index.en.html'),
     Path("404.html"),
     Path("assets/image_non_localized.png"),
     Path("french_only/index.fr.html"),
@@ -72,6 +74,7 @@ def test_build_no_use_directory_urls():
 
 
 PLUGIN_USE_DIRECTORY_URLS = [
+    Path('english_default/index.html'),
     Path("404.html"),
     Path("image.png"),
     Path("image.fake"),
@@ -84,12 +87,14 @@ PLUGIN_USE_DIRECTORY_URLS = [
     Path("fr/image.png"),
     Path("fr/image.fake"),
     Path("fr/assets/image_non_localized.png"),
+    Path('fr/english_default/index.html'),
     Path("fr/topic1/named_file/index.html"),
     Path("fr/topic2/index.html"),
     Path("fr/topic2/1.1.filename.html"),
     Path("fr/french_only/index.html"),
 ]
 PLUGIN_NO_USE_DIRECTORY_URLS = [
+    Path('english_default/index.html'),
     Path("404.html"),
     Path("image.png"),
     Path("image.fake"),
@@ -102,6 +107,7 @@ PLUGIN_NO_USE_DIRECTORY_URLS = [
     Path("fr/image.png"),
     Path("fr/image.fake"),
     Path("fr/assets/image_non_localized.png"),
+    Path('fr/english_default/index.html'),
     Path("fr/topic1/named_file.html"),
     Path("fr/topic2/index.html"),
     Path("fr/topic2/1.1.filename.html"),
@@ -195,6 +201,7 @@ PLUGIN_USE_DIRECTORY_URLS_DEFAULT_ONLY = [
     Path("image.fake"),
     Path("index.html"),
     Path("assets/image_non_localized.png"),
+    Path('english_default/index.html'),
     Path("topic1/named_file/index.html"),
     Path("topic2/index.html"),
     Path("topic2/1.1.filename.html"),
@@ -205,6 +212,7 @@ PLUGIN_NO_USE_DIRECTORY_URLS_DEFAULT_ONLY = [
     Path("image.fake"),
     Path("index.html"),
     Path("assets/image_non_localized.png"),
+    Path('english_default/index.html'),
     Path("topic1/named_file.html"),
     Path("topic2/index.html"),
     Path("topic2/1.1.filename.html"),

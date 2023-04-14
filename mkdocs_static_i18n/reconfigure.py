@@ -192,7 +192,7 @@ def reconfigure_search_plugin(
     search_plugin,
 ):
     # search plugin reconfiguration can be disabled
-    if plugin_config["search_reconfigure"]:
+    if plugin_config["reconfigure_search"]:
         search_langs = search_plugin.config["lang"] or []
         for language in build_languages:
             if language in LUNR_LANGUAGES:
@@ -388,3 +388,82 @@ def reconfigure_alternates(self):
                         ][expected_dest_uri]
             i18n_file.alternates = alternates
     return self.i18n_alternates
+
+
+def extend_search_entries(self, mkdocs_config: MkDocsConfig):
+    """
+    Stack up search plugin entries as we build languages one after the other
+    and deduplicate entries at the same time.
+    """
+    for name, plugin in mkdocs_config.plugins.items():
+        if name in ["search", "material/search"]:
+            if hasattr(plugin, "search_index"):
+                entries = getattr(plugin.search_index, "entries", None) or getattr(
+                    plugin.search_index, "_entries"
+                )
+                self.search_entries.extend(entries)
+
+
+def reconfigure_search_duplicates(self, search_index_entries):
+    """
+    We want to avoid indexing the same pages twice if the default language
+    has its own version built as well as the /language version too as this
+    would pollute the search results.
+    When this happens, we favor the default language location if its
+    content is the same as its /language counterpart.
+    """
+    default_lang_entries = filter(
+        lambda x: not x["location"].startswith(
+            tuple([f"{lang}/" for lang in self.build_languages])
+        ),
+        search_index_entries,
+    )
+    target_lang_entries = list(
+        filter(
+            lambda x: x["location"].startswith(
+                tuple([f"{lang}/" for lang in self.build_languages])
+            ),
+            search_index_entries,
+        )
+    )
+    for default_lang_entry in default_lang_entries:
+        duplicated_entries = filter(
+            lambda x: x["title"] == default_lang_entry["title"]
+            and x["location"].endswith(x["location"])
+            and x["text"] == default_lang_entry["text"],
+            target_lang_entries,
+        )
+        for duplicated_entry in duplicated_entries:
+            if duplicated_entry in search_index_entries:
+                log.debug(
+                    f"removed duplicated search entry: {duplicated_entry['title']} "
+                    f"{duplicated_entry['location']}"
+                )
+                search_index_entries.remove(duplicated_entry)
+
+
+def reconfigure_search_index(self, mkdocs_config: MkDocsConfig):
+    """
+    Stack up search plugin entries as we build languages one after the other
+    and deduplicate entries at the same time.
+    """
+    for name, plugin in mkdocs_config.plugins.items():
+        if name in ["search", "material/search"]:
+            attribute_name = (
+                "_entries" if hasattr(plugin.search_index, "_entries") else "entries"
+            )
+            try:
+                search_index_entries = getattr(plugin.search_index, attribute_name)
+            except AttributeError:
+                log.warning(
+                    f"Can't access the search index entries in {name} ({attribute_name})."
+                )
+                return
+            # clear and repopulate the search index
+            search_index_entries.clear()
+            search_index_entries.extend(self.search_entries)
+            # remove search index duplicates
+            if self.config["reconfigure_search"]:
+                reconfigure_search_duplicates(self, search_index_entries)
+            # run the post_build event to rebuild the search index
+            plugin.on_post_build(config=mkdocs_config)
