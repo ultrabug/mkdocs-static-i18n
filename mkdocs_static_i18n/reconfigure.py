@@ -22,6 +22,7 @@ try:
         if "mkdocs/contrib/search/lunr-language/lunr." in lang.as_posix()
         and len(lang.stem) == 7
     ]
+    assert len(LUNR_LANGUAGES) > 1
 except Exception:
     LUNR_LANGUAGES = [
         "ar",
