@@ -1,17 +1,14 @@
 import logging
-from collections import defaultdict
 from pathlib import PurePath
 
 from jinja2.ext import loopcontrols
 from mkdocs import plugins
 from mkdocs.commands.build import build
-from mkdocs.config.config_options import Choice, Type
 from mkdocs.config.defaults import MkDocsConfig
-from mkdocs.plugins import BasePlugin
 from mkdocs.structure.files import Files
 
-from mkdocs_static_i18n import reconfigure, suffix
-from mkdocs_static_i18n.structure import Locale
+from mkdocs_static_i18n import suffix
+from mkdocs_static_i18n.reconfigure import ExtendedPlugin
 
 try:
     import pkg_resources
@@ -32,7 +29,7 @@ log = logging.getLogger("mkdocs.plugins." + __name__)
 MKDOCS_THEMES = ["mkdocs", "readthedocs"]
 
 
-class I18n(BasePlugin):
+class I18n(ExtendedPlugin):
     """
     We use 'event_priority' to make sure that we are last plugin to be executed
     because we need to make sure that we react to other plugins' behavior
@@ -42,32 +39,6 @@ class I18n(BasePlugin):
         - awesome-pages: this plugin should run before us
         - with-pdf: this plugin is triggerd by us on the appropriate on_* events
     """
-
-    config_scheme = (
-        (
-            "docs_structure",
-            Choice(["folder", "suffix"], default="suffix", required=False),
-        ),
-        ("fallback_to_default", Type(bool, default=True, required=False)),
-        ("languages", Locale(dict, required=True)),
-        ("material_alternate", Type(bool, default=True, required=False)),
-        ("reconfigure_search", Type(bool, default=True, required=False)),
-    )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.all_languages = None
-        self.build_languages = None
-        self.building = False
-        self.current_language = None
-        self.default_language = None
-        self.i18n_alternates = {}
-        self.i18n_configs = {}
-        self.i18n_dest_uris = {}
-        self.i18n_files = defaultdict(list)
-        self.material_alternates = None
-        self.search_entries = []
-        self.site_dir = None
 
     @property
     def is_default_language_build(self):
@@ -80,16 +51,16 @@ class I18n(BasePlugin):
         """
         # first execution, setup defaults
         if self.default_language is None:
-            self.default_language = reconfigure.get_default_language(self.config)
+            self.default_language = self.get_default_language(self.config)
         if self.current_language is None:
             self.current_language = self.default_language
         if self.all_languages is None:
             self.all_languages = [locale for locale in self.config["languages"].keys()]
         if self.build_languages is None:
-            self.build_languages = reconfigure.get_languages_to_build(
+            self.build_languages = self.get_languages_to_build(
                 self.config, self.all_languages
             )
-        return reconfigure.reconfigure_mkdocs_config(self, config)
+        return self.reconfigure_mkdocs_config(config)
 
     @plugins.event_priority(-100)
     def on_files(self, files: Files, config: MkDocsConfig):
@@ -106,7 +77,7 @@ class I18n(BasePlugin):
         # keep a reference of the i18n_files to build the alterntes for
         self.i18n_alternates[self.current_language] = i18n_files
         # reconfigure the alternates map by build language
-        self.i18n_alternates = reconfigure.reconfigure_alternates(self)
+        self.i18n_alternates = self.reconfigure_alternates()
         return i18n_files
 
     @plugins.event_priority(-100)
@@ -114,7 +85,7 @@ class I18n(BasePlugin):
         """
         Translate i18n aware navigation to honor the 'nav_translations' option.
         """
-        i18n_nav = reconfigure.reconfigure_navigation(self, nav, config, files)
+        i18n_nav = self.reconfigure_navigation(nav, config, files)
 
         # manually trigger with-pdf, see #110
         with_pdf_plugin = config["plugins"].get("with-pdf")
@@ -154,7 +125,7 @@ class I18n(BasePlugin):
         # export some useful i18n related variables on page context, see #75
         context["i18n_config"] = self.config
         context["i18n_page_locale"] = page.file.locale
-        context = reconfigure.reconfigure_page_context(self, context, page, config, nav)
+        context = self.reconfigure_page_context(context, page, config, nav)
         return context
 
     @plugins.event_priority(-100)
@@ -175,7 +146,7 @@ class I18n(BasePlugin):
         """
 
         # memorize locale search entries
-        reconfigure.extend_search_entries(self, config)
+        self.extend_search_entries(config)
 
         if self.building is False:
             self.building = True
@@ -213,7 +184,7 @@ class I18n(BasePlugin):
                 with_pdf_plugin.on_post_build(config)
 
         # rebuild and deduplicate the search index
-        reconfigure.reconfigure_search_index(self, config)
+        self.reconfigure_search_index(config)
 
         # remove monkey patching in case some other builds are triggered
         # on the same site (tests, ci...)
