@@ -108,7 +108,16 @@ def on_files(self, files, config):
     i18n_files = I18nFiles(self, [])
     for file in files:
         # documentation files
-        if Path(file.abs_src_path).is_relative_to(config.docs_dir):
+        try:
+            is_docs_file = Path(file.abs_src_path).is_relative_to(config.docs_dir)
+        except AttributeError:
+            # python < 3.9 compat
+            try:
+                Path(file.abs_src_path).relative_to(config.docs_dir)
+                is_docs_file = True
+            except ValueError:
+                is_docs_file = False
+        if is_docs_file:
             i18n_file = reconfigure_file(
                 file,
                 self.current_language,
