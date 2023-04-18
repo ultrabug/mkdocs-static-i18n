@@ -11,13 +11,13 @@ from mkdocs_static_i18n import suffix
 from mkdocs_static_i18n.reconfigure import ExtendedPlugin
 
 try:
-    import pkg_resources
+    from importlib.metadata import files, version
 
-    material_dist = pkg_resources.get_distribution("mkdocs-material")
-    material_version = material_dist.version
+    material_version = version("mkdocs-material")
     material_languages = [
-        lang.split(".html")[0]
-        for lang in material_dist.resource_listdir("material/partials/languages")
+        lang.stem
+        for lang in files("mkdocs-material")
+        if "material/partials/languages" in lang.as_posix()
     ]
 except Exception:
     material_languages = []
