@@ -12,10 +12,14 @@ def test_search_entries():
             plugins={
                 "search": {},
                 "i18n": {
-                    "languages": {
-                        "en": {"name": "english", "default": True},
-                        "fr": {"name": "français"},
-                    },
+                    "languages": [
+                        {
+                            "locale": "en",
+                            "name": "english",
+                            "default": True,
+                        },
+                        {"locale": "fr", "name": "français"},
+                    ],
                 },
             },
         )
@@ -41,10 +45,14 @@ def test_search_entries_no_directory_urls():
         plugins={
             "search": {},
             "i18n": {
-                "languages": {
-                    "en": {"name": "english", "default": True},
-                    "fr": {"name": "français"},
-                },
+                "languages": [
+                    {
+                        "locale": "en",
+                        "name": "english",
+                        "default": True,
+                    },
+                    {"locale": "fr", "name": "français"},
+                ],
             },
         },
     )
@@ -63,10 +71,14 @@ def test_search_entries_no_reconfigure():
             "search": {},
             "i18n": {
                 "reconfigure_search": False,
-                "languages": {
-                    "en": {"name": "english", "default": True},
-                    "fr": {"name": "français"},
-                },
+                "languages": [
+                    {
+                        "locale": "en",
+                        "name": "english",
+                        "default": True,
+                    },
+                    {"locale": "fr", "name": "français"},
+                ],
             },
         },
     )
@@ -84,10 +96,14 @@ def test_search_add_lang():
         plugins={
             "search": {},
             "i18n": {
-                "languages": {
-                    "en": {"name": "english", "default": True},
-                    "fr": {"name": "français"},
-                },
+                "languages": [
+                    {
+                        "locale": "en",
+                        "name": "english",
+                        "default": True,
+                    },
+                    {"locale": "fr", "name": "français"},
+                ],
             },
         },
     )
@@ -108,10 +124,14 @@ def test_search_add_missing_lang():
             },
             "i18n": {
                 "reconfigure_search": True,
-                "languages": {
-                    "en": {"name": "english", "default": True},
-                    "fr": {"name": "français"},
-                },
+                "languages": [
+                    {
+                        "locale": "en",
+                        "name": "english",
+                        "default": True,
+                    },
+                    {"locale": "fr", "name": "français"},
+                ],
             },
         },
     )
@@ -132,10 +152,14 @@ def test_search_no_add_lang():
             },
             "i18n": {
                 "reconfigure_search": False,
-                "languages": {
-                    "en": {"name": "english", "default": True},
-                    "fr": {"name": "français"},
-                },
+                "languages": [
+                    {
+                        "locale": "en",
+                        "name": "english",
+                        "default": True,
+                    },
+                    {"locale": "fr", "name": "français"},
+                ],
             },
         },
     )

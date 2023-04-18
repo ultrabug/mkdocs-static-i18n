@@ -34,15 +34,19 @@ def test_plugin_static_nav():
         ],
         plugins={
             "i18n": {
-                "languages": {
-                    "en": {"name": "english", "default": True},
-                    "fr": {"name": "français"},
-                },
+                "languages": [
+                    {
+                        "locale": "en",
+                        "name": "english",
+                        "default": True,
+                    },
+                    {"locale": "fr", "name": "français"},
+                ],
             },
         },
     )
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
-    for language in i18n_plugin.config["languages"]:
+    for language in i18n_plugin.all_languages:
         config = i18n_plugin.on_config(mkdocs_config)
         #
         i18n_plugin.current_language = language
@@ -71,15 +75,19 @@ def test_plugin_static_nav_no_directory():
         ],
         plugins={
             "i18n": {
-                "languages": {
-                    "en": {"name": "english", "default": True},
-                    "fr": {"name": "français"},
-                },
+                "languages": [
+                    {
+                        "locale": "en",
+                        "name": "english",
+                        "default": True,
+                    },
+                    {"locale": "fr", "name": "français"},
+                ],
             },
         },
     )
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
-    for language in i18n_plugin.config["languages"]:
+    for language in i18n_plugin.all_languages:
         config = i18n_plugin.on_config(mkdocs_config)
         #
         i18n_plugin.current_language = language
@@ -108,8 +116,9 @@ def test_plugin_translated_nav():
         ],
         plugins={
             "i18n": {
-                "languages": {
-                    "en": {
+                "languages": [
+                    {
+                        "locale": "en",
                         "default": True,
                         "name": "english",
                         "nav_translations": {
@@ -117,19 +126,20 @@ def test_plugin_translated_nav():
                             "Named File": "Renamed File",
                         },
                     },
-                    "fr": {
+                    {
+                        "locale": "fr",
                         "name": "français",
                         "nav_translations": {
                             "Home": "Accueil",
                             "Named File": "Fichier Nommé",
                         },
                     },
-                },
+                ],
             },
         },
     )
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
-    for language in i18n_plugin.config["languages"]:
+    for language in i18n_plugin.all_languages:
         config = i18n_plugin.on_config(mkdocs_config)
         #
         i18n_plugin.current_language = language
@@ -158,8 +168,9 @@ def test_plugin_translated_nav_no_directory():
         ],
         plugins={
             "i18n": {
-                "languages": {
-                    "en": {
+                "languages": [
+                    {
+                        "locale": "en",
                         "default": True,
                         "name": "english",
                         "nav_translations": {
@@ -167,19 +178,20 @@ def test_plugin_translated_nav_no_directory():
                             "Named File": "Renamed File",
                         },
                     },
-                    "fr": {
+                    {
+                        "locale": "fr",
                         "name": "français",
                         "nav_translations": {
                             "Home": "Accueil",
                             "Named File": "Fichier Nommé",
                         },
                     },
-                },
+                ],
             },
         },
     )
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
-    for language in i18n_plugin.config["languages"]:
+    for language in i18n_plugin.all_languages:
         config = i18n_plugin.on_config(mkdocs_config)
         #
         i18n_plugin.current_language = language

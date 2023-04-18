@@ -124,10 +124,14 @@ def test_plugin_use_directory_urls():
         plugins={
             "search": {},
             "i18n": {
-                "languages": {
-                    "en": {"name": "english", "default": True},
-                    "fr": {"name": "français"},
-                },
+                "languages": [
+                    {
+                        "locale": "en",
+                        "name": "english",
+                        "default": True,
+                    },
+                    {"locale": "fr", "name": "français"},
+                ],
             },
         },
     )
@@ -149,10 +153,14 @@ def test_plugin_use_directory_urls_static_nav():
         plugins={
             "search": {},
             "i18n": {
-                "languages": {
-                    "en": {"name": "english", "default": True},
-                    "fr": {"name": "français"},
-                },
+                "languages": [
+                    {
+                        "locale": "en",
+                        "name": "english",
+                        "default": True,
+                    },
+                    {"locale": "fr", "name": "français"},
+                ],
             },
         },
         nav=[
@@ -179,10 +187,14 @@ def test_plugin_no_use_directory_urls():
         plugins={
             "search": {},
             "i18n": {
-                "languages": {
-                    "en": {"name": "english", "default": True},
-                    "fr": {"name": "français"},
-                },
+                "languages": [
+                    {
+                        "locale": "en",
+                        "name": "english",
+                        "default": True,
+                    },
+                    {"locale": "fr", "name": "français"},
+                ],
             },
         },
     )
@@ -228,10 +240,14 @@ def test_plugin_use_directory_urls_default_language_only():
         plugins={
             "search": {},
             "i18n": {
-                "languages": {
-                    "fr": {"name": "français", "build": False},
-                    "en": {"name": "english", "default": True},
-                },
+                "languages": [
+                    {
+                        "locale": "en",
+                        "name": "english",
+                        "default": True,
+                    },
+                    {"locale": "fr", "name": "français", "build": False},
+                ],
             },
         },
     )
@@ -253,10 +269,14 @@ def test_plugin_no_use_directory_urls_default_language_only():
         plugins={
             "search": {},
             "i18n": {
-                "languages": {
-                    "fr": {"name": "français", "build": False},
-                    "en": {"name": "english", "default": True},
-                },
+                "languages": [
+                    {
+                        "locale": "en",
+                        "name": "english",
+                        "default": True,
+                    },
+                    {"locale": "fr", "name": "français", "build": False},
+                ],
             },
         },
     )

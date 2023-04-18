@@ -10,10 +10,10 @@ def test_plugin_language_selector_use_directory_urls():
         docs_dir="docs_suffix_structure/",
         plugins={
             "i18n": {
-                "languages": {
-                    "en": {"name": "english", "default": True},
-                    "fr": {"name": "français"},
-                },
+                "languages": [
+                    {"locale": "en", "name": "english", "default": True},
+                    {"locale": "fr", "name": "français"},
+                ],
             },
         },
     )
@@ -33,10 +33,10 @@ def test_plugin_language_selector_no_use_directory_urls():
         docs_dir="docs_suffix_structure/",
         plugins={
             "i18n": {
-                "languages": {
-                    "en": {"name": "english", "default": True},
-                    "fr": {"name": "français"},
-                },
+                "languages": [
+                    {"locale": "en", "name": "english", "default": True},
+                    {"locale": "fr", "name": "français"},
+                ],
             },
         },
     )
@@ -67,10 +67,10 @@ def test_plugin_language_selector_fixed_alternate():
         },
         plugins={
             "i18n": {
-                "languages": {
-                    "en": {"name": "english", "default": True},
-                    "fr": {"name": "français"},
-                },
+                "languages": [
+                    {"locale": "en", "name": "english", "default": True},
+                    {"locale": "fr", "name": "français"},
+                ],
             },
         },
     )
@@ -90,9 +90,7 @@ def test_plugin_language_selector_single_default_language():
         docs_dir="docs_suffix_structure/",
         plugins={
             "i18n": {
-                "languages": {
-                    "fr": {"name": "français", "default": True},
-                },
+                "languages": [{"locale": "fr", "name": "français", "default": True}],
             },
         },
     )
@@ -108,10 +106,15 @@ def test_plugin_language_selector_fixed_link():
         docs_dir="docs_suffix_structure/",
         plugins={
             "i18n": {
-                "languages": {
-                    "en": {"name": "english", "fixed_link": "/en", "default": True},
-                    "fr": {"name": "français", "fixed_link": "/fr"},
-                },
+                "languages": [
+                    {
+                        "locale": "en",
+                        "name": "english",
+                        "default": True,
+                        "fixed_link": "/en",
+                    },
+                    {"locale": "fr", "name": "français", "fixed_link": "/fr"},
+                ],
             }
         },
     )
@@ -141,10 +144,15 @@ def test_plugin_language_selector_fixed_link_with_static_alternate():
         },
         plugins={
             "i18n": {
-                "languages": {
-                    "fr": {"name": "français", "fixed_link": "/fr"},
-                    "en": {"name": "english", "fixed_link": "/en", "default": True},
-                },
+                "languages": [
+                    {
+                        "locale": "en",
+                        "name": "english",
+                        "default": True,
+                        "fixed_link": "/en",
+                    },
+                    {"locale": "fr", "name": "français", "fixed_link": "/fr"},
+                ],
             }
         },
     )

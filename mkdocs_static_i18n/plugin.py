@@ -43,14 +43,9 @@ class I18n(ExtendedPlugin):
         Enrich configuration with language specific knowledge.
         """
         # first execution, setup defaults
-        if self.default_language is None:
-            self.default_language = self.get_default_language()
         if self.current_language is None:
             self.current_language = self.default_language
-        if self.all_languages is None:
-            self.all_languages = [locale for locale in self.config["languages"].keys()]
-        if self.build_languages is None:
-            self.build_languages = self.get_languages_to_build()
+        # reconfigure the mkdocs config
         return self.reconfigure_mkdocs_config(config)
 
     @plugins.event_priority(-100)
@@ -93,9 +88,7 @@ class I18n(ExtendedPlugin):
         """
         # convenience for users in case they need it (we don't)
         context["i18n_build_languages"] = self.build_languages
-        context["i18n_current_language_config"] = self.config["languages"][
-            self.current_language
-        ]
+        context["i18n_current_language_config"] = self.current_language_config
         context["i18n_current_language"] = self.current_language
         # used by sitemap.xml template
         context["i18n_alternates"] = self.i18n_alternates

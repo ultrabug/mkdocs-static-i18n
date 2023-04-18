@@ -19,10 +19,14 @@ def test_rtd_fontfiles():
         docs_dir="docs_suffix_structure/",
         plugins={
             "i18n": {
-                "languages": {
-                    "en": {"name": "english", "default": True},
-                    "fr": {"name": "français"},
-                },
+                "languages": [
+                    {
+                        "locale": "en",
+                        "name": "english",
+                        "default": True,
+                    },
+                    {"locale": "fr", "name": "français"},
+                ],
             },
         },
     )

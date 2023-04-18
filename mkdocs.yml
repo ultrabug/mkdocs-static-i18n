@@ -31,12 +31,12 @@ plugins:
   - i18n:
       docs_structure: suffix
       languages:
-        en:
+        - locale: en
           default: true
           name: English
           build: true
           site_name: "MkDocs static i18n plugin demo (en)"
-        fr:
+        - locale: fr
           name: Français
           build: true
           site_name: "Démo du plugin MkDocs static i18n (fr)"
@@ -46,7 +46,7 @@ plugins:
           nav_translations:
             Topic1: Sujet1 Traduit
             Topic2: Sujet2 Traduit
-        de:
+        - locale: de
           name: German
           build: true
           site_name: "Das plugin MkDocs static i18n (de)"

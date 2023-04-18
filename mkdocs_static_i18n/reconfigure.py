@@ -4,14 +4,15 @@ from pathlib import Path, PurePath
 from urllib.parse import quote as urlquote
 
 from mkdocs import localization
-from mkdocs.config.config_options import Choice, Type
 from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.plugins import BasePlugin
 from mkdocs.structure.nav import Navigation
 from mkdocs.theme import Theme
 
 from mkdocs_static_i18n import __file__ as installation_path
-from mkdocs_static_i18n.structure import Locale
+from mkdocs_static_i18n.config import I18nPluginConfig
+
+log = logging.getLogger("mkdocs.plugins." + __name__)
 
 try:
     from importlib.metadata import files
@@ -23,6 +24,7 @@ try:
         and len(lang.stem) == 7
     ]
     assert len(LUNR_LANGUAGES) > 1
+    LUNR_LANGUAGES.append("en")
 except Exception:
     LUNR_LANGUAGES = [
         "ar",
@@ -46,30 +48,15 @@ except Exception:
         "tr",
         "vi",
     ]
+    log.warning("Unable to detect lunr languages from mkdocs distribution")
 MKDOCS_THEMES = ["mkdocs", "readthedocs"]
 
-log = logging.getLogger("mkdocs.plugins." + __name__)
 
-
-class ExtendedPlugin(BasePlugin):
-    config_scheme = (
-        (
-            "docs_structure",
-            Choice(["folder", "suffix"], default="suffix", required=False),
-        ),
-        ("fallback_to_default", Type(bool, default=True, required=False)),
-        ("languages", Locale(dict, required=True)),
-        ("reconfigure_material", Type(bool, default=True, required=False)),
-        ("reconfigure_search", Type(bool, default=True, required=False)),
-    )
-
+class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.all_languages = None
-        self.build_languages = None
         self.building = False
         self.current_language = None
-        self.default_language = None
         self.i18n_alternates = {}
         self.i18n_configs = {}
         self.i18n_dest_uris = {}
@@ -79,25 +66,38 @@ class ExtendedPlugin(BasePlugin):
         self.site_dir = None
 
     @property
+    def all_languages(self):
+        return [lang.locale for lang in self.config.languages]
+
+    @property
+    def default_language(self):
+        for lang_config in self.config.languages:
+            if lang_config.default is True:
+                return lang_config.locale
+
+    @property
+    def current_language_config(self):
+        return self.get_language_config(self.current_language)
+
+    @property
     def is_default_language_build(self):
         return self.current_language == self.default_language
 
-    def get_default_language(self):
-        for locale, lang_config in self.config["languages"].items():
-            if lang_config["default"] is True:
-                return locale
+    @property
+    def build_languages(self):
+        return [
+            lang.locale
+            for lang in filter(lambda lang: lang.build is True, self.config.languages)
+        ]
 
-    def get_languages_to_build(self):
-        languages_to_build = []
-        for locale in self.all_languages:
-            lang_config = self.config["languages"][locale]
-            if lang_config["build"] is True:
-                languages_to_build.append(locale)
-        return languages_to_build
+    def get_language_config(self, locale):
+        for lang_config in filter(
+            lambda lang: lang.locale == locale, self.config.languages
+        ):
+            return lang_config
+        raise Exception(f"Could not find language locale '{locale}'")
 
     def reconfigure_mkdocs_config(self, config: MkDocsConfig) -> MkDocsConfig:
-        lang_config = self.config["languages"][self.current_language]
-
         # MkDocs themes specific reconfiguration
         if config.theme.name in MKDOCS_THEMES:
             self.reconfigure_mkdocs_theme(config, self.current_language)
@@ -126,7 +126,7 @@ class ExtendedPlugin(BasePlugin):
                 config = self.reconfigure_with_pdf_plugin(config)
 
         # apply localized user config overrides
-        config = self.apply_user_overrides(config, lang_config)
+        config = self.apply_user_overrides(config)
 
         # Install a i18n aware version of sitemap.xml if not provided by the user
         if not Path(
@@ -140,12 +140,12 @@ class ExtendedPlugin(BasePlugin):
 
         return config
 
-    def apply_user_overrides(self, config: MkDocsConfig, lang_config: dict):
+    def apply_user_overrides(self, config: MkDocsConfig):
         """
         The i18n configuration structure allows users to set abitrary configuration
         that will be overriden if they match valid MkDocsConfig or Theme options.
         """
-        for lang_key, lang_override in lang_config.items():
+        for lang_key, lang_override in self.current_language_config.items():
             if lang_key in config.data and lang_override is not None:
                 mkdocs_config_option_type = type(config.data[lang_key])
                 # support special Theme object overrides
@@ -205,9 +205,9 @@ class ExtendedPlugin(BasePlugin):
                     link_suffix = "index.html"
                 # setup language switcher
                 for language in self.build_languages:
-                    lang_config = self.config["languages"][language]
+                    lang_config = self.get_language_config(language)
                     # skip language if not built
-                    if lang_config["build"] is False:
+                    if lang_config.build is False:
                         continue
                     config["extra"]["alternate"].append(
                         {
@@ -263,9 +263,7 @@ class ExtendedPlugin(BasePlugin):
         Localize the default homepage button.
         """
         # nav_translations
-        nav_translations = self.config["languages"][self.current_language].get(
-            "nav_translations", {}
-        )
+        nav_translations = self.current_language_config.nav_translations or {}
         translated_items = 0
         for item in nav:
             if hasattr(item, "title") and item.title in nav_translations:
@@ -304,24 +302,6 @@ class ExtendedPlugin(BasePlugin):
                 f"Could not find a homepage for locale '{self.current_language}'"
             )
         return nav
-
-    def reconfigure_markdown(self, page):
-        """
-        Apply translation mapping for the current language to the given page
-        and its children.
-
-        TODO: dead code, obsolete?
-        """
-        nav_translations = self.config["languages"][self.current_language].get(
-            "nav_translations", {}
-        )
-        if hasattr(page, "title") and page.title in nav_translations:
-            page.title = nav_translations[page.title]
-            log.info(f"Translated page title to '{self.current_language}'")
-        if hasattr(page, "children") and page.children:
-            for child in page.children:
-                self.reconfigure_markdown(self, child)
-        return page
 
     def reconfigure_page_context(
         self, context, page, config: MkDocsConfig, nav: Navigation
