@@ -304,7 +304,16 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
             new_alternate = {}
             new_alternate.update(**current_alternate)
             # page is part of the localized language path
-            if PurePath(page.url).is_relative_to(self.current_language):
+            try:
+                is_localized_file = PurePath(page.url).is_relative_to(self.current_language)
+            except AttributeError:
+                # python < 3.9 compat
+                try:
+                    PurePath(page.url).relative_to(self.current_language)
+                    is_localized_file = True
+                except ValueError:
+                    is_localized_file = False
+            if is_localized_file:
                 # link to the default root path should not prefix the locale
                 if current_alternate["lang"] == self.default_language:
                     new_alternate["link"] = urlquote(
