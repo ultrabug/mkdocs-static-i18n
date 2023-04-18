@@ -13,27 +13,38 @@ from mkdocs.theme import Theme
 from mkdocs_static_i18n import __file__ as installation_path
 from mkdocs_static_i18n.structure import Locale
 
-LUNR_LANGUAGES = [
-    "ar",
-    "da",
-    "de",
-    "en",
-    "es",
-    "fi",
-    "fr",
-    "hu",
-    "it",
-    "ja",
-    "nl",
-    "no",
-    "pt",
-    "ro",
-    "ru",
-    "sv",
-    "th",
-    "tr",
-    "vi",
-]
+try:
+    from importlib.metadata import files
+
+    LUNR_LANGUAGES = [
+        PurePath(lang.stem).suffix.replace(".", "")
+        for lang in files("mkdocs")
+        if "mkdocs/contrib/search/lunr-language/lunr." in lang.as_posix()
+        and len(lang.stem) == 7
+    ]
+except Exception:
+    LUNR_LANGUAGES = [
+        "ar",
+        "da",
+        "de",
+        "du",
+        "en",
+        "es",
+        "fi",
+        "fr",
+        "hu",
+        "it",
+        "ja",
+        "nl",
+        "no",
+        "pt",
+        "ro",
+        "ru",
+        "sv",
+        "th",
+        "tr",
+        "vi",
+    ]
 MKDOCS_THEMES = ["mkdocs", "readthedocs"]
 
 log = logging.getLogger("mkdocs.plugins." + __name__)
@@ -65,6 +76,10 @@ class ExtendedPlugin(BasePlugin):
         self.material_alternates = None
         self.search_entries = []
         self.site_dir = None
+
+    @property
+    def is_default_language_build(self):
+        return self.current_language == self.default_language
 
     def get_default_language(self):
         for locale, lang_config in self.config["languages"].items():

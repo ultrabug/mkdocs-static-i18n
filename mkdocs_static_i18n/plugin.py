@@ -26,9 +26,6 @@ except Exception:
 log = logging.getLogger("mkdocs.plugins." + __name__)
 
 
-MKDOCS_THEMES = ["mkdocs", "readthedocs"]
-
-
 class I18n(ExtendedPlugin):
     """
     We use 'event_priority' to make sure that we are last plugin to be executed
@@ -39,10 +36,6 @@ class I18n(ExtendedPlugin):
         - awesome-pages: this plugin should run before us
         - with-pdf: this plugin is triggerd by us on the appropriate on_* events
     """
-
-    @property
-    def is_default_language_build(self):
-        return self.current_language == self.default_language
 
     @plugins.event_priority(-100)
     def on_config(self, config: MkDocsConfig):
