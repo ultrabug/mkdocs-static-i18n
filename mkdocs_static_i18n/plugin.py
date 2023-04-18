@@ -70,12 +70,8 @@ class I18n(ExtendedPlugin):
             i18n_files = suffix.on_files(self, files, config)
         else:
             raise Exception("unimplemented")
-        # because we build one language after the other, we need to rebuild
-        # the alternates for each of them until the last built language
-        # keep a reference of the i18n_files to build the alterntes for
-        self.i18n_alternates[self.current_language] = i18n_files
         # reconfigure the alternates map by build language
-        self.i18n_alternates = self.reconfigure_alternates()
+        self.i18n_alternates = self.reconfigure_alternates(i18n_files)
         return i18n_files
 
     @plugins.event_priority(-100)
@@ -123,7 +119,8 @@ class I18n(ExtendedPlugin):
         # export some useful i18n related variables on page context, see #75
         context["i18n_config"] = self.config
         context["i18n_page_locale"] = page.file.locale
-        context = self.reconfigure_page_context(context, page, config, nav)
+        if self.config["reconfigure_material"] is True:
+            context = self.reconfigure_page_context(context, page, config, nav)
         return context
 
     @plugins.event_priority(-100)

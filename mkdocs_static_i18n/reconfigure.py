@@ -47,7 +47,7 @@ class ExtendedPlugin(BasePlugin):
         ),
         ("fallback_to_default", Type(bool, default=True, required=False)),
         ("languages", Locale(dict, required=True)),
-        ("material_alternate", Type(bool, default=True, required=False)),
+        ("reconfigure_material", Type(bool, default=True, required=False)),
         ("reconfigure_search", Type(bool, default=True, required=False)),
     )
 
@@ -81,15 +81,17 @@ class ExtendedPlugin(BasePlugin):
 
     def reconfigure_mkdocs_config(self, config: MkDocsConfig) -> MkDocsConfig:
         lang_config = self.config["languages"][self.current_language]
-        locale = self.current_language
 
         # MkDocs themes specific reconfiguration
         if config.theme.name in MKDOCS_THEMES:
-            self.reconfigure_mkdocs_theme(config, locale)
+            self.reconfigure_mkdocs_theme(config, self.current_language)
 
-        # material theme specific reconfiguration
-        if config.theme.name == "material":
-            config = self.reconfigure_material_theme(config, locale)
+        # material theme specific reconfiguration (can be disabled)
+        if (
+            config.theme.name == "material"
+            and self.config["reconfigure_material"] is True
+        ):
+            config = self.reconfigure_material_theme(config, self.current_language)
             # warn about navigation.instant incompatibility
             if "navigation.instant" in config.theme._vars.get("features", []):
                 log.warning(
@@ -101,7 +103,9 @@ class ExtendedPlugin(BasePlugin):
         for name, plugin in config.plugins.items():
             # search plugin (MkDocs & material > 9.0) reconfiguration
             if name in ["search", "material/search"]:
-                config = self.reconfigure_search_plugin(config, name, plugin)
+                # search plugin reconfiguration can be disabled
+                if self.config["reconfigure_search"]:
+                    config = self.reconfigure_search_plugin(config, name, plugin)
             if name == "with-pdf":
                 config = self.reconfigure_with_pdf_plugin(config)
 
@@ -163,42 +167,40 @@ class ExtendedPlugin(BasePlugin):
         # set theme language
         if "language" in config.theme._vars:
             config.theme._vars["language"] = locale
-        # site language selector reconfiguration can be disabled
-        if self.config["material_alternate"] is True:
-            # configure extra.alternate language switcher
-            if len(self.build_languages) > 1:
-                # user has setup its own extra.alternate
-                # warn him if it's poorly configured
-                if "alternate" in config["extra"]:
-                    for alternate in config["extra"]["alternate"]:
-                        if not alternate.get("link", "").startswith("./"):
-                            log.info(
-                                "The 'extra.alternate' configuration contains a "
-                                "'link' option that should starts with './' in "
-                                f"{alternate}"
-                            )
-                # configure the extra.alternate for the user
-                else:
-                    config["extra"]["alternate"] = []
-                    # Add index.html file name when used with
-                    # use_directory_urls = True
-                    link_suffix = ""
-                    if config.get("use_directory_urls") is False:
-                        link_suffix = "index.html"
-                    # setup language switcher
-                    for language in self.build_languages:
-                        lang_config = self.config["languages"][language]
-                        # skip language if not built
-                        if lang_config["build"] is False:
-                            continue
-                        config["extra"]["alternate"].append(
-                            {
-                                "name": f"{lang_config['name']}",
-                                "link": f"{lang_config['link']}{link_suffix}",
-                                "fixed_link": lang_config["fixed_link"],
-                                "lang": language,
-                            }
+        # configure extra.alternate language switcher
+        if len(self.build_languages) > 1:
+            # user has setup its own extra.alternate
+            # warn him if it's poorly configured
+            if "alternate" in config["extra"]:
+                for alternate in config["extra"]["alternate"]:
+                    if not alternate.get("link", "").startswith("./"):
+                        log.info(
+                            "The 'extra.alternate' configuration contains a "
+                            "'link' option that should starts with './' in "
+                            f"{alternate}"
                         )
+            # configure the extra.alternate for the user
+            else:
+                config["extra"]["alternate"] = []
+                # Add index.html file name when used with
+                # use_directory_urls = True
+                link_suffix = ""
+                if config.get("use_directory_urls") is False:
+                    link_suffix = "index.html"
+                # setup language switcher
+                for language in self.build_languages:
+                    lang_config = self.config["languages"][language]
+                    # skip language if not built
+                    if lang_config["build"] is False:
+                        continue
+                    config["extra"]["alternate"].append(
+                        {
+                            "name": f"{lang_config['name']}",
+                            "link": f"{lang_config['link']}{link_suffix}",
+                            "fixed_link": lang_config["fixed_link"],
+                            "lang": language,
+                        }
+                    )
         return config
 
     def reconfigure_search_plugin(
@@ -207,38 +209,35 @@ class ExtendedPlugin(BasePlugin):
         search_plugin_name: str,
         search_plugin,
     ):
-        # search plugin reconfiguration can be disabled
-        if self.config["reconfigure_search"]:
-            search_langs = search_plugin.config["lang"] or []
-            for language in self.build_languages:
-                if language in LUNR_LANGUAGES:
-                    if language not in search_langs:
-                        search_langs.append(language)
-                        log.info(
-                            f"Adding '{language}' to the '{search_plugin_name}' plugin 'lang' option"
-                        )
-                else:
-                    log.warning(
-                        f"Language '{language}' is not supported by "
-                        f"lunr.js, not setting it in the 'plugins.search.lang' option"
+        search_langs = search_plugin.config["lang"] or []
+        for language in self.build_languages:
+            if language in LUNR_LANGUAGES:
+                if language not in search_langs:
+                    search_langs.append(language)
+                    log.info(
+                        f"Adding '{language}' to the '{search_plugin_name}' plugin 'lang' option"
                     )
-            if search_langs:
-                search_plugin.config["lang"] = search_langs
+            else:
+                log.warning(
+                    f"Language '{language}' is not supported by "
+                    f"lunr.js, not setting it in the 'plugins.search.lang' option"
+                )
+        if search_langs:
+            search_plugin.config["lang"] = search_langs
         return config
 
     def reconfigure_with_pdf_plugin(self, config: MkDocsConfig):
         """
         Support plugin mkdocs-with-pdf, see #110.
         """
-        if "with-pdf" in config["plugins"]:
-            for events in config["plugins"].events.values():
-                for idx, event in enumerate(list(events)):
-                    try:
-                        if str(event.__module__) == "mkdocs_with_pdf.plugin":
-                            events.pop(idx)
-                    except AttributeError:
-                        # partials don't have a module
-                        pass
+        for events in config["plugins"].events.values():
+            for idx, event in enumerate(list(events)):
+                try:
+                    if str(event.__module__) == "mkdocs_with_pdf.plugin":
+                        events.pop(idx)
+                except AttributeError:
+                    # partials don't have a module
+                    pass
         return config
 
     def reconfigure_navigation(self, nav: Navigation, config: MkDocsConfig, i18n_files):
@@ -316,60 +315,58 @@ class ExtendedPlugin(BasePlugin):
         users can switch between the different localized versions of their current page.
         """
         # TODO: switch to using page.alternates to avoid 404 on missing content?
-        # site language selector reconfiguration can be disabled
-        if self.config["material_alternate"] is True:
-            if PurePath(page.url) == PurePath("."):
-                return context
-            alternates = []
-            for current_alternate in config["extra"].get("alternate", {}):
-                new_alternate = {}
-                new_alternate.update(**current_alternate)
-                # page is part of the localized language path
-                if PurePath(page.url).is_relative_to(self.current_language):
-                    # link to the default root path should not prefix the locale
-                    if current_alternate["lang"] == self.default_language:
-                        new_alternate["link"] = urlquote(
-                            PurePath(page.url)
-                            .relative_to(self.current_language)
-                            .as_posix()
-                        )
-                    # link to other locales should prefix the locale
-                    else:
-                        # there is an alternate page for this page, link to it
-                        if current_alternate["lang"] in page.file.alternates:
-                            new_alternate["link"] = urlquote(
-                                PurePath(
-                                    PurePath(current_alternate["lang"])
-                                    / PurePath(page.url).relative_to(
-                                        self.current_language
-                                    )
-                                ).as_posix()
-                            )
-                        # there is no alternate page for this page, link to root
-                        else:
-                            new_alternate["link"] = urlquote(
-                                PurePath(current_alternate["lang"]).as_posix()
-                            )
-
-                # page is part of the default language root path
+        if PurePath(page.url) == PurePath("."):
+            return context
+        alternates = []
+        for current_alternate in config["extra"].get("alternate", {}):
+            new_alternate = {}
+            new_alternate.update(**current_alternate)
+            # page is part of the localized language path
+            if PurePath(page.url).is_relative_to(self.current_language):
+                # link to the default root path should not prefix the locale
+                if current_alternate["lang"] == self.default_language:
+                    new_alternate["link"] = urlquote(
+                        PurePath(page.url).relative_to(self.current_language).as_posix()
+                    )
+                # link to other locales should prefix the locale
                 else:
-                    if current_alternate["lang"] == self.current_language:
-                        new_alternate["link"] = page.url
-                    else:
+                    # there is an alternate page for this page, link to it
+                    if current_alternate["lang"] in page.file.alternates:
                         new_alternate["link"] = urlquote(
                             PurePath(
-                                PurePath(current_alternate["lang"]) / PurePath(page.url)
+                                PurePath(current_alternate["lang"])
+                                / PurePath(page.url).relative_to(self.current_language)
                             ).as_posix()
                         )
-                new_alternate["link"] = f"./{new_alternate['link']}"
-                alternates.append(new_alternate)
-            context["config"]["extra"]["alternate"] = alternates
+                    # there is no alternate page for this page, link to root
+                    else:
+                        new_alternate["link"] = urlquote(
+                            PurePath(current_alternate["lang"]).as_posix()
+                        )
+
+            # page is part of the default language root path
+            else:
+                if current_alternate["lang"] == self.current_language:
+                    new_alternate["link"] = page.url
+                else:
+                    new_alternate["link"] = urlquote(
+                        PurePath(
+                            PurePath(current_alternate["lang"]) / PurePath(page.url)
+                        ).as_posix()
+                    )
+            new_alternate["link"] = f"./{new_alternate['link']}"
+            alternates.append(new_alternate)
+        context["config"]["extra"]["alternate"] = alternates
         return context
 
-    def reconfigure_alternates(self):
+    def reconfigure_alternates(self, i18n_files):
         """
         Reconfigure File() alternates of all languages built so far.
         """
+        # because we build one language after the other, we need to rebuild
+        # the alternates for each of them until the last built language
+        # keep a reference of the i18n_files to build the alterntes for
+        self.i18n_alternates[self.current_language] = i18n_files
         for build_locale, build_dest_uris in self.i18n_dest_uris.items():
             for i18n_file in build_dest_uris.values():
                 alternates = {}
