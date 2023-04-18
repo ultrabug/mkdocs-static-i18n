@@ -51,15 +51,13 @@ class I18n(ExtendedPlugin):
         """
         # first execution, setup defaults
         if self.default_language is None:
-            self.default_language = self.get_default_language(self.config)
+            self.default_language = self.get_default_language()
         if self.current_language is None:
             self.current_language = self.default_language
         if self.all_languages is None:
             self.all_languages = [locale for locale in self.config["languages"].keys()]
         if self.build_languages is None:
-            self.build_languages = self.get_languages_to_build(
-                self.config, self.all_languages
-            )
+            self.build_languages = self.get_languages_to_build()
         return self.reconfigure_mkdocs_config(config)
 
     @plugins.event_priority(-100)

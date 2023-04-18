@@ -7,6 +7,7 @@ from mkdocs import localization
 from mkdocs.config.config_options import Choice, Type
 from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.plugins import BasePlugin
+from mkdocs.structure.nav import Navigation
 from mkdocs.theme import Theme
 
 from mkdocs_static_i18n import __file__ as installation_path
@@ -65,85 +66,76 @@ class ExtendedPlugin(BasePlugin):
         self.search_entries = []
         self.site_dir = None
 
-    def get_default_language(self, plugin_config: dict):
-        for locale, lang_config in plugin_config["languages"].items():
+    def get_default_language(self):
+        for locale, lang_config in self.config["languages"].items():
             if lang_config["default"] is True:
                 return locale
 
-    def get_languages_to_build(self, plugin_config: dict, all_languages):
+    def get_languages_to_build(self):
         languages_to_build = []
-        for locale in all_languages:
-            lang_config = plugin_config["languages"][locale]
+        for locale in self.all_languages:
+            lang_config = self.config["languages"][locale]
             if lang_config["build"] is True:
                 languages_to_build.append(locale)
         return languages_to_build
 
-    def reconfigure_mkdocs_config(self, mkdocs_config: MkDocsConfig) -> MkDocsConfig:
-        build_languages = self.build_languages
-        i18n_config = mkdocs_config
+    def reconfigure_mkdocs_config(self, config: MkDocsConfig) -> MkDocsConfig:
         lang_config = self.config["languages"][self.current_language]
         locale = self.current_language
-        plugin_config = self.config
 
         # MkDocs themes specific reconfiguration
-        if mkdocs_config.theme.name in MKDOCS_THEMES:
-            i18n_config.theme = self.reconfigure_mkdocs_theme(
-                locale, i18n_config.theme, plugin_config
-            )
+        if config.theme.name in MKDOCS_THEMES:
+            self.reconfigure_mkdocs_theme(config, locale)
 
         # material theme specific reconfiguration
-        if mkdocs_config.theme.name == "material":
-            i18n_config = self.reconfigure_material_theme(
-                locale, i18n_config, plugin_config, build_languages
-            )
+        if config.theme.name == "material":
+            config = self.reconfigure_material_theme(config, locale)
             # warn about navigation.instant incompatibility
-            if "navigation.instant" in mkdocs_config.theme._vars.get("features", []):
+            if "navigation.instant" in config.theme._vars.get("features", []):
                 log.warning(
                     "mkdocs-material language switcher contextual link is not "
                     "compatible with theme.features = navigation.instant"
                 )
 
         # supported plugins reconfiguration
-        for name, plugin in i18n_config.plugins.items():
+        for name, plugin in config.plugins.items():
             # search plugin (MkDocs & material > 9.0) reconfiguration
             if name in ["search", "material/search"]:
-                i18n_config = self.reconfigure_search_plugin(
-                    i18n_config, plugin_config, build_languages, name, plugin
-                )
+                config = self.reconfigure_search_plugin(config, name, plugin)
             if name == "with-pdf":
-                i18n_config = self.reconfigure_with_pdf_plugin(i18n_config)
+                config = self.reconfigure_with_pdf_plugin(config)
 
         # apply localized user config overrides
-        i18n_config = self.apply_user_overrides(i18n_config, lang_config)
+        config = self.apply_user_overrides(config, lang_config)
 
         # Install a i18n aware version of sitemap.xml if not provided by the user
         if not Path(
-            PurePath(i18n_config.theme._vars.get("custom_dir", "."))
+            PurePath(config.theme._vars.get("custom_dir", "."))
             / PurePath("sitemap.xml")
         ).exists():
             custom_i18n_sitemap_dir = Path(
                 PurePath(installation_path).parent / PurePath("custom_i18n_sitemap")
             ).resolve()
-            i18n_config.theme.dirs.insert(0, str(custom_i18n_sitemap_dir))
+            config.theme.dirs.insert(0, str(custom_i18n_sitemap_dir))
 
-        return i18n_config
+        return config
 
-    def apply_user_overrides(self, i18n_config: MkDocsConfig, lang_config: dict):
+    def apply_user_overrides(self, config: MkDocsConfig, lang_config: dict):
         """
         The i18n configuration structure allows users to set abitrary configuration
         that will be overriden if they match valid MkDocsConfig or Theme options.
         """
         for lang_key, lang_override in lang_config.items():
-            if lang_key in i18n_config.data and lang_override is not None:
-                mkdocs_config_option_type = type(i18n_config.data[lang_key])
+            if lang_key in config.data and lang_override is not None:
+                mkdocs_config_option_type = type(config.data[lang_key])
                 # support special Theme object overrides
                 if mkdocs_config_option_type == Theme and type(lang_override) == dict:
-                    i18n_config.theme = self.apply_user_theme_overrides(
-                        i18n_config.theme, lang_override
+                    config.theme = self.apply_user_theme_overrides(
+                        config.theme, lang_override
                     )
                 elif mkdocs_config_option_type in [str, bool, dict, list]:
-                    i18n_config.load_dict({lang_key: lang_override})
-        return i18n_config
+                    config.load_dict({lang_key: lang_override})
+        return config
 
     def apply_user_theme_overrides(self, theme: Theme, options: dict) -> Theme:
         """
@@ -158,32 +150,27 @@ class ExtendedPlugin(BasePlugin):
                 log.error(f"Failed to override unknown theme.{key}")
         return theme
 
-    def reconfigure_mkdocs_theme(
-        self, locale: str, theme: Theme, plugin_config: dict
-    ) -> Theme:
+    def reconfigure_mkdocs_theme(self, config: MkDocsConfig, locale: str) -> Theme:
         # set theme locale
-        if "locale" in theme._vars:
-            theme._vars["locale"] = localization.parse_locale(locale)
-        return theme
+        if "locale" in config.theme._vars:
+            config.theme._vars["locale"] = localization.parse_locale(locale)
 
     def reconfigure_material_theme(
         self,
+        config: MkDocsConfig,
         locale: str,
-        i18n_config: MkDocsConfig,
-        plugin_config: dict,
-        build_languages,
     ) -> MkDocsConfig:
         # set theme language
-        if "language" in i18n_config.theme._vars:
-            i18n_config.theme._vars["language"] = locale
+        if "language" in config.theme._vars:
+            config.theme._vars["language"] = locale
         # site language selector reconfiguration can be disabled
-        if plugin_config["material_alternate"] is True:
+        if self.config["material_alternate"] is True:
             # configure extra.alternate language switcher
-            if len(build_languages) > 1:
+            if len(self.build_languages) > 1:
                 # user has setup its own extra.alternate
                 # warn him if it's poorly configured
-                if "alternate" in i18n_config["extra"]:
-                    for alternate in i18n_config["extra"]["alternate"]:
+                if "alternate" in config["extra"]:
+                    for alternate in config["extra"]["alternate"]:
                         if not alternate.get("link", "").startswith("./"):
                             log.info(
                                 "The 'extra.alternate' configuration contains a "
@@ -192,19 +179,19 @@ class ExtendedPlugin(BasePlugin):
                             )
                 # configure the extra.alternate for the user
                 else:
-                    i18n_config["extra"]["alternate"] = []
+                    config["extra"]["alternate"] = []
                     # Add index.html file name when used with
                     # use_directory_urls = True
                     link_suffix = ""
-                    if i18n_config.get("use_directory_urls") is False:
+                    if config.get("use_directory_urls") is False:
                         link_suffix = "index.html"
                     # setup language switcher
-                    for language in build_languages:
-                        lang_config = plugin_config["languages"][language]
+                    for language in self.build_languages:
+                        lang_config = self.config["languages"][language]
                         # skip language if not built
                         if lang_config["build"] is False:
                             continue
-                        i18n_config["extra"]["alternate"].append(
+                        config["extra"]["alternate"].append(
                             {
                                 "name": f"{lang_config['name']}",
                                 "link": f"{lang_config['link']}{link_suffix}",
@@ -212,20 +199,18 @@ class ExtendedPlugin(BasePlugin):
                                 "lang": language,
                             }
                         )
-        return i18n_config
+        return config
 
     def reconfigure_search_plugin(
         self,
-        i18n_config: MkDocsConfig,
-        plugin_config: dict,
-        build_languages,
+        config: MkDocsConfig,
         search_plugin_name: str,
         search_plugin,
     ):
         # search plugin reconfiguration can be disabled
-        if plugin_config["reconfigure_search"]:
+        if self.config["reconfigure_search"]:
             search_langs = search_plugin.config["lang"] or []
-            for language in build_languages:
+            for language in self.build_languages:
                 if language in LUNR_LANGUAGES:
                     if language not in search_langs:
                         search_langs.append(language)
@@ -239,14 +224,14 @@ class ExtendedPlugin(BasePlugin):
                     )
             if search_langs:
                 search_plugin.config["lang"] = search_langs
-        return i18n_config
+        return config
 
-    def reconfigure_with_pdf_plugin(self, i18n_config):
+    def reconfigure_with_pdf_plugin(self, config: MkDocsConfig):
         """
         Support plugin mkdocs-with-pdf, see #110.
         """
-        if "with-pdf" in i18n_config["plugins"]:
-            for events in i18n_config["plugins"].events.values():
+        if "with-pdf" in config["plugins"]:
+            for events in config["plugins"].events.values():
                 for idx, event in enumerate(list(events)):
                     try:
                         if str(event.__module__) == "mkdocs_with_pdf.plugin":
@@ -254,9 +239,9 @@ class ExtendedPlugin(BasePlugin):
                     except AttributeError:
                         # partials don't have a module
                         pass
-        return i18n_config
+        return config
 
-    def reconfigure_navigation(self, nav, mkdocs_config, i18n_files):
+    def reconfigure_navigation(self, nav: Navigation, config: MkDocsConfig, i18n_files):
         """
         Apply static navigation items translation mapping for the current language.
 
@@ -273,7 +258,7 @@ class ExtendedPlugin(BasePlugin):
                 translated_items += 1
             # translation should be recursive to children
             if hasattr(item, "children") and item.children:
-                self.reconfigure_navigation(item.children, mkdocs_config, i18n_files)
+                self.reconfigure_navigation(item.children, config, i18n_files)
             # is that the localized content homepage?
             if (
                 hasattr(nav, "homepage")
@@ -281,7 +266,7 @@ class ExtendedPlugin(BasePlugin):
                 and hasattr(item, "url")
                 and item.url
             ):
-                if mkdocs_config.use_directory_urls is True:
+                if config.use_directory_urls is True:
                     expected_homepage_urls = [
                         f"{self.current_language}/",
                         f"/{self.current_language}/",
@@ -323,7 +308,9 @@ class ExtendedPlugin(BasePlugin):
                 self.reconfigure_markdown(self, child)
         return page
 
-    def reconfigure_page_context(self, context, page, i18n_config, nav):
+    def reconfigure_page_context(
+        self, context, page, config: MkDocsConfig, nav: Navigation
+    ):
         """
         Support dynamic reconfiguration of the material language selector so that
         users can switch between the different localized versions of their current page.
@@ -334,7 +321,7 @@ class ExtendedPlugin(BasePlugin):
             if PurePath(page.url) == PurePath("."):
                 return context
             alternates = []
-            for current_alternate in i18n_config["extra"].get("alternate", {}):
+            for current_alternate in config["extra"].get("alternate", {}):
                 new_alternate = {}
                 new_alternate.update(**current_alternate)
                 # page is part of the localized language path
@@ -413,12 +400,12 @@ class ExtendedPlugin(BasePlugin):
                 i18n_file.alternates = alternates
         return self.i18n_alternates
 
-    def extend_search_entries(self, mkdocs_config: MkDocsConfig):
+    def extend_search_entries(self, config: MkDocsConfig):
         """
         Stack up search plugin entries as we build languages one after the other
         and deduplicate entries at the same time.
         """
-        for name, plugin in mkdocs_config.plugins.items():
+        for name, plugin in config.plugins.items():
             if name in ["search", "material/search"]:
                 if hasattr(plugin, "search_index"):
                     entries = getattr(plugin.search_index, "entries", None) or getattr(
@@ -463,12 +450,12 @@ class ExtendedPlugin(BasePlugin):
                     )
                     search_index_entries.remove(duplicated_entry)
 
-    def reconfigure_search_index(self, mkdocs_config: MkDocsConfig):
+    def reconfigure_search_index(self, config: MkDocsConfig):
         """
         Stack up search plugin entries as we build languages one after the other
         and deduplicate entries at the same time.
         """
-        for name, plugin in mkdocs_config.plugins.items():
+        for name, plugin in config.plugins.items():
             if name in ["search", "material/search"]:
                 attribute_name = (
                     "_entries"
@@ -489,4 +476,4 @@ class ExtendedPlugin(BasePlugin):
                 if self.config["reconfigure_search"]:
                     self.reconfigure_search_duplicates(search_index_entries)
                 # run the post_build event to rebuild the search index
-                plugin.on_post_build(config=mkdocs_config)
+                plugin.on_post_build(config=config)
