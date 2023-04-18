@@ -20,8 +20,19 @@ try:
         if "material/partials/languages" in lang.as_posix()
     ]
 except Exception:
-    material_languages = []
-    material_version = None
+    try:
+        # python 3.7 compatibility, drop on 3.7 EOL
+        import pkg_resources
+
+        material_dist = pkg_resources.get_distribution("mkdocs-material")
+        material_version = material_dist.version
+        material_languages = [
+            lang.split(".html")[0]
+            for lang in material_dist.resource_listdir("material/partials/languages")
+        ]
+    except Exception:
+        material_languages = []
+        material_version = None
 
 log = logging.getLogger("mkdocs.plugins." + __name__)
 
