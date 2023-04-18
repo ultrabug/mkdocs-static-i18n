@@ -202,7 +202,5 @@ def test_plugin_translated_nav_no_directory():
         nav = i18n_plugin.on_nav(nav, config, files)
         for page in nav.pages:
             assert page.title in TRANSLATED_NAV_NO_DIRECTORY_URLS[language]
-            assert (
-                page.abs_url == TRANSLATED_NAV_NO_DIRECTORY_URLS[language][page.title]
-            )
+            assert page.abs_url == TRANSLATED_NAV_NO_DIRECTORY_URLS[language][page.title]
         assert nav.homepage is not None

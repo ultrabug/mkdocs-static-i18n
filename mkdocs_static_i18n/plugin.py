@@ -162,9 +162,7 @@ class I18n(ExtendedPlugin):
             if locale == self.current_language:
                 continue
             self.current_language = locale
-            log.info(
-                f"Building '{locale}' documentation to directory: {config.site_dir}"
-            )
+            log.info(f"Building '{locale}' documentation to directory: {config.site_dir}")
             # TODO: reconfigure config here? skip on_config?
             build(config)
 

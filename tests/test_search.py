@@ -24,9 +24,7 @@ def test_search_entries():
             },
         )
         if theme == "material":
-            mkdocs_config["plugins"]["material/search"].on_startup(
-                command=None, dirty=False
-            )
+            mkdocs_config["plugins"]["material/search"].on_startup(command=None, dirty=False)
         build(mkdocs_config)
         if theme == "mkdocs":
             search_plugin = mkdocs_config["plugins"]["search"]

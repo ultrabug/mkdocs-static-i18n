@@ -51,9 +51,7 @@ def test_build_use_directory_urls():
     build(mkdocs_config)
     site_dir = mkdocs_config["site_dir"]
     generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
-    generate_site.extend(
-        [f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.*")]
-    )
+    generate_site.extend([f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.*")])
     assert sorted(generate_site) == sorted(USE_DIRECTORY_URLS)
 
 
@@ -67,9 +65,7 @@ def test_build_no_use_directory_urls():
     build(mkdocs_config)
     site_dir = mkdocs_config["site_dir"]
     generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
-    generate_site.extend(
-        [f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.*")]
-    )
+    generate_site.extend([f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.*")])
     assert sorted(generate_site) == sorted(NO_USE_DIRECTORY_URLS)
 
 
@@ -138,9 +134,7 @@ def test_plugin_use_directory_urls():
     build(mkdocs_config)
     site_dir = mkdocs_config["site_dir"]
     generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
-    generate_site.extend(
-        [f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.*")]
-    )
+    generate_site.extend([f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.*")])
     assert sorted(generate_site) == sorted(PLUGIN_USE_DIRECTORY_URLS)
 
 
@@ -172,9 +166,7 @@ def test_plugin_use_directory_urls_static_nav():
     build(mkdocs_config)
     site_dir = mkdocs_config["site_dir"]
     generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
-    generate_site.extend(
-        [f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.*")]
-    )
+    generate_site.extend([f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.*")])
     assert sorted(generate_site) == sorted(PLUGIN_USE_DIRECTORY_URLS)
 
 
@@ -201,9 +193,7 @@ def test_plugin_no_use_directory_urls():
     build(mkdocs_config)
     site_dir = mkdocs_config["site_dir"]
     generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
-    generate_site.extend(
-        [f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.*")]
-    )
+    generate_site.extend([f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.*")])
     assert sorted(generate_site) == sorted(PLUGIN_NO_USE_DIRECTORY_URLS)
 
 
@@ -254,9 +244,7 @@ def test_plugin_use_directory_urls_default_language_only():
     build(mkdocs_config)
     site_dir = mkdocs_config["site_dir"]
     generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
-    generate_site.extend(
-        [f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.*")]
-    )
+    generate_site.extend([f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.*")])
     assert sorted(generate_site) == sorted(PLUGIN_USE_DIRECTORY_URLS_DEFAULT_ONLY)
 
 
@@ -283,7 +271,5 @@ def test_plugin_no_use_directory_urls_default_language_only():
     build(mkdocs_config)
     site_dir = mkdocs_config["site_dir"]
     generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
-    generate_site.extend(
-        [f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.*")]
-    )
+    generate_site.extend([f.relative_to(site_dir) for f in Path(site_dir).glob("**/image*.*")])
     assert sorted(generate_site) == sorted(PLUGIN_NO_USE_DIRECTORY_URLS_DEFAULT_ONLY)

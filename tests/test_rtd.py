@@ -38,11 +38,9 @@ def test_rtd_fontfiles():
     build(config_plugin_rtd)
 
     base_font_files = [
-        str(p).replace(base_site_dir, "")
-        for p in Path(base_site_dir, "fonts").glob("**/*")
+        str(p).replace(base_site_dir, "") for p in Path(base_site_dir, "fonts").glob("**/*")
     ]
     i18n_font_files = [
-        str(p).replace(i18n_site_dir, "")
-        for p in Path(i18n_site_dir, "fonts").glob("**/*")
+        str(p).replace(i18n_site_dir, "") for p in Path(i18n_site_dir, "fonts").glob("**/*")
     ]
     assert sorted(base_font_files) == sorted(i18n_font_files)

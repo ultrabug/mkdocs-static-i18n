@@ -57,8 +57,7 @@ class I18nFolderFiles(Files):
             Path(self.locale) / Path(expected_src_path),
             Path(self.locale) / Path(expected_src_path.relative_to(root_folder)),
             Path(self.default_locale) / Path(expected_src_path),
-            Path(self.default_locale)
-            / Path(expected_src_path.relative_to(root_folder)),
+            Path(self.default_locale) / Path(expected_src_path.relative_to(root_folder)),
         ]
         for src_path in filter(lambda s: Path(s) in expected_src_paths, self.src_paths):
             return self.src_paths.get(os.path.normpath(src_path))
@@ -161,9 +160,7 @@ class I18nFolderFile(File):
         if self._is_localized() is None:
             non_i18n_src_path = Path(self.initial_src_path).with_suffix("")
         else:
-            non_i18n_src_path = (
-                Path(self.initial_src_path).with_suffix("").with_suffix("")
-            )
+            non_i18n_src_path = Path(self.initial_src_path).with_suffix("").with_suffix("")
         return non_i18n_src_path
 
     def _is_localized(self):
@@ -228,18 +225,14 @@ class I18nFolderFile(File):
         """Return url for file relative to other i18n file."""
         return utils.get_relative_url(
             self.url,
-            other.url
-            if (isinstance(other, File) or isinstance(other, I18nFolderFile))
-            else other,
+            other.url if (isinstance(other, File) or isinstance(other, I18nFolderFile)) else other,
         )
 
     def to_locale(self, from_locale, language):
         """Return the i18n file object as another language"""
         self.url = self.url.replace(f"{from_locale}/", f"{language}/", 1)
         self.dest_path = self.dest_path.replace(f"{from_locale}/", f"{language}/", 1)
-        self.abs_dest_path = self.abs_dest_path.replace(
-            f"{from_locale}/", f"{language}/", 1
-        )
+        self.abs_dest_path = self.abs_dest_path.replace(f"{from_locale}/", f"{language}/", 1)
 
 
 def on_files(self, files, config):
@@ -320,9 +313,7 @@ def on_files(self, files, config):
             # skip if language build is disabled
             if self.config["languages"].get(language, {}).get("build", False) is False:
                 continue
-            alternate = self.i18n_files[language].get_localized_page_from_url(
-                page.url, language
-            )
+            alternate = self.i18n_files[language].get_localized_page_from_url(page.url, language)
             if not alternate:
                 i18n_ffile = I18nFolderFile(
                     page.file_from,
@@ -343,9 +334,7 @@ def on_files(self, files, config):
             # do not list languages not being built as alternates
             if self.config["languages"].get(language, {}).get("build", False) is False:
                 continue
-            alternate = self.i18n_files[language].get_localized_page_from_url(
-                page.url, language
-            )
+            alternate = self.i18n_files[language].get_localized_page_from_url(page.url, language)
             if alternate:
                 page.alternates[language] = alternate
             else:
@@ -385,9 +374,7 @@ def on_nav(self, nav, config, files):
             else:
                 # the expected folder structure starts with a [Section(title='LANG')]
                 # so we render our navigation using it as a root
-                self.i18n_navs[language].items = (
-                    self.i18n_navs[language].items[0].children
-                )
+                self.i18n_navs[language].items = self.i18n_navs[language].items[0].children
             for item in self.i18n_navs[language]:
                 if config["use_directory_urls"] is True:
                     expected_url = f"{language}/"
@@ -431,8 +418,6 @@ def on_nav(self, nav, config, files):
                     nav.homepage = item
                     break
             else:
-                raise Exception(
-                    f"could not find default homepage Page(url='{expected_url}')"
-                )
+                raise Exception(f"could not find default homepage Page(url='{expected_url}')")
 
     return nav

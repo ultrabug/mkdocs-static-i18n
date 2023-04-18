@@ -20,8 +20,7 @@ try:
     LUNR_LANGUAGES = [
         PurePath(lang.stem).suffix.replace(".", "")
         for lang in files("mkdocs")
-        if "mkdocs/contrib/search/lunr-language/lunr." in lang.as_posix()
-        and len(lang.stem) == 7
+        if "mkdocs/contrib/search/lunr-language/lunr." in lang.as_posix() and len(lang.stem) == 7
     ]
     assert len(LUNR_LANGUAGES) > 1
     LUNR_LANGUAGES.append("en")
@@ -86,14 +85,11 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
     @property
     def build_languages(self):
         return [
-            lang.locale
-            for lang in filter(lambda lang: lang.build is True, self.config.languages)
+            lang.locale for lang in filter(lambda lang: lang.build is True, self.config.languages)
         ]
 
     def get_language_config(self, locale):
-        for lang_config in filter(
-            lambda lang: lang.locale == locale, self.config.languages
-        ):
+        for lang_config in filter(lambda lang: lang.locale == locale, self.config.languages):
             return lang_config
         raise Exception(f"Could not find language locale '{locale}'")
 
@@ -103,10 +99,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
             self.reconfigure_mkdocs_theme(config, self.current_language)
 
         # material theme specific reconfiguration (can be disabled)
-        if (
-            config.theme.name == "material"
-            and self.config["reconfigure_material"] is True
-        ):
+        if config.theme.name == "material" and self.config["reconfigure_material"] is True:
             config = self.reconfigure_material_theme(config, self.current_language)
             # warn about navigation.instant incompatibility
             if "navigation.instant" in config.theme._vars.get("features", []):
@@ -130,8 +123,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
 
         # Install a i18n aware version of sitemap.xml if not provided by the user
         if not Path(
-            PurePath(config.theme._vars.get("custom_dir", "."))
-            / PurePath("sitemap.xml")
+            PurePath(config.theme._vars.get("custom_dir", ".")) / PurePath("sitemap.xml")
         ).exists():
             custom_i18n_sitemap_dir = Path(
                 PurePath(installation_path).parent / PurePath("custom_i18n_sitemap")
@@ -150,9 +142,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                 mkdocs_config_option_type = type(config.data[lang_key])
                 # support special Theme object overrides
                 if mkdocs_config_option_type == Theme and type(lang_override) == dict:
-                    config.theme = self.apply_user_theme_overrides(
-                        config.theme, lang_override
-                    )
+                    config.theme = self.apply_user_theme_overrides(config.theme, lang_override)
                 elif mkdocs_config_option_type in [str, bool, dict, list]:
                     config.load_dict({lang_key: lang_override})
         return config
@@ -298,14 +288,10 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
             )
         # report missing homepage
         if hasattr(nav, "homepage") and nav.homepage is None:
-            log.warning(
-                f"Could not find a homepage for locale '{self.current_language}'"
-            )
+            log.warning(f"Could not find a homepage for locale '{self.current_language}'")
         return nav
 
-    def reconfigure_page_context(
-        self, context, page, config: MkDocsConfig, nav: Navigation
-    ):
+    def reconfigure_page_context(self, context, page, config: MkDocsConfig, nav: Navigation):
         """
         Support dynamic reconfiguration of the material language selector so that
         users can switch between the different localized versions of their current page.
@@ -387,9 +373,9 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                     # lookup the expected language alternate i18n_file, if present
                     if expected_language in self.i18n_dest_uris:
                         if expected_dest_uri in self.i18n_dest_uris[expected_language]:
-                            alternates[expected_language] = self.i18n_dest_uris[
-                                expected_language
-                            ][expected_dest_uri]
+                            alternates[expected_language] = self.i18n_dest_uris[expected_language][
+                                expected_dest_uri
+                            ]
                 i18n_file.alternates = alternates
         return self.i18n_alternates
 
@@ -451,9 +437,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         for name, plugin in config.plugins.items():
             if name in ["search", "material/search"]:
                 attribute_name = (
-                    "_entries"
-                    if hasattr(plugin.search_index, "_entries")
-                    else "entries"
+                    "_entries" if hasattr(plugin.search_index, "_entries") else "entries"
                 )
                 try:
                     search_index_entries = getattr(plugin.search_index, attribute_name)

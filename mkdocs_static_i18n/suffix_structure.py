@@ -47,9 +47,7 @@ class I18nFiles(Files):
         expected_src_path = Path(path)
         expected_src_paths = [
             expected_src_path.with_suffix(f".{self.locale}{expected_src_path.suffix}"),
-            expected_src_path.with_suffix(
-                f".{self.default_locale}{expected_src_path.suffix}"
-            ),
+            expected_src_path.with_suffix(f".{self.default_locale}{expected_src_path.suffix}"),
             expected_src_path,
         ]
         return any(filter(lambda s: Path(s) in expected_src_paths, self.src_paths))
@@ -59,9 +57,7 @@ class I18nFiles(Files):
         expected_src_path = Path(path)
         expected_src_paths = [
             expected_src_path.with_suffix(f".{self.locale}{expected_src_path.suffix}"),
-            expected_src_path.with_suffix(
-                f".{self.default_locale}{expected_src_path.suffix}"
-            ),
+            expected_src_path.with_suffix(f".{self.default_locale}{expected_src_path.suffix}"),
             expected_src_path,
         ]
         for src_path in filter(lambda s: Path(s) in expected_src_paths, self.src_paths):
@@ -122,13 +118,11 @@ class I18nFile(File):
         expected_paths = [
             (
                 language,
-                Path(docs_dir)
-                / Path(f"{self.non_i18n_src_path}.{language}{self.suffix}"),
+                Path(docs_dir) / Path(f"{self.non_i18n_src_path}.{language}{self.suffix}"),
             ),
             (
                 default_language,
-                Path(docs_dir)
-                / Path(f"{self.non_i18n_src_path}.{default_language}{self.suffix}"),
+                Path(docs_dir) / Path(f"{self.non_i18n_src_path}.{default_language}{self.suffix}"),
             ),
             (None, Path(docs_dir) / Path(f"{self.non_i18n_src_path}{self.suffix}")),
         ]
@@ -147,9 +141,7 @@ class I18nFile(File):
                 #
                 self.dest_path = self._get_dest_path(use_directory_urls)
                 self.abs_dest_path = (
-                    Path(self.site_dir)
-                    / Path(self.dest_language)
-                    / Path(self.dest_path)
+                    Path(self.site_dir) / Path(self.dest_language) / Path(self.dest_path)
                 )
                 break
         else:
@@ -190,9 +182,7 @@ class I18nFile(File):
         if self._is_localized() is None:
             non_i18n_src_path = Path(self.initial_src_path).with_suffix("")
         else:
-            non_i18n_src_path = (
-                Path(self.initial_src_path).with_suffix("").with_suffix("")
-            )
+            non_i18n_src_path = Path(self.initial_src_path).with_suffix("").with_suffix("")
         return non_i18n_src_path
 
     def _is_localized(self):
@@ -257,9 +247,7 @@ class I18nFile(File):
         """Return url for file relative to other i18n file."""
         return utils.get_relative_url(
             self.url,
-            other.url
-            if (isinstance(other, File) or isinstance(other, I18nFile))
-            else other,
+            other.url if (isinstance(other, File) or isinstance(other, I18nFile)) else other,
         )
 
 
@@ -306,9 +294,7 @@ def on_files(self, files, config):
                 and language != self.default_language
                 and main_i18n_file.src_path == i18n_file.src_path
             ):
-                log.debug(
-                    f"file {main_i18n_file.src_path} is missing translation in '{language}'"
-                )
+                log.debug(f"file {main_i18n_file.src_path} is missing translation in '{language}'")
 
     # these comments are here to help me debug later if needed
     # print([{p.src_path: p.url} for p in main_files.documentation_pages()])
@@ -325,9 +311,7 @@ def on_files(self, files, config):
             # do not list languages not being built as alternates
             if self.config["languages"].get(language, {}).get("build", False) is False:
                 continue
-            alternate = self.i18n_files[language].get_localized_page_from_url(
-                page.url, language
-            )
+            alternate = self.i18n_files[language].get_localized_page_from_url(page.url, language)
             if alternate:
                 page.alternates[language] = alternate
             else:

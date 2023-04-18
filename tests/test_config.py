@@ -5,9 +5,7 @@ from mkdocs_static_i18n.plugin import I18n
 
 def test_plugin_single_language_en():
     plugin = I18n()
-    plugin.load_config(
-        {"languages": [{"locale": "en", "name": "english", "default": True}]}
-    )
+    plugin.load_config({"languages": [{"locale": "en", "name": "english", "default": True}]})
     config = load_config(
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
@@ -20,9 +18,7 @@ def test_plugin_single_language_en():
 
 def test_plugin_single_language_fr():
     plugin = I18n()
-    plugin.load_config(
-        {"languages": [{"locale": "fr", "name": "français", "default": True}]}
-    )
+    plugin.load_config({"languages": [{"locale": "fr", "name": "français", "default": True}]})
     config = load_config(
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
@@ -35,9 +31,7 @@ def test_plugin_single_language_fr():
 
 def test_plugin_theme_sitemap():
     plugin = I18n()
-    plugin.load_config(
-        {"languages": [{"locale": "fr", "name": "français", "default": True}]}
-    )
+    plugin.load_config({"languages": [{"locale": "fr", "name": "français", "default": True}]})
     config = load_config(
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
