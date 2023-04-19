@@ -10,6 +10,7 @@ from mkdocs.structure.nav import Navigation
 from mkdocs.theme import Theme
 
 from mkdocs_static_i18n import __file__ as installation_path
+from mkdocs_static_i18n import is_relative_to
 from mkdocs_static_i18n.config import I18nPluginConfig
 
 log = logging.getLogger("mkdocs.plugins." + __name__)
@@ -304,16 +305,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
             new_alternate = {}
             new_alternate.update(**current_alternate)
             # page is part of the localized language path
-            try:
-                is_localized_file = PurePath(page.url).is_relative_to(self.current_language)
-            except AttributeError:
-                # python < 3.9 compat
-                try:
-                    PurePath(page.url).relative_to(self.current_language)
-                    is_localized_file = True
-                except ValueError:
-                    is_localized_file = False
-            if is_localized_file:
+            if is_relative_to(page.url, self.current_language):
                 # link to the default root path should not prefix the locale
                 if current_alternate["lang"] == self.default_language:
                     new_alternate["link"] = urlquote(

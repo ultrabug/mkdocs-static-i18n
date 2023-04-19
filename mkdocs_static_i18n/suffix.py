@@ -6,6 +6,8 @@ from urllib.parse import quote as urlquote
 from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.structure.files import File, Files
 
+from mkdocs_static_i18n import is_relative_to
+
 log = logging.getLogger("mkdocs.plugins." + __name__)
 
 
@@ -108,16 +110,7 @@ def on_files(self, files, config):
     i18n_files = I18nFiles(self, [])
     for file in files:
         # documentation files
-        try:
-            is_docs_file = Path(file.abs_src_path).is_relative_to(config.docs_dir)
-        except AttributeError:
-            # python < 3.9 compat
-            try:
-                Path(file.abs_src_path).relative_to(config.docs_dir)
-                is_docs_file = True
-            except ValueError:
-                is_docs_file = False
-        if is_docs_file:
+        if is_relative_to(file.abs_src_path, config.docs_dir):
             i18n_file = reconfigure_file(
                 file,
                 self.current_language,
