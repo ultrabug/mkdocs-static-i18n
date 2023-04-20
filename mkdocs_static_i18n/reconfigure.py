@@ -1,5 +1,4 @@
 import logging
-from collections import defaultdict
 from pathlib import Path, PurePath
 from urllib.parse import quote as urlquote
 
@@ -58,12 +57,8 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         self.building = False
         self.current_language = None
         self.i18n_alternates = {}
-        self.i18n_configs = {}
         self.i18n_dest_uris = {}
-        self.i18n_files = defaultdict(list)
-        self.material_alternates = None
         self.search_entries = []
-        self.site_dir = None
 
     @property
     def all_languages(self):
