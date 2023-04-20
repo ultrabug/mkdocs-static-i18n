@@ -11,12 +11,13 @@ from mkdocs_static_i18n import suffix
 from mkdocs_static_i18n.reconfigure import ExtendedPlugin
 
 try:
-    from importlib.metadata import files, version
+    from importlib.metadata import files as package_files
+    from importlib.metadata import version
 
     material_version = version("mkdocs-material")
     material_languages = [
         lang.stem
-        for lang in files("mkdocs-material")
+        for lang in package_files("mkdocs-material")
         if "material/partials/languages" in lang.as_posix()
     ]
 except Exception:

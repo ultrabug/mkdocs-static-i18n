@@ -15,11 +15,11 @@ from mkdocs_static_i18n.config import I18nPluginConfig
 log = logging.getLogger("mkdocs.plugins." + __name__)
 
 try:
-    from importlib.metadata import files
+    from importlib.metadata import files as package_files
 
     LUNR_LANGUAGES = [
         PurePath(lang.stem).suffix.replace(".", "")
-        for lang in files("mkdocs")
+        for lang in package_files("mkdocs")
         if "mkdocs/contrib/search/lunr-language/lunr." in lang.as_posix() and len(lang.stem) == 7
     ]
     assert len(LUNR_LANGUAGES) > 1
@@ -161,11 +161,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         if "locale" in config.theme._vars:
             config.theme._vars["locale"] = localization.parse_locale(locale)
 
-    def reconfigure_material_theme(
-        self,
-        config: MkDocsConfig,
-        locale: str,
-    ) -> MkDocsConfig:
+    def reconfigure_material_theme(self, config: MkDocsConfig, locale: str) -> MkDocsConfig:
         # set theme language
         if "language" in config.theme._vars:
             config.theme._vars["language"] = locale
@@ -206,10 +202,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         return config
 
     def reconfigure_search_plugin(
-        self,
-        config: MkDocsConfig,
-        search_plugin_name: str,
-        search_plugin,
+        self, config: MkDocsConfig, search_plugin_name: str, search_plugin
     ):
         search_langs = search_plugin.config["lang"] or []
         for language in self.build_languages:
