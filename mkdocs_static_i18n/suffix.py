@@ -1,6 +1,7 @@
 import logging
 import os
 from pathlib import Path, PurePath
+from typing import Optional
 from urllib.parse import quote as urlquote
 
 from mkdocs.config.defaults import MkDocsConfig
@@ -95,7 +96,7 @@ class I18nFiles(Files):
         super().__init__(files)
         self.plugin = plugin
 
-    def get_file_from_path(self, path: str):
+    def get_file_from_path(self, path: str) -> Optional[File]:
         """
         Used by mkdocs.structure.nav.get_navigation to find resources linked in markdown.
         """
@@ -109,8 +110,12 @@ class I18nFiles(Files):
             ),
             expected_src_uri,
         ]
-        for src_uri in filter(lambda s: Path(s) in expected_src_uris, self.src_uris):
-            return self.src_uris.get(os.path.normpath(src_uri))
+        for src_uri in expected_src_uris:
+            file = self.src_uris.get(src_uri.as_posix())
+            if file:
+                return file
+        else:
+            return None
 
 
 def on_files(self, files, config):
