@@ -6,6 +6,7 @@ from mkdocs import localization
 from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.plugins import BasePlugin
 from mkdocs.structure.nav import Navigation
+from mkdocs.structure.pages import Page
 from mkdocs.theme import Theme
 
 from mkdocs_static_i18n import __file__ as installation_path
@@ -237,7 +238,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         return config
 
     def reconfigure_navigation(
-        self, nav: Navigation, config: MkDocsConfig, files: I18nFiles, counter
+        self, nav: Navigation, config: MkDocsConfig, files: I18nFiles, nav_helper
     ):
         """
         Apply static navigation items translation mapping for the current language.
@@ -250,33 +251,17 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         for item in nav:
             if hasattr(item, "title") and item.title in nav_translations:
                 item.title = nav_translations[item.title]
-                counter.translated_items += 1
+                nav_helper.translated_items += 1
+
+            # is that the localized content homepage?
+            if nav_helper.homepage is None and isinstance(item, Page):
+                if item.url in nav_helper.expected_homepage_urls or item.url == "":
+                    nav_helper.homepage = item
+
             # translation should be recursive to children
             if hasattr(item, "children") and item.children:
-                self.reconfigure_navigation(item.children, config, files, counter)
-            # is that the localized content homepage?
-            if (
-                hasattr(nav, "homepage")
-                and nav.homepage is None
-                and hasattr(item, "url")
-                and item.url
-            ):
-                if config.use_directory_urls is True:
-                    expected_homepage_urls = [
-                        f"{self.current_language}/",
-                        f"/{self.current_language}/",
-                    ]
-                else:
-                    expected_homepage_urls = [
-                        f"{self.current_language}/index.html",
-                        f"/{self.current_language}/index.html",
-                    ]
-                if item.url in expected_homepage_urls:
-                    nav.homepage = item
+                self.reconfigure_navigation(item.children, config, files, nav_helper)
 
-        # report missing homepage
-        if hasattr(nav, "homepage") and nav.homepage is None:
-            log.warning(f"Could not find a homepage for locale '{self.current_language}'")
         return nav
 
     def reconfigure_page_context(self, context, page, config: MkDocsConfig, nav: Navigation):
