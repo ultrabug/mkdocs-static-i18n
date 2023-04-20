@@ -11,6 +11,7 @@ from mkdocs.theme import Theme
 from mkdocs_static_i18n import __file__ as installation_path
 from mkdocs_static_i18n import is_relative_to
 from mkdocs_static_i18n.config import I18nPluginConfig
+from mkdocs_static_i18n.suffix import I18nFiles
 
 log = logging.getLogger("mkdocs.plugins." + __name__)
 
@@ -235,7 +236,9 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                     pass
         return config
 
-    def reconfigure_navigation(self, nav: Navigation, config: MkDocsConfig, i18n_files):
+    def reconfigure_navigation(
+        self, nav: Navigation, config: MkDocsConfig, files: I18nFiles, counter
+    ):
         """
         Apply static navigation items translation mapping for the current language.
 
@@ -243,14 +246,14 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         """
         # nav_translations
         nav_translations = self.current_language_config.nav_translations or {}
-        translated_items = 0
+
         for item in nav:
             if hasattr(item, "title") and item.title in nav_translations:
                 item.title = nav_translations[item.title]
-                translated_items += 1
+                counter.translated_items += 1
             # translation should be recursive to children
             if hasattr(item, "children") and item.children:
-                self.reconfigure_navigation(item.children, config, i18n_files)
+                self.reconfigure_navigation(item.children, config, files, counter)
             # is that the localized content homepage?
             if (
                 hasattr(nav, "homepage")
@@ -270,11 +273,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                     ]
                 if item.url in expected_homepage_urls:
                     nav.homepage = item
-        if translated_items:
-            log.info(
-                f"Translated {translated_items} navigation element"
-                f"{'s' if translated_items > 1 else ''} to '{self.current_language}'"
-            )
+
         # report missing homepage
         if hasattr(nav, "homepage") and nav.homepage is None:
             log.warning(f"Could not find a homepage for locale '{self.current_language}'")

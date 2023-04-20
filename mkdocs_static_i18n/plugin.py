@@ -79,7 +79,18 @@ class I18n(ExtendedPlugin):
         """
         Translate i18n aware navigation to honor the 'nav_translations' option.
         """
-        i18n_nav = self.reconfigure_navigation(nav, config, files)
+
+        # maybe move to another file and don't pass it as parameter?
+        class TranslationCounter:
+            translated_items: int = 0
+
+        i18n_nav = self.reconfigure_navigation(nav, config, files, TranslationCounter)
+
+        if TranslationCounter.translated_items:
+            log.info(
+                f"Translated {TranslationCounter.translated_items} navigation element"
+                f"{'s' if TranslationCounter.translated_items > 1 else ''} to '{self.current_language}'"
+            )
 
         # manually trigger with-pdf, see #110
         with_pdf_plugin = config["plugins"].get("with-pdf")
