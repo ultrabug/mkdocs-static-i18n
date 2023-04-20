@@ -213,7 +213,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                         f"Adding '{language}' to the '{search_plugin_name}' plugin 'lang' option"
                     )
             else:
-                log.warning(
+                log.info(
                     f"Language '{language}' is not supported by "
                     f"lunr.js, not setting it in the 'plugins.search.lang' option"
                 )
