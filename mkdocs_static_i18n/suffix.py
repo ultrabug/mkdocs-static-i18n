@@ -118,7 +118,7 @@ class I18nFiles(Files):
             return None
 
 
-def on_files(self, files, config):
+def on_files(self, files: Files, config: MkDocsConfig) -> I18nFiles:
     """ """
     i18n_dest_uris = {}
     i18n_files = I18nFiles(self, [])
@@ -126,11 +126,7 @@ def on_files(self, files, config):
         # documentation files
         if is_relative_to(file.abs_src_path, config.docs_dir):
             i18n_file = reconfigure_file(
-                file,
-                self.current_language,
-                self.default_language,
-                self.all_languages,
-                config,
+                file, self.current_language, self.default_language, self.all_languages, config
             )
 
             # never seen that file?
@@ -172,9 +168,8 @@ def on_files(self, files, config):
                     log.debug(f"Ignore {i18n_file.locale} {i18n_file}")
 
         # theme (and overrides) files
-        else:
-            if self.is_default_language_build:
-                i18n_files.append(file)
+        elif self.is_default_language_build or file.src_uri.startswith("assets/"):
+            i18n_files.append(file)
 
     # populate the resulting Files and keep track of all the alternates
     # that will be used by the sitemap.xml template
