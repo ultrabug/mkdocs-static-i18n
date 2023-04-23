@@ -4,7 +4,7 @@ from typing import Optional
 
 from jinja2.ext import loopcontrols
 from mkdocs import plugins
-from mkdocs.commands.build import build
+from mkdocs.commands.build import DuplicateFilter, build
 from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.structure.files import Files
 from mkdocs.structure.pages import Page
@@ -167,10 +167,14 @@ class I18n(ExtendedPlugin):
         # memorize locale search entries
         self.extend_search_entries(config)
 
-        if self.building is False:
-            self.building = True
-        else:
+        if self.building:
             return
+
+        self.building = True
+
+        # Block time logging for internal builds
+        duplicate_filter: DuplicateFilter = logging.getLogger("mkdocs.commands.build").filters[0]
+        duplicate_filter.msgs.add("Documentation built in %.2f seconds")
 
         # manually trigger with-pdf, see #110
         with_pdf_plugin = config["plugins"].get("with-pdf")
@@ -206,3 +210,6 @@ class I18n(ExtendedPlugin):
         # remove monkey patching in case some other builds are triggered
         # on the same site (tests, ci...)
         utils.clean_directory = mkdocs_utils_clean_directory
+
+        # Unblock time logging after internal builds
+        duplicate_filter.msgs.remove("Documentation built in %.2f seconds")
