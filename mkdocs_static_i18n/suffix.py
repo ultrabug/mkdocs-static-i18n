@@ -7,6 +7,7 @@ from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.structure.files import File, Files
 
 from mkdocs_static_i18n import is_relative_to
+from mkdocs_static_i18n.config import RE_LOCALE
 
 log = logging.getLogger("mkdocs.plugins." + __name__)
 
@@ -25,11 +26,16 @@ def reconfigure_file(
 
     try:
         file_locale = Path(file.name).suffixes.pop(-1).replace(".", "")
-        if file_locale in all_languages:
+        # the file_locale must be a valid language locale code that we check on the
+        # configured languages (validated by config) or using the locale regex in case
+        # users have localized files but not configured them on the plugin yet
+        if file_locale in all_languages or RE_LOCALE.match(file_locale):
             file_dest_path_no_suffix = Path(file_dest_path.parent) / Path(
                 file_dest_path.stem
             ).with_suffix("")
             file_dest_path = Path(f"{file_dest_path_no_suffix}{file_dest_path.suffix}")
+            # file name suffixed by locale, remove it
+            file.name = Path(file.name).stem
         else:
             file_locale = default_language
     except IndexError:
@@ -53,7 +59,10 @@ def reconfigure_file(
     else:
         file.dest_path = file_dest_path
     file.abs_dest_path = os.path.normpath(os.path.join(config.site_dir, file.dest_path))
-    file.name = Path(file_dest_path).stem
+
+    # assure a valid name for the Page.is_index check
+    if file.name == "README":
+        file.name = "index"
 
     # update the url in case we played with the folder structure
     file.url = file._get_url(config.use_directory_urls)
@@ -131,7 +140,7 @@ def on_files(self, files, config):
                 elif (
                     self.config["fallback_to_default"] is True
                     and i18n_file.locale == self.default_language
-                ):
+                ) or i18n_file.src_uri.startswith("assets/"):
                     i18n_dest_uris[i18n_file.dest_uri] = i18n_file
                     log.debug(f"Use {i18n_file.locale} {i18n_file}")
                 else:
@@ -141,8 +150,12 @@ def on_files(self, files, config):
             else:
                 # override it only if this is our language
                 if i18n_file.locale == self.current_language:
-                    # users should not add default non suffixed files + suffixed files
-                    if i18n_dest_uris[i18n_file.dest_uri].locale == i18n_file.locale:
+                    # users should not add default non suffixed files + suffixed files when
+                    # multiple languages are configured
+                    if (
+                        len(self.all_languages) > 1
+                        and i18n_dest_uris[i18n_file.dest_uri].locale == i18n_file.locale
+                    ):
                         raise Exception(
                             f"Conflicting files for the default language '{self.default_language}': "
                             f"choose either '{i18n_file.src_uri}' or "
