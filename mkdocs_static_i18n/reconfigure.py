@@ -1,5 +1,4 @@
 import logging
-from collections import defaultdict
 from pathlib import Path, PurePath
 from urllib.parse import quote as urlquote
 
@@ -7,20 +6,22 @@ from mkdocs import localization
 from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.plugins import BasePlugin
 from mkdocs.structure.nav import Navigation
+from mkdocs.structure.pages import Page
 from mkdocs.theme import Theme
 
 from mkdocs_static_i18n import __file__ as installation_path
 from mkdocs_static_i18n import is_relative_to
 from mkdocs_static_i18n.config import I18nPluginConfig
+from mkdocs_static_i18n.suffix import I18nFiles
 
 log = logging.getLogger("mkdocs.plugins." + __name__)
 
 try:
-    from importlib.metadata import files
+    from importlib.metadata import files as package_files
 
     LUNR_LANGUAGES = [
         PurePath(lang.stem).suffix.replace(".", "")
-        for lang in files("mkdocs")
+        for lang in package_files("mkdocs")
         if "mkdocs/contrib/search/lunr-language/lunr." in lang.as_posix() and len(lang.stem) == 7
     ]
     assert len(LUNR_LANGUAGES) > 1
@@ -58,12 +59,8 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         self.building = False
         self.current_language = None
         self.i18n_alternates = {}
-        self.i18n_configs = {}
         self.i18n_dest_uris = {}
-        self.i18n_files = defaultdict(list)
-        self.material_alternates = None
         self.search_entries = []
-        self.site_dir = None
 
     @property
     def all_languages(self):
@@ -166,11 +163,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         if "locale" in config.theme._vars:
             config.theme._vars["locale"] = localization.parse_locale(locale)
 
-    def reconfigure_material_theme(
-        self,
-        config: MkDocsConfig,
-        locale: str,
-    ) -> MkDocsConfig:
+    def reconfigure_material_theme(self, config: MkDocsConfig, locale: str) -> MkDocsConfig:
         # set theme language
         if "language" in config.theme._vars:
             config.theme._vars["language"] = locale
@@ -211,10 +204,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         return config
 
     def reconfigure_search_plugin(
-        self,
-        config: MkDocsConfig,
-        search_plugin_name: str,
-        search_plugin,
+        self, config: MkDocsConfig, search_plugin_name: str, search_plugin
     ):
         search_langs = search_plugin.config["lang"] or []
         for language in self.build_languages:
@@ -225,7 +215,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                         f"Adding '{language}' to the '{search_plugin_name}' plugin 'lang' option"
                     )
             else:
-                log.warning(
+                log.info(
                     f"Language '{language}' is not supported by "
                     f"lunr.js, not setting it in the 'plugins.search.lang' option"
                 )
@@ -247,7 +237,9 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                     pass
         return config
 
-    def reconfigure_navigation(self, nav: Navigation, config: MkDocsConfig, i18n_files):
+    def reconfigure_navigation(
+        self, nav: Navigation, config: MkDocsConfig, files: I18nFiles, nav_helper
+    ):
         """
         Apply static navigation items translation mapping for the current language.
 
@@ -255,41 +247,21 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         """
         # nav_translations
         nav_translations = self.current_language_config.nav_translations or {}
-        translated_items = 0
+
         for item in nav:
             if hasattr(item, "title") and item.title in nav_translations:
                 item.title = nav_translations[item.title]
-                translated_items += 1
+                nav_helper.translated_items += 1
+
+            # is that the localized content homepage?
+            if nav_helper.homepage is None and isinstance(item, Page):
+                if item.url in nav_helper.expected_homepage_urls or item.url == "":
+                    nav_helper.homepage = item
+
             # translation should be recursive to children
             if hasattr(item, "children") and item.children:
-                self.reconfigure_navigation(item.children, config, i18n_files)
-            # is that the localized content homepage?
-            if (
-                hasattr(nav, "homepage")
-                and nav.homepage is None
-                and hasattr(item, "url")
-                and item.url
-            ):
-                if config.use_directory_urls is True:
-                    expected_homepage_urls = [
-                        f"{self.current_language}/",
-                        f"/{self.current_language}/",
-                    ]
-                else:
-                    expected_homepage_urls = [
-                        f"{self.current_language}/index.html",
-                        f"/{self.current_language}/index.html",
-                    ]
-                if item.url in expected_homepage_urls:
-                    nav.homepage = item
-        if translated_items:
-            log.info(
-                f"Translated {translated_items} navigation element"
-                f"{'s' if translated_items > 1 else ''} to '{self.current_language}'"
-            )
-        # report missing homepage
-        if hasattr(nav, "homepage") and nav.homepage is None:
-            log.warning(f"Could not find a homepage for locale '{self.current_language}'")
+                self.reconfigure_navigation(item.children, config, files, nav_helper)
+
         return nav
 
     def reconfigure_page_context(self, context, page, config: MkDocsConfig, nav: Navigation):

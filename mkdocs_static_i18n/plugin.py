@@ -1,22 +1,25 @@
 import logging
 from pathlib import PurePath
+from typing import Optional
 
 from jinja2.ext import loopcontrols
 from mkdocs import plugins
-from mkdocs.commands.build import build
+from mkdocs.commands.build import DuplicateFilter, build
 from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.structure.files import Files
+from mkdocs.structure.pages import Page
 
 from mkdocs_static_i18n import suffix
 from mkdocs_static_i18n.reconfigure import ExtendedPlugin
 
 try:
-    from importlib.metadata import files, version
+    from importlib.metadata import files as package_files
+    from importlib.metadata import version
 
     material_version = version("mkdocs-material")
     material_languages = [
         lang.stem
-        for lang in files("mkdocs-material")
+        for lang in package_files("mkdocs-material")
         if "material/partials/languages" in lang.as_posix()
     ]
 except Exception:
@@ -78,7 +81,31 @@ class I18n(ExtendedPlugin):
         """
         Translate i18n aware navigation to honor the 'nav_translations' option.
         """
-        i18n_nav = self.reconfigure_navigation(nav, config, files)
+
+        homepage_suffix: str = "" if config.use_directory_urls else "index.html"
+
+        # maybe move to another file and don't pass it as parameter?
+        class NavHelper:
+            translated_items: int = 0
+            homepage: Optional[Page] = nav.homepage
+            expected_homepage_urls = [
+                f"{self.current_language}/{homepage_suffix}",
+                f"/{self.current_language}/{homepage_suffix}",
+            ]
+
+        i18n_nav = self.reconfigure_navigation(nav, config, files, NavHelper)
+        i18n_nav.homepage = NavHelper.homepage
+
+        # report translated entries
+        if NavHelper.translated_items:
+            log.info(
+                f"Translated {NavHelper.translated_items} navigation element"
+                f"{'s' if NavHelper.translated_items > 1 else ''} to '{self.current_language}'"
+            )
+
+        # report missing homepage
+        if i18n_nav.homepage is None:
+            log.warning(f"Could not find a homepage for locale '{self.current_language}'")
 
         # manually trigger with-pdf, see #110
         with_pdf_plugin = config["plugins"].get("with-pdf")
@@ -140,10 +167,14 @@ class I18n(ExtendedPlugin):
         # memorize locale search entries
         self.extend_search_entries(config)
 
-        if self.building is False:
-            self.building = True
-        else:
+        if self.building:
             return
+
+        self.building = True
+
+        # Block time logging for internal builds
+        duplicate_filter: DuplicateFilter = logging.getLogger("mkdocs.commands.build").filters[0]
+        duplicate_filter.msgs.add("Documentation built in %.2f seconds")
 
         # manually trigger with-pdf, see #110
         with_pdf_plugin = config["plugins"].get("with-pdf")
@@ -179,3 +210,6 @@ class I18n(ExtendedPlugin):
         # remove monkey patching in case some other builds are triggered
         # on the same site (tests, ci...)
         utils.clean_directory = mkdocs_utils_clean_directory
+
+        # Unblock time logging after internal builds
+        duplicate_filter.msgs.remove("Documentation built in %.2f seconds")
