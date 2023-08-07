@@ -173,8 +173,14 @@ class I18n(ExtendedPlugin):
         self.building = True
 
         # Block time logging for internal builds
-        duplicate_filter: DuplicateFilter = logging.getLogger("mkdocs.commands.build").filters[0]
-        duplicate_filter.msgs.add("Documentation built in %.2f seconds")
+        try:
+            duplicate_filter: DuplicateFilter = logging.getLogger("mkdocs.commands.build").filters[
+                0
+            ]
+            duplicate_filter.msgs.add("Documentation built in %.2f seconds")
+        except IndexError:
+            # tests dont setup a duplicatefilter
+            pass
 
         # manually trigger with-pdf, see #110
         with_pdf_plugin = config["plugins"].get("with-pdf")
@@ -212,4 +218,8 @@ class I18n(ExtendedPlugin):
         utils.clean_directory = mkdocs_utils_clean_directory
 
         # Unblock time logging after internal builds
-        duplicate_filter.msgs.remove("Documentation built in %.2f seconds")
+        try:
+            duplicate_filter.msgs.remove("Documentation built in %.2f seconds")
+        except UnboundLocalError:
+            # tests dont setup a duplicatefilter
+            pass
