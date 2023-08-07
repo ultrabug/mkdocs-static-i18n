@@ -35,6 +35,7 @@ class I18nPluginLanguage(Config):
     name = config_options.Type(str)
     nav = config_options.Optional(config_options.Nav())
     nav_translations = config_options.Optional(config_options.Type(dict))
+    site_name = config_options.Optional(config_options.Type(str))
     theme = config_options.Optional(config_options.Type(dict))
 
     def validate(self):
@@ -42,9 +43,21 @@ class I18nPluginLanguage(Config):
         # set defaults
         if self.link is None:
             if self.default:
-                self.link = "./"
+                self.link = "/"
             else:
-                self.link = f"./{self.locale}/"
+                self.link = f"/{self.locale}/"
+        # link should be absolute and end with a trailing /
+        else:
+            if not self.link.startswith("/") or not self.link.endswith("/"):
+                failed.append(
+                    (
+                        "link",
+                        ValidationError(
+                            f"languages[{self.locale}].link should be an absolute link starting "
+                            f"with a leading / and ending with a / (like /{self.locale}/)."
+                        ),
+                    )
+                )
         return failed, warnings
 
 
@@ -61,10 +74,16 @@ class I18nPluginConfig(Config):
 
     def validate(self):
         failed, warnings = super().validate()
-        # check that we have at least a default language to build
-        if not any(filter(lambda c: c.default and c.build, self.languages)):
-            raise ValidationError(
-                "Could not find a default language to build "
-                "(expecting 'default: true' AND 'build: true')."
-            )
+        if not failed:
+            # check that we have at least a default language to build
+            if not any(filter(lambda c: c.default and c.build, self.languages)):
+                failed.append(
+                    (
+                        "languages",
+                        ValidationError(
+                            "Could not find a default language to build "
+                            "(expecting 'default: true' AND 'build: true')."
+                        ),
+                    )
+                )
         return failed, warnings
