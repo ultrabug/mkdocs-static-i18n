@@ -84,7 +84,6 @@ class I18n(ExtendedPlugin):
 
         homepage_suffix: str = "" if config.use_directory_urls else "index.html"
 
-        # maybe move to another file and don't pass it as parameter?
         class NavHelper:
             translated_items: int = 0
             homepage: Optional[Page] = nav.homepage
