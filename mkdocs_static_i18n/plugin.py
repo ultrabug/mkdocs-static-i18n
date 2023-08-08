@@ -6,6 +6,7 @@ from jinja2.ext import loopcontrols
 from mkdocs import plugins
 from mkdocs.commands.build import DuplicateFilter, build
 from mkdocs.config.defaults import MkDocsConfig
+from mkdocs.plugins import get_plugin_logger
 from mkdocs.structure.files import Files
 from mkdocs.structure.pages import Page
 
@@ -37,7 +38,7 @@ except Exception:
         material_languages = []
         material_version = None
 
-log = logging.getLogger("mkdocs.plugins." + __name__)
+log = get_plugin_logger(__name__)
 
 
 class I18n(ExtendedPlugin):

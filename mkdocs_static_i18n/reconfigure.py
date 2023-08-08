@@ -4,7 +4,7 @@ from urllib.parse import quote as urlquote
 
 from mkdocs import localization
 from mkdocs.config.defaults import MkDocsConfig
-from mkdocs.plugins import BasePlugin
+from mkdocs.plugins import BasePlugin, get_plugin_logger
 from mkdocs.structure.nav import Navigation
 from mkdocs.structure.pages import Page
 from mkdocs.theme import Theme
@@ -14,7 +14,7 @@ from mkdocs_static_i18n import is_relative_to
 from mkdocs_static_i18n.config import I18nPluginConfig
 from mkdocs_static_i18n.suffix import I18nFiles
 
-log = logging.getLogger("mkdocs.plugins." + __name__)
+log = get_plugin_logger(__name__)
 
 try:
     from importlib.metadata import files as package_files

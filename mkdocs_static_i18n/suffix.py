@@ -1,16 +1,16 @@
-import logging
 import os
 from pathlib import Path, PurePath
 from typing import Optional
 from urllib.parse import quote as urlquote
 
 from mkdocs.config.defaults import MkDocsConfig
+from mkdocs.plugins import get_plugin_logger
 from mkdocs.structure.files import File, Files
 
 from mkdocs_static_i18n import is_relative_to
 from mkdocs_static_i18n.config import RE_LOCALE
 
-log = logging.getLogger("mkdocs.plugins." + __name__)
+log = get_plugin_logger(__name__)
 
 
 def reconfigure_file(
