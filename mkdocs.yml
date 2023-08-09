@@ -49,7 +49,7 @@ plugins:
         - locale: de
           name: German
           build: true
-          site_name: "Das plugin MkDocs static i18n (de)"
+          site_name: "Demo des plugin MkDocs static i18n (de)"
           theme:
             palette:
               primary: yellow
