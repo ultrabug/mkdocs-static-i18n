@@ -10,7 +10,7 @@ from mkdocs.plugins import get_plugin_logger
 from mkdocs.structure.files import Files
 from mkdocs.structure.pages import Page
 
-from mkdocs_static_i18n import suffix
+from mkdocs_static_i18n import folder, suffix
 from mkdocs_static_i18n.reconfigure import ExtendedPlugin
 
 try:
@@ -74,7 +74,7 @@ class I18n(ExtendedPlugin):
         if self.config["docs_structure"] == "suffix":
             i18n_files = suffix.on_files(self, files, config)
         else:
-            raise Exception("unimplemented")
+            i18n_files = folder.on_files(self, files, config)
         # update the (cumulative) global alternates map which is
         # used by the sitemap.xml template
         self.i18n_alternates[self.current_language] = i18n_files
@@ -85,6 +85,10 @@ class I18n(ExtendedPlugin):
         """
         Translate i18n aware navigation to honor the 'nav_translations' option.
         """
+        # folder structure, reconfigure navigation to remove language sections
+        if self.config["docs_structure"] == "folder":
+            nav = folder.reconfigure_navigation(self, nav)
+
         homepage_suffix: str = "" if config.use_directory_urls else "index.html"
 
         class NavHelper:
