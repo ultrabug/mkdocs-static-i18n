@@ -26,24 +26,26 @@ def test_plugin_languages_backward_compat_1():
         {
             "locale": "en",
             "name": "english",
-            "link": "./",
+            "link": "/",
             "fixed_link": None,
             "build": True,
             "default": True,
             "nav": None,
             "nav_translations": None,
             "theme": None,
+            "site_name": None,
         },
         {
             "locale": "fr",
             "name": "français",
-            "link": "./fr/",
+            "link": "/fr/",
             "fixed_link": None,
             "build": True,
             "default": False,
             "nav": None,
             "nav_translations": None,
             "theme": None,
+            "site_name": None,
         },
     ]
 
@@ -72,12 +74,13 @@ def test_plugin_languages_backward_compat_2():
         {
             "locale": "en",
             "name": "english",
-            "link": "./",
+            "link": "/",
             "fixed_link": None,
             "build": True,
             "default": True,
             "nav": None,
             "nav_translations": None,
             "theme": None,
+            "site_name": None,
         },
     ]

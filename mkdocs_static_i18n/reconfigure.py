@@ -1,6 +1,6 @@
-import logging
+from copy import deepcopy
 from pathlib import Path, PurePath
-from urllib.parse import quote as urlquote
+from urllib.parse import urlsplit
 
 from mkdocs import localization
 from mkdocs.config.defaults import MkDocsConfig
@@ -10,7 +10,6 @@ from mkdocs.structure.pages import Page
 from mkdocs.theme import Theme
 
 from mkdocs_static_i18n import __file__ as installation_path
-from mkdocs_static_i18n import is_relative_to
 from mkdocs_static_i18n.config import I18nPluginConfig
 from mkdocs_static_i18n.suffix import I18nFiles
 
@@ -58,8 +57,8 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         super().__init__(*args, **kwargs)
         self.building = False
         self.current_language = None
+        self.extra_alternate = {}
         self.i18n_alternates = {}
-        self.i18n_dest_uris = {}
         self.search_entries = []
 
     @property
@@ -169,24 +168,36 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
             config.theme._vars["language"] = locale
         # configure extra.alternate language switcher
         if len(self.build_languages) > 1:
+            # 'on_page_context' overrides the config.extra.alternate
+            # so we need to reset it to its initial computed value if present
+            if self.extra_alternate:
+                config["extra"]["alternate"] = deepcopy(self.extra_alternate)
             # user has setup its own extra.alternate
-            # warn him if it's poorly configured
+            # warn if it's poorly configured
             if "alternate" in config["extra"]:
                 for alternate in config["extra"]["alternate"]:
-                    if not alternate.get("link", "").startswith("./"):
+                    if not alternate.get("link", "").startswith("/") or not alternate.get(
+                        "link", ""
+                    ).endswith("/"):
                         log.info(
                             "The 'extra.alternate' configuration contains a "
-                            "'link' option that should starts with './' in "
-                            f"{alternate}"
+                            "'link' option that should be an absolute path '/' and "
+                            f"end with a trailing '/' in {alternate}"
                         )
+                    for required_key in ["name", "link", "lang"]:
+                        if required_key not in alternate:
+                            log.info(
+                                "The 'extra.alternate' configuration is missing a required "
+                                f"'{required_key}' option in {alternate}"
+                            )
             # configure the extra.alternate for the user
+            # https://squidfunk.github.io/mkdocs-material/setup/changing-the-language/#site-language-selector
             else:
+                base_url = urlsplit(config.site_url).path.rstrip("/")
                 config["extra"]["alternate"] = []
                 # Add index.html file name when used with
                 # use_directory_urls = True
-                link_suffix = ""
-                if config.get("use_directory_urls") is False:
-                    link_suffix = "index.html"
+                link_suffix = "" if config.get("use_directory_urls") else "index.html"
                 # setup language switcher
                 for language in self.build_languages:
                     lang_config = self.get_language_config(language)
@@ -195,12 +206,13 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                         continue
                     config["extra"]["alternate"].append(
                         {
-                            "name": f"{lang_config['name']}",
-                            "link": f"{lang_config['link']}{link_suffix}",
-                            "fixed_link": lang_config["fixed_link"],
+                            "name": lang_config.name,
+                            "link": lang_config.fixed_link
+                            or f"{base_url}{lang_config.link}{link_suffix}",
                             "lang": language,
                         }
                     )
+            self.extra_alternate = deepcopy(config["extra"]["alternate"])
         return config
 
     def reconfigure_search_plugin(
@@ -269,88 +281,20 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         Support dynamic reconfiguration of the material language selector so that
         users can switch between the different localized versions of their current page.
         """
-        # TODO: switch to using page.alternates to avoid 404 on missing content?
-        if PurePath(page.url) == PurePath("."):
-            return context
-        alternates = []
-        for current_alternate in config["extra"].get("alternate", {}):
-            new_alternate = {}
-            new_alternate.update(**current_alternate)
-            # page is part of the localized language path
-            if is_relative_to(page.url, self.current_language):
-                # link to the default root path should not prefix the locale
-                if current_alternate["lang"] == self.default_language:
-                    new_alternate["link"] = urlquote(
-                        PurePath(page.url).relative_to(self.current_language).as_posix()
-                    )
-                # link to other locales should prefix the locale
-                else:
-                    # there is an alternate page for this page, link to it
-                    if current_alternate["lang"] in page.file.alternates:
-                        new_alternate["link"] = urlquote(
-                            PurePath(
-                                PurePath(current_alternate["lang"])
-                                / PurePath(page.url).relative_to(self.current_language)
-                            ).as_posix()
-                        )
-                    # there is no alternate page for this page, link to root
-                    else:
-                        new_alternate["link"] = urlquote(
-                            PurePath(current_alternate["lang"]).as_posix()
-                        )
-
-            # page is part of the default language root path
-            else:
-                if current_alternate["lang"] == self.current_language:
-                    new_alternate["link"] = page.url
-                else:
-                    new_alternate["link"] = urlquote(
-                        PurePath(
-                            PurePath(current_alternate["lang"]) / PurePath(page.url)
-                        ).as_posix()
-                    )
-            new_alternate["link"] = f"./{new_alternate['link']}"
-            alternates.append(new_alternate)
-        context["config"]["extra"]["alternate"] = alternates
+        if self.extra_alternate:
+            config["extra"]["alternate"] = deepcopy(self.extra_alternate)
+            if PurePath(page.url) == PurePath("."):
+                return context
+            if PurePath(page.url) == PurePath(page.file.locale_alternate_of):
+                return context
+            #
+            for extra_alternate in config["extra"]["alternate"]:
+                alternate_lang = extra_alternate["lang"]
+                # current page has an alternate for this language, use it
+                if alternate_lang in page.file.alternates:
+                    alternate_file = page.file.alternates[alternate_lang]
+                    extra_alternate["link"] = alternate_file.url
         return context
-
-    def reconfigure_alternates(self, i18n_files):
-        """
-        Reconfigure File() alternates of all languages built so far.
-        """
-        # because we build one language after the other, we need to rebuild
-        # the alternates for each of them until the last built language
-        # keep a reference of the i18n_files to build the alterntes for
-        self.i18n_alternates[self.current_language] = i18n_files
-        for build_locale, build_dest_uris in self.i18n_dest_uris.items():
-            for i18n_file in build_dest_uris.values():
-                alternates = {}
-                for expected_language in self.build_languages:
-                    if build_locale == self.default_language:
-                        if expected_language == self.default_language:
-                            expected_dest_uri = PurePath(i18n_file.dest_uri).as_posix()
-                        else:
-                            expected_dest_uri = PurePath(
-                                PurePath(expected_language) / i18n_file.dest_uri
-                            ).as_posix()
-                    else:
-                        if expected_language == self.default_language:
-                            expected_dest_uri = PurePath(
-                                PurePath(i18n_file.dest_uri).relative_to(build_locale)
-                            ).as_posix()
-                        else:
-                            expected_dest_uri = PurePath(
-                                PurePath(expected_language)
-                                / PurePath(i18n_file.dest_uri).relative_to(build_locale)
-                            ).as_posix()
-                    # lookup the expected language alternate i18n_file, if present
-                    if expected_language in self.i18n_dest_uris:
-                        if expected_dest_uri in self.i18n_dest_uris[expected_language]:
-                            alternates[expected_language] = self.i18n_dest_uris[expected_language][
-                                expected_dest_uri
-                            ]
-                i18n_file.alternates = alternates
-        return self.i18n_alternates
 
     def extend_search_entries(self, config: MkDocsConfig):
         """

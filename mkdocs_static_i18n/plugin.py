@@ -68,13 +68,16 @@ class I18n(ExtendedPlugin):
         """
         Construct the lang specific file tree which will be used to
         generate the navigation for the default site and per language.
+
+        Note that each file's alternates are also built during this step.
         """
         if self.config["docs_structure"] == "suffix":
             i18n_files = suffix.on_files(self, files, config)
         else:
             raise Exception("unimplemented")
-        # reconfigure the alternates map by build language
-        self.i18n_alternates = self.reconfigure_alternates(i18n_files)
+        # update the (cumulative) global alternates map which is
+        # used by the sitemap.xml template
+        self.i18n_alternates[self.current_language] = i18n_files
         return i18n_files
 
     @plugins.event_priority(-100)
@@ -82,7 +85,6 @@ class I18n(ExtendedPlugin):
         """
         Translate i18n aware navigation to honor the 'nav_translations' option.
         """
-
         homepage_suffix: str = "" if config.use_directory_urls else "index.html"
 
         class NavHelper:

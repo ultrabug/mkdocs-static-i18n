@@ -37,7 +37,11 @@
         {%- elif i18n_file.page.abs_url %}
             {%- set i18n_href = i18n_file.page.abs_url | e %}
         {%- else %}
-            {%- set i18n_href = config.site_url ~ i18n_file.url %}
+            {%- if i18n_file.url == "./" %}
+                {%- set i18n_href = config.site_url %}
+            {%- else %}
+                {%- set i18n_href = config.site_url ~ i18n_file.url %}
+            {%- endif %}
         {%- endif %}
         <xhtml:link rel="alternate" hreflang="{{ i18n_locale }}" href="{{ i18n_href }}"/>
     {%- endfor %}
