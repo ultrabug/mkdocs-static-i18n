@@ -60,6 +60,8 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         self.extra_alternate = {}
         self.i18n_alternates = {}
         self.search_entries = []
+        self.original_configs = {}
+        self.original_theme_configs = {}
 
     @property
     def all_languages(self):
@@ -129,11 +131,40 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
 
         return config
 
+    def reset_to_original_config(self, config: MkDocsConfig):
+        """
+        Since applying user overrides on each language build is done
+        on the same MkDocs config instance, we need to reset parts of
+        it before overriding it again.
+
+        Example:
+            - the general config has a default site_name defined
+            - we build for "en", "fr", "de" (in that order)
+            - if site_name is overridden for "fr" but NOT for "de"
+            - then "de" would get the "fr" site_name instead of the general one
+
+        This method takes care of that problem.
+        """
+        for config_key, config_value in self.original_configs.items():
+            config[config_key] = config_value
+        for config_key, config_value in self.original_theme_configs.items():
+            config.theme._vars[config_key] = config_value
+
+        return config
+
+    def save_original_config(self, store, key, value):
+        if key not in store:
+            store[key] = value
+
     def apply_user_overrides(self, config: MkDocsConfig):
         """
         The i18n configuration structure allows users to set abitrary configuration
         that will be overriden if they match valid MkDocsConfig or Theme options.
         """
+        # reset config to its orginal values since the config might have been
+        # altered by a previous build
+        config = self.reset_to_original_config(config)
+
         for lang_key, lang_override in self.current_language_config.items():
             if lang_key in config.data and lang_override is not None:
                 mkdocs_config_option_type = type(config.data[lang_key])
@@ -141,6 +172,9 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                 if mkdocs_config_option_type == Theme and type(lang_override) == dict:
                     config.theme = self.apply_user_theme_overrides(config.theme, lang_override)
                 elif mkdocs_config_option_type in [str, bool, dict, list]:
+                    self.save_original_config(
+                        self.original_configs, lang_key, config.data[lang_key]
+                    )
                     config.load_dict({lang_key: lang_override})
         return config
 
@@ -150,8 +184,10 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         """
         for key, value in options.items():
             if key in theme._vars and type(theme._vars[key]) == type(value):
+                self.save_original_config(self.original_theme_configs, key, theme._vars[key])
                 theme._vars[key] = value
             elif key == "locale":
+                self.save_original_config(self.original_theme_configs, key, theme._vars[key])
                 theme._vars[key] = localization.parse_locale(value)
             else:
                 log.error(f"Failed to override unknown theme.{key}")
