@@ -77,7 +77,7 @@ class I18n(ExtendedPlugin):
             i18n_files = folder.on_files(self, files, config)
         # update the (cumulative) global alternates map which is
         # used by the sitemap.xml template
-        self.i18n_alternates[self.current_language] = i18n_files
+        self.i18n_files_per_language[self.current_language] = i18n_files
         return i18n_files
 
     @plugins.event_priority(-100)
@@ -135,7 +135,7 @@ class I18n(ExtendedPlugin):
         context["i18n_current_language_config"] = self.current_language_config
         context["i18n_current_language"] = self.current_language
         # used by sitemap.xml template
-        context["i18n_alternates"] = self.i18n_alternates
+        context["i18n_alternates"] = self.i18n_files_per_language
         return context
 
     @plugins.event_priority(-100)

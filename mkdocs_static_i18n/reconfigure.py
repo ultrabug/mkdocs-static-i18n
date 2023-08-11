@@ -58,10 +58,10 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         self.building = False
         self.current_language = None
         self.extra_alternate = {}
-        self.i18n_alternates = {}
-        self.search_entries = []
+        self.i18n_files_per_language = {}
         self.original_configs = {}
         self.original_theme_configs = {}
+        self.search_entries = []
 
     @property
     def all_languages(self):
