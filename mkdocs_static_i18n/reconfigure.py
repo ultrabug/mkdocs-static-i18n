@@ -171,7 +171,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                 # support special Theme object overrides
                 if mkdocs_config_option_type == Theme and type(lang_override) == dict:
                     config.theme = self.apply_user_theme_overrides(config.theme, lang_override)
-                elif mkdocs_config_option_type in [str, bool, dict, list]:
+                elif mkdocs_config_option_type in [str, bool, dict, list, type(None)]:
                     self.save_original_config(
                         self.original_configs, lang_key, config.data[lang_key]
                     )
