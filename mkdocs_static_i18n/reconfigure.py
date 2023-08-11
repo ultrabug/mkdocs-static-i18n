@@ -359,10 +359,13 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         for name, plugin in config.plugins.items():
             if name in ["search", "material/search"]:
                 if hasattr(plugin, "search_index"):
-                    entries = getattr(plugin.search_index, "entries", None) or getattr(
-                        plugin.search_index, "_entries"
-                    )
-                    self.search_entries.extend(entries)
+                    for entries_attr in ["entries", "_entries"]:
+                        if hasattr(plugin.search_index, entries_attr):
+                            entries = getattr(plugin.search_index, entries_attr)
+                            self.search_entries.extend(entries)
+                            break
+                    else:
+                        log.warning(f"Could not find '{name}' plugin search entries")
 
     def reconfigure_search_duplicates(self, search_index_entries):
         """
