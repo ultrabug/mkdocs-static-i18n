@@ -13,31 +13,6 @@ from mkdocs.structure.pages import Page
 from mkdocs_static_i18n import folder, suffix
 from mkdocs_static_i18n.reconfigure import ExtendedPlugin
 
-try:
-    from importlib.metadata import files as package_files
-    from importlib.metadata import version
-
-    material_version = version("mkdocs-material")
-    material_languages = [
-        lang.stem
-        for lang in package_files("mkdocs-material")
-        if "material/partials/languages" in lang.as_posix()
-    ]
-except Exception:
-    try:
-        # python 3.7 compatibility, drop on 3.7 EOL
-        import pkg_resources
-
-        material_dist = pkg_resources.get_distribution("mkdocs-material")
-        material_version = material_dist.version
-        material_languages = [
-            lang.split(".html")[0]
-            for lang in material_dist.resource_listdir("material/partials/languages")
-        ]
-    except Exception:
-        material_languages = []
-        material_version = None
-
 log = get_plugin_logger(__name__)
 
 

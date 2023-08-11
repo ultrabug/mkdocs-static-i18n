@@ -16,6 +16,19 @@ from mkdocs_static_i18n.suffix import I18nFiles
 log = get_plugin_logger(__name__)
 
 try:
+    from importlib.metadata import version
+
+    MATERIAL_VERSION = version("mkdocs-material")
+except Exception:
+    try:
+        # python 3.7 compatibility, drop on 3.7 EOL
+        import pkg_resources
+
+        MATERIAL_VERSION = pkg_resources.get_distribution("mkdocs-material").version
+    except Exception:
+        MATERIAL_VERSION = None
+
+try:
     from importlib.metadata import files as package_files
 
     LUNR_LANGUAGES = [
@@ -99,13 +112,19 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
 
         # material theme specific reconfiguration (can be disabled)
         if config.theme.name == "material" and self.config["reconfigure_material"] is True:
-            config = self.reconfigure_material_theme(config, self.current_language)
-            # warn about navigation.instant incompatibility
-            if "navigation.instant" in config.theme._vars.get("features", []):
-                log.warning(
-                    "mkdocs-material language switcher contextual link is not "
-                    "compatible with theme.features = navigation.instant"
-                )
+            # check and warn about missing mkdocs-material version
+            if MATERIAL_VERSION is None:
+                log.warning("mkdocs-material version could not be detected")
+            elif MATERIAL_VERSION <= "7.1":
+                log.warning(f"mkdocs-material version {MATERIAL_VERSION} is not supported")
+            else:
+                config = self.reconfigure_material_theme(config, self.current_language)
+                # warn about navigation.instant incompatibility
+                if "navigation.instant" in config.theme._vars.get("features", []):
+                    log.warning(
+                        "mkdocs-material language switcher contextual link is not "
+                        "compatible with theme.features = navigation.instant"
+                    )
 
         # supported plugins reconfiguration
         for name, plugin in config.plugins.items():
