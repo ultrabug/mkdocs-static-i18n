@@ -36,7 +36,7 @@ def create_i18n_file(
     is_asset = False
 
     for language in all_languages:
-        if PurePath(file.src_path).is_relative_to(language):
+        if is_relative_to(file.src_path, language):
             file_locale = language
             break
     else:
@@ -50,7 +50,7 @@ def create_i18n_file(
         # don't change assets (root) paths
         pass
     elif file_locale != current_language:
-        if PurePath(file_dest_path).is_relative_to(file_locale):
+        if is_relative_to(file_dest_path, file_locale):
             # we have to change the output folder
             file.dest_path = PurePath(
                 PurePath(current_language) / PurePath(file_dest_path).relative_to(file_locale)
@@ -61,7 +61,7 @@ def create_i18n_file(
             ).as_posix()
     elif file_locale == default_language:
         # we check that we are relative since we also accept other non localized files (assets)
-        if PurePath(file_dest_path).is_relative_to(file_locale):
+        if is_relative_to(file_dest_path, file_locale):
             # we have to change the output folder to nothing
             file.dest_path = PurePath(file_dest_path).relative_to(file_locale).as_posix()
         elif current_language != default_language:
@@ -109,9 +109,9 @@ class I18nFiles(Files):
         """
         expected_src_uri = PurePath(path)
         expected_src_uris = []
-        if expected_src_uri.is_relative_to(self.plugin.current_language):
+        if is_relative_to(expected_src_uri, self.plugin.current_language):
             expected_src_uris.append(expected_src_uri.relative_to(self.plugin.current_language))
-        if expected_src_uri.is_relative_to(self.plugin.default_language):
+        if is_relative_to(expected_src_uri, self.plugin.default_language):
             expected_src_uris.append(expected_src_uri.relative_to(self.plugin.default_language))
         expected_src_uris.append(expected_src_uri)
         for src_uri in expected_src_uris:
@@ -210,10 +210,10 @@ def on_files(i18n_plugin, files: Files, mkdocs_config: MkDocsConfig) -> I18nFile
                 mkdocs_config,
             )
             # this file is from the target language to build
-            if PurePath(file.src_path).is_relative_to(i18n_plugin.current_language):
+            if is_relative_to(file.src_path, i18n_plugin.current_language):
                 i18n_dest_uris[i18n_file.dest_uri] = i18n_file
                 log.debug(f"Use localized {i18n_file.locale} {i18n_file}")
-            elif PurePath(file.src_path).is_relative_to(i18n_plugin.default_language):
+            elif is_relative_to(file.src_path, i18n_plugin.default_language):
                 if i18n_file.dest_uri not in i18n_dest_uris:
                     i18n_dest_uris[i18n_file.dest_uri] = i18n_file
                     log.debug(f"Use default {i18n_file.locale} {i18n_file}")
