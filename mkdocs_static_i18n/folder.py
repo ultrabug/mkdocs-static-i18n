@@ -186,11 +186,12 @@ def reconfigure_navigation(i18n_plugin, nav):
             or i18n_plugin.default_language.capitalize()
         ):
             items.extend(section.children)
-    nav.items = items
-    # [Page(title=[blank], url='/mkdocs-static-i18n/fr/'), Section(title='Topic1'), Section(title='Topic2'), Section(title='French only'), Section(title='English default')]
-    # =>
-    # [Page(title=[blank], url='/mkdocs-static-i18n/fr/'), Section(title='English default'), Section(title='French only'), Section(title='Topic1'), Section(title='Topic2')]
-    nav.items.sort(key=lambda x: x.title if x.title else "")
+    if items:
+        nav.items = items
+        # [Page(title=[blank], url='/mkdocs-static-i18n/fr/'), Section(title='Topic1'), Section(title='Topic2'), Section(title='French only'), Section(title='English default')]
+        # =>
+        # [Page(title=[blank], url='/mkdocs-static-i18n/fr/'), Section(title='English default'), Section(title='French only'), Section(title='Topic1'), Section(title='Topic2')]
+        nav.items.sort(key=lambda x: x.title if x.title else "")
     return nav
 
 
@@ -214,7 +215,10 @@ def on_files(i18n_plugin, files: Files, mkdocs_config: MkDocsConfig) -> I18nFile
                 i18n_dest_uris[i18n_file.dest_uri] = i18n_file
                 log.debug(f"Use localized {i18n_file.locale} {i18n_file}")
             elif is_relative_to(file.src_path, i18n_plugin.default_language):
-                if i18n_file.dest_uri not in i18n_dest_uris:
+                if (
+                    i18n_plugin.config.fallback_to_default is True
+                    and i18n_file.dest_uri not in i18n_dest_uris
+                ):
                     i18n_dest_uris[i18n_file.dest_uri] = i18n_file
                     log.debug(f"Use default {i18n_file.locale} {i18n_file}")
                 i18n_alternate_dest_uris[i18n_file.dest_uri].append(file)
