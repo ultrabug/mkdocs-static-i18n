@@ -109,10 +109,17 @@ class I18nFiles(Files):
         """
         expected_src_uri = PurePath(path)
         expected_src_uris = []
+        # non localized paths detection (root)
         if is_relative_to(expected_src_uri, self.plugin.current_language):
             expected_src_uris.append(expected_src_uri.relative_to(self.plugin.current_language))
-        if is_relative_to(expected_src_uri, self.plugin.default_language):
+        elif is_relative_to(expected_src_uri, self.plugin.default_language):
             expected_src_uris.append(expected_src_uri.relative_to(self.plugin.default_language))
+        # localized paths detection
+        else:
+            expected_src_uris.append(PurePath(self.plugin.current_language) / expected_src_uri)
+        # default language path detection
+        if self.plugin.config.fallback_to_default is True:
+            expected_src_uris.append(PurePath(self.plugin.default_language) / expected_src_uri)
         expected_src_uris.append(expected_src_uri)
         for src_uri in expected_src_uris:
             file = self.src_uris.get(src_uri.as_posix())
