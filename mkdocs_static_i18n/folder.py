@@ -132,14 +132,6 @@ class I18nFiles(Files):
             if file:
                 return file
         else:
-            print(
-                "FAILED looking for",
-                expected_src_uri,
-                "in",
-                expected_src_uris,
-                "=>",
-                [x for x in self.src_uris if "assets" not in x],
-            )
             return None
 
 
@@ -151,7 +143,7 @@ def reconfigure_navigation(i18n_plugin, nav):
     for section in filter(lambda i: i.is_top_level and i.is_section, nav.items):
         if (
             section.title == i18n_plugin.current_language.capitalize()
-            or i18n_plugin.default_language.capitalize()
+            or section.title == i18n_plugin.default_language.capitalize()
         ):
             items.extend(section.children)
     if items:
