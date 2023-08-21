@@ -1,3 +1,5 @@
+![logo by max.icons](https://github.com/ultrabug/mkdocs-static-i18n/blob/main/docs/assets/logo_by_maxicons.png)
+
 # MkDocs static i18n plugin
 
 ![mkdocs-static-i18n pypi version](https://img.shields.io/pypi/v/mkdocs-static-i18n.svg)
@@ -564,3 +566,7 @@ site
 ## Contributions welcome
 
 Feel free to ask questions, enhancements and to contribute to this project!
+
+## Credits
+
+- Logo by [max.icons](https://www.flaticon.com/authors/maxicons)
