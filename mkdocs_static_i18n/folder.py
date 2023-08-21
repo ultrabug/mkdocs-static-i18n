@@ -152,8 +152,12 @@ class I18nFiles(Files):
             for i18n_dest_uri, i18n_file in i18n_dest_uris.items():
                 if build_lang not in i18n_file.alternates:
                     for alternate_file in i18n_alternate_dest_uris.get(i18n_dest_uri, []):
-                        alternate_file = create_alternate_from(
-                            alternate_file, build_lang, self.plugin, mkdocs_config
+                        alternate_file = create_i18n_file(
+                            alternate_file,
+                            build_lang,
+                            self.plugin.default_language,
+                            self.plugin.all_languages,
+                            mkdocs_config,
                         )
                         if alternate_file.locale == build_lang:
                             i18n_file.alternates[alternate_file.locale] = alternate_file
@@ -163,15 +167,23 @@ class I18nFiles(Files):
                         # an alternate for the build language, look for the default version of the file
                         if self.plugin.config.fallback_to_default is True:
                             for alternate_file in i18n_alternate_dest_uris.get(i18n_dest_uri, []):
-                                alternate_file = create_alternate_from(
-                                    alternate_file, build_lang, self.plugin, mkdocs_config
+                                alternate_file = create_i18n_file(
+                                    alternate_file,
+                                    build_lang,
+                                    self.plugin.default_language,
+                                    self.plugin.all_languages,
+                                    mkdocs_config,
                                 )
                                 if alternate_file.locale == self.plugin.default_language:
                                     i18n_file.alternates[build_lang] = alternate_file
                                     break
                             else:
-                                alternate_file = create_alternate_from(
-                                    i18n_file, build_lang, self.plugin, mkdocs_config
+                                alternate_file = create_i18n_file(
+                                    i18n_file,
+                                    build_lang,
+                                    self.plugin.default_language,
+                                    self.plugin.all_languages,
+                                    mkdocs_config,
                                 )
                                 if alternate_file.locale == self.plugin.default_language:
                                     i18n_file.alternates[build_lang] = alternate_file
@@ -183,17 +195,6 @@ class I18nFiles(Files):
         #         print(
         #             f"    {build_lang=} {alternate_file.src_uri=} {alternate_file.locale_alternate_of=} {alternate_file.dest_uri=}"
         #         )
-
-
-def create_alternate_from(file, alternate_language, i18n_plugin, mkdocs_config: MkDocsConfig):
-    alternate_file = create_i18n_file(
-        file,
-        alternate_language,
-        i18n_plugin.default_language,
-        i18n_plugin.all_languages,
-        mkdocs_config,
-    )
-    return alternate_file
 
 
 def reconfigure_navigation(i18n_plugin, nav):
