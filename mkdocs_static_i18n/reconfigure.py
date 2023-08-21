@@ -488,8 +488,8 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                 else:
                     # override it only if this is our language
                     if i18n_file.locale == self.current_language:
-                        # users should not add default non suffixed files + suffixed files when
-                        # multiple languages are configured
+                        # users should not add default non suffixed/folder files + suffixed/folder
+                        # files when multiple languages are configured
                         if (
                             len(self.all_languages) > 1
                             and i18n_dest_uris[i18n_file.dest_uri].locale == i18n_file.locale
@@ -512,9 +512,70 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         # populate the resulting Files and keep track of all the alternates
         # that will be used by the sitemap.xml template
         for file in i18n_dest_uris.values():
+            log.debug(f"Selected {file.locale} {file}")
             i18n_files.append(file)
 
         # build the alternates for all the Files
-        i18n_files.update_files_alternates(i18n_dest_uris, i18n_alternate_dest_uris, mkdocs_config)
+        self.reconfigure_files_alternates(
+            i18n_dest_uris, i18n_alternate_dest_uris, mkdocs_config, create_i18n_file
+        )
 
         return i18n_files
+
+    def reconfigure_files_alternates(
+        self,
+        i18n_dest_uris,
+        i18n_alternate_dest_uris,
+        mkdocs_config: MkDocsConfig,
+        create_i18n_file: Union[suffix.create_i18n_file, folder.create_i18n_file],
+    ):
+        """
+        Find and update the alternates of each file.
+        """
+        for build_lang in sorted(self.build_languages):
+            for i18n_dest_uri, i18n_file in i18n_dest_uris.items():
+                if build_lang not in i18n_file.alternates:
+                    for alternate_file in i18n_alternate_dest_uris.get(i18n_dest_uri, []):
+                        alternate_file = create_i18n_file(
+                            alternate_file,
+                            build_lang,
+                            self.default_language,
+                            self.all_languages,
+                            mkdocs_config,
+                        )
+                        if alternate_file.locale == build_lang:
+                            i18n_file.alternates[alternate_file.locale] = alternate_file
+                            break
+                    else:
+                        # if fallbacking to default language is configured and we did not find
+                        # an alternate for the build language, look for the default version of the file
+                        if self.config.fallback_to_default is True:
+                            for alternate_file in i18n_alternate_dest_uris.get(i18n_dest_uri, []):
+                                alternate_file = create_i18n_file(
+                                    alternate_file,
+                                    build_lang,
+                                    self.default_language,
+                                    self.all_languages,
+                                    mkdocs_config,
+                                )
+                                if alternate_file.locale == self.default_language:
+                                    i18n_file.alternates[build_lang] = alternate_file
+                                    break
+                            else:
+                                alternate_file = create_i18n_file(
+                                    i18n_file,
+                                    build_lang,
+                                    self.default_language,
+                                    self.all_languages,
+                                    mkdocs_config,
+                                )
+                                if alternate_file.locale == self.default_language:
+                                    i18n_file.alternates[build_lang] = alternate_file
+        # uncomment to debug alternate selection
+        # for i18n_dest_uri, i18n_file in i18n_dest_uris.items():
+        #     print(" ")
+        #     print(f"{i18n_dest_uri=}")
+        #     for build_lang, alternate_file in i18n_file.alternates.items():
+        #         print(
+        #             f"    {build_lang=} {alternate_file.src_uri=} {alternate_file.locale_alternate_of=} {alternate_file.dest_uri=}"
+        #         )
