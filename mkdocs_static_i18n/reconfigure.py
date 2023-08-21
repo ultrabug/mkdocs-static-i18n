@@ -1,17 +1,20 @@
+from collections import defaultdict
 from copy import deepcopy
 from pathlib import Path, PurePath
+from typing import Union
 from urllib.parse import urlsplit
 
 from mkdocs import localization
 from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.plugins import BasePlugin, get_plugin_logger
+from mkdocs.structure.files import Files
 from mkdocs.structure.nav import Navigation
 from mkdocs.structure.pages import Page
 from mkdocs.theme import Theme
 
 from mkdocs_static_i18n import __file__ as installation_path
+from mkdocs_static_i18n import folder, is_relative_to, suffix
 from mkdocs_static_i18n.config import I18nPluginConfig
-from mkdocs_static_i18n.suffix import I18nFiles
 
 log = get_plugin_logger(__name__)
 
@@ -305,7 +308,11 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         return config
 
     def reconfigure_navigation(
-        self, nav: Navigation, config: MkDocsConfig, files: I18nFiles, nav_helper
+        self,
+        nav: Navigation,
+        config: MkDocsConfig,
+        files: Union[suffix.I18nFiles, folder.I18nFiles],
+        nav_helper,
     ):
         """
         Apply static navigation items translation mapping for the current language.
@@ -429,3 +436,85 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                     self.reconfigure_search_duplicates(search_index_entries)
                 # run the post_build event to rebuild the search index
                 plugin.on_post_build(config=config)
+
+    def reconfigure_files(
+        self,
+        files: Files,
+        mkdocs_config: MkDocsConfig,
+    ) -> Union[suffix.I18nFiles, folder.I18nFiles]:
+        """ """
+        if self.config["docs_structure"] == "suffix":
+            create_i18n_file = suffix.create_i18n_file
+            I18nFiles = suffix.I18nFiles
+        else:
+            create_i18n_file = folder.create_i18n_file
+            I18nFiles = folder.I18nFiles
+        i18n_dest_uris = {}
+        i18n_files = I18nFiles(self, [])
+        i18n_alternate_dest_uris = defaultdict(list)
+        for file in files:
+            # documentation files
+            if is_relative_to(file.abs_src_path, mkdocs_config.docs_dir):
+                i18n_file = create_i18n_file(
+                    file,
+                    self.current_language,
+                    self.default_language,
+                    self.all_languages,
+                    mkdocs_config,
+                )
+
+                # never seen that file?
+                if i18n_file.dest_uri not in i18n_dest_uris:
+                    # best case scenario
+                    # use the file since its locale is our current build language
+                    if i18n_file.locale == self.current_language:
+                        i18n_dest_uris[i18n_file.dest_uri] = i18n_file
+                        log.debug(f"Use {i18n_file.locale} {i18n_file}")
+                    # if locale is the default language AND default language fallback is enabled
+                    # we are using a file that is not really our locale
+                    elif (
+                        self.config.fallback_to_default is True
+                        and i18n_file.locale == self.default_language
+                    ) or i18n_file.src_uri.startswith("assets/"):
+                        i18n_dest_uris[i18n_file.dest_uri] = i18n_file
+                        log.debug(f"Use default {i18n_file.locale} {i18n_file}")
+                        if not i18n_file.src_uri.startswith("assets/"):
+                            i18n_alternate_dest_uris[i18n_file.dest_uri].append(file)
+                    else:
+                        log.debug(f"Ignore {i18n_file.locale} {i18n_file}")
+                        i18n_alternate_dest_uris[i18n_file.dest_uri].append(file)
+
+                # we've seen that file already
+                else:
+                    # override it only if this is our language
+                    if i18n_file.locale == self.current_language:
+                        # users should not add default non suffixed files + suffixed files when
+                        # multiple languages are configured
+                        if (
+                            len(self.all_languages) > 1
+                            and i18n_dest_uris[i18n_file.dest_uri].locale == i18n_file.locale
+                        ):
+                            raise Exception(
+                                f"Conflicting files for the default language '{self.default_language}': "
+                                f"choose either '{i18n_file.src_uri}' or "
+                                f"'{i18n_dest_uris[i18n_file.dest_uri].src_uri}' but not both"
+                            )
+                        i18n_dest_uris[i18n_file.dest_uri] = i18n_file
+                        log.debug(f"Use localized {i18n_file.locale} {i18n_file}")
+                    else:
+                        log.debug(f"Ignore {i18n_file.locale} {i18n_file}")
+                        i18n_alternate_dest_uris[i18n_file.dest_uri].append(file)
+
+            # theme (and overrides) files
+            elif self.is_default_language_build or file.src_uri.startswith("assets/"):
+                i18n_files.append(file)
+
+        # populate the resulting Files and keep track of all the alternates
+        # that will be used by the sitemap.xml template
+        for file in i18n_dest_uris.values():
+            i18n_files.append(file)
+
+        # build the alternates for all the Files
+        i18n_files.update_files_alternates(i18n_dest_uris, i18n_alternate_dest_uris, mkdocs_config)
+
+        return i18n_files

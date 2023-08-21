@@ -1,5 +1,4 @@
 import os
-from collections import defaultdict
 from pathlib import Path, PurePath
 from typing import Optional
 
@@ -8,6 +7,7 @@ from mkdocs.plugins import get_plugin_logger
 from mkdocs.structure.files import File, Files
 
 from mkdocs_static_i18n import is_relative_to
+from mkdocs_static_i18n.config import RE_LOCALE
 
 log = get_plugin_logger(__name__)
 
@@ -33,23 +33,24 @@ def create_i18n_file(
 
     file_dest_path = Path(file.dest_path)
     file_locale = default_language
-    is_asset = False
 
     for language in all_languages:
         if is_relative_to(file.src_path, language):
             file_locale = language
             break
-    else:
-        is_asset = True
+        else:
+            # maybe the language folder is present BUT not configured in the plugin.languages yet
+            # so we use the locale regex to guess that it's a localization folder
+            maybe_file_locale = PurePath(file.src_path).parts[0]
+            if RE_LOCALE.match(maybe_file_locale):
+                file_locale = maybe_file_locale
+                break
 
     # README.html should be renamed to index.html
     if file_dest_path.name.endswith("README.html"):
         file_dest_path = file_dest_path.with_name("index.html")
 
-    if is_asset:
-        # don't change assets (root) paths
-        pass
-    elif file_locale != current_language:
+    if file_locale != current_language:
         if is_relative_to(file_dest_path, file_locale):
             # we have to change the output folder
             file.dest_path = PurePath(
@@ -82,7 +83,6 @@ def create_i18n_file(
     file.alternates = {current_language: file}
     file.locale = file_locale
     file.locale_alternate_of = current_language
-    file.is_asset = is_asset
 
     log.debug(f"reconfigure {file} from locale {file_locale}")
 
@@ -114,6 +114,11 @@ class I18nFiles(Files):
             expected_src_uris.append(expected_src_uri.relative_to(self.plugin.current_language))
         elif is_relative_to(expected_src_uri, self.plugin.default_language):
             expected_src_uris.append(expected_src_uri.relative_to(self.plugin.default_language))
+            if self.plugin.config.fallback_to_default is True:
+                expected_src_uris.append(
+                    PurePath(self.plugin.current_language)
+                    / expected_src_uri.relative_to(self.plugin.default_language)
+                )
         # localized paths detection
         else:
             expected_src_uris.append(PurePath(self.plugin.current_language) / expected_src_uri)
@@ -121,11 +126,20 @@ class I18nFiles(Files):
         if self.plugin.config.fallback_to_default is True:
             expected_src_uris.append(PurePath(self.plugin.default_language) / expected_src_uri)
         expected_src_uris.append(expected_src_uri)
+
         for src_uri in expected_src_uris:
             file = self.src_uris.get(src_uri.as_posix())
             if file:
                 return file
         else:
+            print(
+                "FAILED looking for",
+                expected_src_uri,
+                "in",
+                expected_src_uris,
+                "=>",
+                [x for x in self.src_uris if "assets" not in x],
+            )
             return None
 
     def update_files_alternates(
@@ -200,51 +214,3 @@ def reconfigure_navigation(i18n_plugin, nav):
         # [Page(title=[blank], url='/mkdocs-static-i18n/fr/'), Section(title='English default'), Section(title='French only'), Section(title='Topic1'), Section(title='Topic2')]
         nav.items.sort(key=lambda x: x.title if x.title else "")
     return nav
-
-
-def on_files(i18n_plugin, files: Files, mkdocs_config: MkDocsConfig) -> I18nFiles:
-    """ """
-    i18n_dest_uris = {}
-    i18n_files = I18nFiles(i18n_plugin, [])
-    i18n_alternate_dest_uris = defaultdict(list)
-    for file in files:
-        # documentation files
-        if is_relative_to(file.abs_src_path, mkdocs_config.docs_dir):
-            i18n_file = create_i18n_file(
-                file,
-                i18n_plugin.current_language,
-                i18n_plugin.default_language,
-                i18n_plugin.all_languages,
-                mkdocs_config,
-            )
-            # this file is from the target language to build
-            if is_relative_to(file.src_path, i18n_plugin.current_language):
-                i18n_dest_uris[i18n_file.dest_uri] = i18n_file
-                log.debug(f"Use localized {i18n_file.locale} {i18n_file}")
-            elif is_relative_to(file.src_path, i18n_plugin.default_language):
-                if (
-                    i18n_plugin.config.fallback_to_default is True
-                    and i18n_file.dest_uri not in i18n_dest_uris
-                ):
-                    i18n_dest_uris[i18n_file.dest_uri] = i18n_file
-                    log.debug(f"Use default {i18n_file.locale} {i18n_file}")
-                i18n_alternate_dest_uris[i18n_file.dest_uri].append(file)
-            else:
-                # root / assets files
-                if i18n_file.is_asset is True:
-                    i18n_dest_uris[i18n_file.dest_uri] = i18n_file
-                    log.debug(f"Use asset {i18n_file.locale} {i18n_file}")
-
-        # theme (and overrides) files
-        elif i18n_plugin.is_default_language_build or file.src_uri.startswith("assets/"):
-            i18n_files.append(file)
-
-    # populate the resulting Files and keep track of all the alternates
-    # that will be used by the sitemap.xml template
-    for file in i18n_dest_uris.values():
-        i18n_files.append(file)
-
-    # build the alternates for all the Files
-    i18n_files.update_files_alternates(i18n_dest_uris, i18n_alternate_dest_uris, mkdocs_config)
-
-    return i18n_files

@@ -48,6 +48,36 @@ def test_control_build(make_config):
                 },
             },
         ),
+        (
+            {"mkdocs_fp": "tests/structures/control/en_only/mkdocs.yml"},
+            {
+                "mkdocs_fp": "tests/mkdocs.yml",
+                "docs_dir": "docs_folder_structure/",
+                "plugins": {
+                    "i18n": {
+                        "docs_structure": "folder",
+                        "languages": [
+                            {"locale": "en", "name": "test", "default": True},
+                        ],
+                    }
+                },
+            },
+        ),
+        (
+            {"mkdocs_fp": "tests/structures/control/fr_only/mkdocs.yml"},
+            {
+                "mkdocs_fp": "tests/mkdocs.yml",
+                "docs_dir": "docs_folder_structure/",
+                "plugins": {
+                    "i18n": {
+                        "docs_structure": "folder",
+                        "languages": [
+                            {"locale": "fr", "name": "test", "default": True},
+                        ],
+                    }
+                },
+            },
+        ),
     ],
 )
 def test_control_single(make_config, control_data, test_data):
@@ -56,7 +86,7 @@ def test_control_single(make_config, control_data, test_data):
     #
     assert control_nav.__str__() == test_nav.__str__()
     assert control_env.filters.keys() == test_env.filters.keys()
-    assert [file.dest_uri for file in control_files] == [file.dest_uri for file in test_files]
+    assert {file.dest_uri for file in control_files} == {file.dest_uri for file in test_files}
 
     for control_page, test_page in zip(
         control_files.documentation_pages(), test_files.documentation_pages()
@@ -102,6 +132,41 @@ def test_control_single(make_config, control_data, test_data):
                 },
             },
         ),
+        (
+            {"mkdocs_fp": "tests/structures/control/en_only/mkdocs.yml"},
+            {"mkdocs_fp": "tests/structures/control/fr_with_default/mkdocs.yml"},
+            {
+                "mkdocs_fp": "tests/mkdocs.yml",
+                "docs_dir": "docs_folder_structure/",
+                "plugins": {
+                    "i18n": {
+                        "docs_structure": "folder",
+                        "languages": [
+                            {"locale": "en", "name": "test", "default": True},
+                            {"locale": "fr", "name": "test"},
+                        ],
+                    }
+                },
+            },
+        ),
+        (
+            {"mkdocs_fp": "tests/structures/control/en_only/mkdocs.yml"},
+            {"mkdocs_fp": "tests/structures/control/fr_without_default/mkdocs.yml"},
+            {
+                "mkdocs_fp": "tests/mkdocs.yml",
+                "docs_dir": "docs_folder_structure/",
+                "plugins": {
+                    "i18n": {
+                        "fallback_to_default": False,
+                        "docs_structure": "folder",
+                        "languages": [
+                            {"locale": "en", "name": "test", "default": True},
+                            {"locale": "fr", "name": "test"},
+                        ],
+                    }
+                },
+            },
+        ),
     ],
 )
 def test_control_en_fr(
@@ -119,7 +184,7 @@ def test_control_en_fr(
 
     assert control_nav_en.__str__() == test_nav.__str__()
     assert control_env_en.filters.keys() == test_env.filters.keys()
-    assert [file.dest_uri for file in control_files_en] == [file.dest_uri for file in test_files]
+    assert {file.dest_uri for file in control_files_en} == {file.dest_uri for file in test_files}
 
     for control_page, test_page in zip(
         control_files_en.documentation_pages(), test_files.documentation_pages()
@@ -145,13 +210,16 @@ def test_control_en_fr(
     #
     assert control_nav_fr.__str__() == test_nav_fr.__str__()
     assert control_env_fr.filters.keys() == test_env_fr.filters.keys()
-    assert sorted([f"fr/{file.dest_uri}" for file in control_files_fr]) == sorted(
-        [file.dest_uri for file in test_files_fr]
-    )
+    assert {f"fr/{file.dest_uri}" for file in control_files_fr} == {
+        file.dest_uri for file in test_files_fr
+    }
 
-    for control_page, test_page in zip(
-        control_files_fr.documentation_pages(), test_files_fr.documentation_pages()
-    ):
+    control_pages = control_files_fr.documentation_pages()
+    control_pages.sort(key=lambda p: p.src_uri)
+    test_pages = test_files_fr.documentation_pages()
+    test_pages.sort(key=lambda p: p.src_uri)
+
+    for control_page, test_page in zip(control_pages, test_pages):
         assert f"fr/{control_page.dest_uri}" == test_page.dest_uri
         assert control_page.name == test_page.name
         if control_page.url == "./":

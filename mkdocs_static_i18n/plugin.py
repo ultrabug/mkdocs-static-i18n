@@ -10,7 +10,7 @@ from mkdocs.plugins import get_plugin_logger
 from mkdocs.structure.files import Files
 from mkdocs.structure.pages import Page
 
-from mkdocs_static_i18n import folder, suffix
+from mkdocs_static_i18n import folder
 from mkdocs_static_i18n.reconfigure import ExtendedPlugin
 
 log = get_plugin_logger(__name__)
@@ -46,10 +46,7 @@ class I18n(ExtendedPlugin):
 
         Note that each file's alternates are also built during this step.
         """
-        if self.config["docs_structure"] == "suffix":
-            i18n_files = suffix.on_files(self, files, config)
-        else:
-            i18n_files = folder.on_files(self, files, config)
+        i18n_files = self.reconfigure_files(files, config)
         # update the (cumulative) global alternates map which is
         # used by the sitemap.xml template
         self.i18n_files_per_language[self.current_language] = i18n_files
