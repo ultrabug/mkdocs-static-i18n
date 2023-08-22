@@ -58,7 +58,7 @@ class I18n(ExtendedPlugin):
         Translate i18n aware navigation to honor the 'nav_translations' option.
         """
         # folder structure, reconfigure navigation to remove language sections
-        if self.config["docs_structure"] == "folder":
+        if self.config.docs_structure == "folder":
             nav = folder.reconfigure_navigation(self, nav)
 
         homepage_suffix: str = "" if config.use_directory_urls else "index.html"
@@ -86,7 +86,7 @@ class I18n(ExtendedPlugin):
             log.warning(f"Could not find a homepage for locale '{self.current_language}'")
 
         # manually trigger with-pdf, see #110
-        with_pdf_plugin = config["plugins"].get("with-pdf")
+        with_pdf_plugin = config.plugins.get("with-pdf")
         if with_pdf_plugin:
             with_pdf_plugin.on_nav(i18n_nav, config, files)
 
@@ -121,7 +121,7 @@ class I18n(ExtendedPlugin):
         # export some useful i18n related variables on page context, see #75
         context["i18n_config"] = self.config
         context["i18n_page_locale"] = page.file.locale
-        if self.config["reconfigure_material"] is True:
+        if self.config.reconfigure_material is True:
             context = self.reconfigure_page_context(context, page, config, nav)
         return context
 
@@ -131,7 +131,7 @@ class I18n(ExtendedPlugin):
         Some plugins we control ourselves need this event.
         """
         # manually trigger with-pdf, see #110
-        with_pdf_plugin = config["plugins"].get("with-pdf")
+        with_pdf_plugin = config.plugins.get("with-pdf")
         if with_pdf_plugin:
             with_pdf_plugin.on_post_page(output, page, config)
         return output
@@ -161,7 +161,7 @@ class I18n(ExtendedPlugin):
             pass
 
         # manually trigger with-pdf, see #110
-        with_pdf_plugin = config["plugins"].get("with-pdf")
+        with_pdf_plugin = config.plugins.get("with-pdf")
         if with_pdf_plugin:
             with_pdf_output_path = with_pdf_plugin.config["output_path"]
             with_pdf_plugin.on_post_build(config)

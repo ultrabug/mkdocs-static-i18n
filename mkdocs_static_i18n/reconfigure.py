@@ -122,7 +122,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
             self.reconfigure_mkdocs_theme(config, self.current_language)
 
         # material theme specific reconfiguration (can be disabled)
-        if config.theme.name == "material" and self.config["reconfigure_material"] is True:
+        if config.theme.name == "material" and self.config.reconfigure_material is True:
             # check and warn about missing mkdocs-material version
             if MATERIAL_VERSION is None:
                 log.warning("mkdocs-material version could not be detected")
@@ -142,7 +142,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
             # search plugin (MkDocs & material > 9.0) reconfiguration
             if name in ["search", "material/search"]:
                 # search plugin reconfiguration can be disabled
-                if self.config["reconfigure_search"]:
+                if self.config.reconfigure_search:
                     config = self.reconfigure_search_plugin(config, name, plugin)
             if name == "with-pdf":
                 config = self.reconfigure_with_pdf_plugin(config)
@@ -237,11 +237,11 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
             # 'on_page_context' overrides the config.extra.alternate
             # so we need to reset it to its initial computed value if present
             if self.extra_alternate:
-                config["extra"]["alternate"] = deepcopy(self.extra_alternate)
+                config.extra["alternate"] = deepcopy(self.extra_alternate)
             # user has setup its own extra.alternate
             # warn if it's poorly configured
-            if "alternate" in config["extra"]:
-                for alternate in config["extra"]["alternate"]:
+            if "alternate" in config.extra:
+                for alternate in config.extra["alternate"]:
                     if not alternate.get("link", "").startswith("/") or not alternate.get(
                         "link", ""
                     ).endswith("/"):
@@ -260,7 +260,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
             # https://squidfunk.github.io/mkdocs-material/setup/changing-the-language/#site-language-selector
             else:
                 base_url = urlsplit(config.site_url).path.rstrip("/")
-                config["extra"]["alternate"] = []
+                config.extra["alternate"] = []
                 # Add index.html file name when used with
                 # use_directory_urls = True
                 link_suffix = "" if config.get("use_directory_urls") else "index.html"
@@ -270,7 +270,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                     # skip language if not built
                     if lang_config.build is False:
                         continue
-                    config["extra"]["alternate"].append(
+                    config.extra["alternate"].append(
                         {
                             "name": lang_config.name,
                             "link": lang_config.fixed_link
@@ -278,13 +278,13 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                             "lang": language,
                         }
                     )
-            self.extra_alternate = deepcopy(config["extra"]["alternate"])
+            self.extra_alternate = deepcopy(config.extra["alternate"])
         return config
 
     def reconfigure_search_plugin(
         self, config: MkDocsConfig, search_plugin_name: str, search_plugin
     ):
-        search_langs = search_plugin.config["lang"] or []
+        search_langs = search_plugin.config.lang or []
         for language in self.build_languages:
             if language in LUNR_LANGUAGES:
                 if language not in search_langs:
@@ -298,14 +298,14 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                     f"lunr.js, not setting it in the 'plugins.search.lang' option"
                 )
         if search_langs:
-            search_plugin.config["lang"] = search_langs
+            search_plugin.config.lang = search_langs
         return config
 
     def reconfigure_with_pdf_plugin(self, config: MkDocsConfig):
         """
         Support plugin mkdocs-with-pdf, see #110.
         """
-        for events in config["plugins"].events.values():
+        for events in config.plugins.events.values():
             for idx, event in enumerate(list(events)):
                 try:
                     if str(event.__module__) == "mkdocs_with_pdf.plugin":
@@ -352,13 +352,13 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         users can switch between the different localized versions of their current page.
         """
         if self.extra_alternate:
-            config["extra"]["alternate"] = deepcopy(self.extra_alternate)
+            config.extra.alternate = deepcopy(self.extra_alternate)
             if PurePath(page.url) == PurePath("."):
                 return context
             if PurePath(page.url) == PurePath(page.file.locale_alternate_of):
                 return context
             #
-            for extra_alternate in config["extra"]["alternate"]:
+            for extra_alternate in config.extra.alternate:
                 alternate_lang = extra_alternate["lang"]
                 # current page has an alternate for this language, use it
                 if alternate_lang in page.file.alternates:
@@ -440,7 +440,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                 search_index_entries.clear()
                 search_index_entries.extend(self.search_entries)
                 # remove search index duplicates
-                if self.config["reconfigure_search"]:
+                if self.config.reconfigure_search:
                     self.reconfigure_search_duplicates(search_index_entries)
                 # run the post_build event to rebuild the search index
                 plugin.on_post_build(config=config)
@@ -451,7 +451,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         mkdocs_config: MkDocsConfig,
     ) -> Union[suffix.I18nFiles, folder.I18nFiles]:
         """ """
-        if self.config["docs_structure"] == "suffix":
+        if self.config.docs_structure == "suffix":
             create_i18n_file = suffix.create_i18n_file
             I18nFiles = suffix.I18nFiles
         else:
