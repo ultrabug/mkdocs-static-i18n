@@ -96,7 +96,7 @@ class I18n(ExtendedPlugin):
         # Add extension to allow the "continue" clause in the sitemap template loops.
         env.add_extension(loopcontrols)
 
-    @plugins.event_priority(-100)
+    @plugins.event_priority(50)
     def on_template_context(self, context, template_name, config):
         """
         Template context only applies to Template() objects.
@@ -110,7 +110,7 @@ class I18n(ExtendedPlugin):
         context["i18n_alternates"] = self.i18n_files_per_language
         return context
 
-    @plugins.event_priority(-100)
+    @plugins.event_priority(50)
     def on_page_context(self, context, page, config, nav):
         """
         Page context only applies to Page() objects.
