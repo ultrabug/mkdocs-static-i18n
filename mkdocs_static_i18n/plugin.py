@@ -49,7 +49,7 @@ class I18n(ExtendedPlugin):
         i18n_files = self.reconfigure_files(files, config)
         # update the (cumulative) global alternates map which is
         # used by the sitemap.xml template
-        self.i18n_files_per_language[self.current_language] = i18n_files
+        self.i18n_files_per_language[self.current_language] = i18n_files.documentation_pages()
         return i18n_files
 
     @plugins.event_priority(-100)
