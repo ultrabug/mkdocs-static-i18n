@@ -47,6 +47,7 @@ except Exception:
         "da",
         "de",
         "du",
+        "en",
         "es",
         "fi",
         "fr",
