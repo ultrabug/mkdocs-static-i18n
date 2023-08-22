@@ -453,7 +453,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         i18n_files = I18nFiles(self, [])
         i18n_alternate_dest_uris = defaultdict(list)
         for file in files:
-            # documentation files
+            # user provided files in docs_dir
             if is_relative_to(file.abs_src_path, mkdocs_config.docs_dir):
                 i18n_file = create_i18n_file(
                     file,
@@ -463,50 +463,83 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                     mkdocs_config,
                 )
 
-                # never seen that file?
-                if i18n_file.dest_uri not in i18n_dest_uris:
-                    # best case scenario
-                    # use the file since its locale is our current build language
-                    if i18n_file.locale == self.current_language:
-                        i18n_dest_uris[i18n_file.dest_uri] = i18n_file
-                        log.debug(f"Use {i18n_file.locale} {i18n_file}")
-                    # if locale is the default language AND default language fallback is enabled
-                    # we are using a file that is not really our locale
-                    elif (
-                        self.config.fallback_to_default is True
-                        and i18n_file.locale == self.default_language
-                    ) or i18n_file.src_uri.startswith("assets/"):
-                        i18n_dest_uris[i18n_file.dest_uri] = i18n_file
-                        log.debug(f"Use default {i18n_file.locale} {i18n_file}")
-                        if not i18n_file.src_uri.startswith("assets/"):
-                            i18n_alternate_dest_uris[i18n_file.dest_uri].append(file)
-                    else:
-                        log.debug(f"Ignore {i18n_file.locale} {i18n_file}")
-                        i18n_alternate_dest_uris[i18n_file.dest_uri].append(file)
-
-                # we've seen that file already
-                else:
-                    # override it only if this is our language
-                    if i18n_file.locale == self.current_language:
-                        # users should not add default non suffixed/folder files + suffixed/folder
-                        # files when multiple languages are configured
-                        if (
-                            len(self.all_languages) > 1
-                            and i18n_dest_uris[i18n_file.dest_uri].locale == i18n_file.locale
+                # user provided documentation page
+                if i18n_file.is_documentation_page():
+                    # never seen that file?
+                    if i18n_file.dest_uri not in i18n_dest_uris:
+                        # best case scenario
+                        # use the file since its locale is our current build language
+                        if i18n_file.locale == self.current_language:
+                            i18n_dest_uris[i18n_file.dest_uri] = i18n_file
+                            log.debug(f"Use {i18n_file.locale} {i18n_file}")
+                        # if locale is the default language AND default language fallback is enabled
+                        # we are using a file that is not really our locale
+                        elif (
+                            self.config.fallback_to_default is True
+                            and i18n_file.locale == self.default_language
                         ):
-                            raise Exception(
-                                f"Conflicting files for the default language '{self.default_language}': "
-                                f"choose either '{i18n_file.src_uri}' or "
-                                f"'{i18n_dest_uris[i18n_file.dest_uri].src_uri}' but not both"
-                            )
-                        i18n_dest_uris[i18n_file.dest_uri] = i18n_file
-                        log.debug(f"Use localized {i18n_file.locale} {i18n_file}")
+                            i18n_dest_uris[i18n_file.dest_uri] = i18n_file
+                            log.debug(f"Use default {i18n_file.locale} {i18n_file}")
+                            i18n_alternate_dest_uris[i18n_file.dest_uri].append(file)
+                        else:
+                            log.debug(f"Ignore {i18n_file.locale} {i18n_file}")
+                            i18n_alternate_dest_uris[i18n_file.dest_uri].append(file)
+
+                    # we've seen that file already
                     else:
-                        log.debug(f"Ignore {i18n_file.locale} {i18n_file}")
-                        i18n_alternate_dest_uris[i18n_file.dest_uri].append(file)
+                        # override it only if this is our language
+                        if i18n_file.locale == self.current_language:
+                            # users should not add default non suffixed/folder files + suffixed/folder
+                            # files when multiple languages are configured
+                            if (
+                                len(self.all_languages) > 1
+                                and i18n_dest_uris[i18n_file.dest_uri].locale == i18n_file.locale
+                            ):
+                                raise Exception(
+                                    f"Conflicting files for the default language '{self.default_language}': "
+                                    f"choose either '{i18n_file.src_uri}' or "
+                                    f"'{i18n_dest_uris[i18n_file.dest_uri].src_uri}' but not both"
+                                )
+                            i18n_dest_uris[i18n_file.dest_uri] = i18n_file
+                            log.debug(f"Use localized {i18n_file.locale} {i18n_file}")
+                        else:
+                            log.debug(f"Ignore {i18n_file.locale} {i18n_file}")
+                            i18n_alternate_dest_uris[i18n_file.dest_uri].append(file)
+
+                # user provided asset
+                else:
+                    # never seen that file?
+                    if i18n_file.dest_uri not in i18n_dest_uris:
+                        # best case scenario
+                        # use the file since its locale is our current build language
+                        if i18n_file.locale == self.current_language:
+                            i18n_dest_uris[i18n_file.dest_uri] = i18n_file
+                            log.debug(f"Use asset {i18n_file.locale} {i18n_file}")
+                        # if locale is the default language AND default language fallback is enabled
+                        # we are using a file that is not really our locale
+                        elif (
+                            self.config.fallback_to_default is True
+                            and i18n_file.locale == self.default_language
+                        ):
+                            i18n_asset = create_i18n_file(
+                                file,
+                                self.default_language,
+                                self.default_language,
+                                self.all_languages,
+                                mkdocs_config,
+                            )
+                            i18n_dest_uris[i18n_file.dest_uri] = i18n_asset
+                            log.debug(f"Use default asset {i18n_asset.locale} {i18n_asset}")
+
+                    # we've seen that file already
+                    else:
+                        # override it only if this is our language
+                        if i18n_file.locale == self.current_language:
+                            i18n_dest_uris[i18n_file.dest_uri] = i18n_file
+                            log.debug(f"Use localized asset {i18n_file.locale} {i18n_file}")
 
             # theme (and overrides) files
-            elif self.is_default_language_build or file.src_uri.startswith("assets/"):
+            elif self.is_default_language_build:
                 i18n_files.append(file)
 
         # populate the resulting Files and keep track of all the alternates

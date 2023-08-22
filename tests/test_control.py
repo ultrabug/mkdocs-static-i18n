@@ -210,9 +210,14 @@ def test_control_en_fr(
     #
     assert control_nav_fr.__str__() == test_nav_fr.__str__()
     assert control_env_fr.filters.keys() == test_env_fr.filters.keys()
-    assert {f"fr/{file.dest_uri}" for file in control_files_fr} == {
-        file.dest_uri for file in test_files_fr
-    }
+
+    control_dest_uris = set()
+    for file in control_files_fr:
+        if not file.dest_uri.startswith("assets/"):
+            control_dest_uris.add(f"fr/{file.dest_uri}")
+        else:
+            control_dest_uris.add(file.dest_uri)
+    assert control_dest_uris == {file.dest_uri for file in test_files_fr}
 
     control_pages = control_files_fr.documentation_pages()
     control_pages.sort(key=lambda p: p.src_uri)
