@@ -118,11 +118,12 @@ class I18n(ExtendedPlugin):
 
         Overriden templates such as the sitemap.xml are not impacted by this method!
         """
-        # export some useful i18n related variables on page context, see #75
-        context["i18n_config"] = self.config
-        context["i18n_page_locale"] = page.file.locale
-        if self.config.reconfigure_material is True:
-            context = self.reconfigure_page_context(context, page, config, nav)
+        if isinstance(page, Page) and hasattr(page.file, "locale"):
+            # export some useful i18n related variables on page context, see #75
+            context["i18n_config"] = self.config
+            context["i18n_page_locale"] = page.file.locale
+            if self.config.reconfigure_material is True:
+                context = self.reconfigure_page_context(context, page, config, nav)
         return context
 
     @plugins.event_priority(-100)
