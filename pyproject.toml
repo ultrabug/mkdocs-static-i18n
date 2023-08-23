@@ -1,8 +1,105 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mkdocs-static-i18n"
+dynamic = ["version"]
+description = "MkDocs i18n plugin using static translation markdown files"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.7"
+authors = [
+    { name = "Ultrabug", email = "ultrabug@ultrabug.net" },
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "mkdocs>=1.5.2",
+]
+
+[project.entry-points."mkdocs.plugins"]
+i18n = "mkdocs_static_i18n.plugin:I18n"
+
+[project.urls]
+Documentation = "https://github.com/ultrabug/mkdocs-static-i18n#readme"
+Download = "https://github.com/ultrabug/mkdocs-static-i18n/tags"
+Funding = "https://ultrabug.fr/#support-me"
+Homepage = "https://github.com/ultrabug/mkdocs-static-i18n"
+Source = "https://github.com/ultrabug/mkdocs-static-i18n"
+Tracker = "https://github.com/ultrabug/mkdocs-static-i18n/issues"
+
+[tool.hatch.version]
+path = "mkdocs_static_i18n/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/mkdocs_static_i18n",
+]
+
+[project.optional-dependencies]
+material = ["mkdocs-material>=9.2.3"]
+
+[tool.hatch.envs.default.scripts]
+all = [
+    "hatch run test:test",
+    "hatch run style:check",
+]
+
+[tool.hatch.envs.test]
+dependencies = [
+    "pytest",
+    "mkdocs-material>=9.2.3"
+]
+
+[tool.hatch.envs.test.scripts]
+test = [
+    "pytest -xs",
+]
+
+[[tool.hatch.envs.test.matrix]]
+python = ["py37", "py38", "py39", "py310", "py311"]
+type = ["default"]
+
+[tool.hatch.envs.style]
+detached = true
+dependencies = [
+    "black",
+    "isort",
+    "ruff",
+]
+
+[tool.hatch.envs.style.scripts]
+check = [
+    "isort --check-only --diff mkdocs_static_i18n",
+    "black -q --check --diff mkdocs_static_i18n",
+    "ruff mkdocs_static_i18n",
+]
+format = [
+    "isort -q mkdocs_static_i18n",
+    "black -q mkdocs_static_i18n",
+]
+
 [tool.black]
 line-length = 100
-target-version = ["py38"]
+target-version = ["py310"]
 skip-string-normalization = true
 
 [tool.isort]
 profile = "black"
 line_length = 100
+
+[tool.ruff]
+line-length = 100
+ignore = ["E501"]

@@ -1,20 +1,21 @@
 qa:
-	isort --profile black . && black . && flake8
+	hatch run style:format
+	hatch run style:check
 
 clean:
-	rm -rf dist
+	hatch clean
 
-release: clean qa test
-	python3 setup.py sdist && python3 -m twine upload dist/*
+release: clean qa test build
+	hatch publish -u __token__
 
 serve:
 	mkdocs serve
 
 build:
-	mkdocs build
+	hatch build
 
 deploy: qa test
 	mkdocs gh-deploy
 
 test:
-	pytest -xsvv
+	hatch run all
