@@ -213,10 +213,29 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         """
         Support and apply special mkdocs.Theme object overrides.
         """
+
+        def dict_recursive_update(source, overrides):
+            for key, value in overrides.items():
+                if isinstance(value, dict) and value:
+                    updated = dict_recursive_update(source.get(key, {}), value)
+                    source[key] = updated
+                else:
+                    source[key] = overrides[key]
+            return source
+
         for key, value in options.items():
             if key in theme._vars and type(theme._vars[key]) == type(value):
                 self.save_original_config(self.original_theme_configs, key, theme._vars[key])
-                theme._vars[key] = value
+                if isinstance(value, dict):
+                    dict_recursive_update(theme._vars[key], value)
+                elif isinstance(value, list):
+                    for idx, item in enumerate(value):
+                        if isinstance(item, dict):
+                            dict_recursive_update(theme._vars[key][idx], item)
+                        else:
+                            theme._vars[key][idx] = item
+                else:
+                    theme._vars[key] = value
             elif key == "locale":
                 self.save_original_config(self.original_theme_configs, key, theme._vars[key])
                 theme._vars[key] = localization.parse_locale(value)
