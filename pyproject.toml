@@ -46,7 +46,10 @@ path = "mkdocs_static_i18n/__init__.py"
 [tool.hatch.build.targets.sdist]
 include = [
     "/mkdocs_static_i18n",
+    "/tests",
 ]
+[tool.hatch.build.targets.wheel]
+exclude = ["/tests"]
 
 [project.optional-dependencies]
 material = ["mkdocs-material>=9.2.3"]
