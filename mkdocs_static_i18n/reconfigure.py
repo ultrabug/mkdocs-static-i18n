@@ -200,7 +200,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
             if lang_key in config.data and lang_override is not None:
                 mkdocs_config_option_type = type(config.data[lang_key])
                 # support special Theme object overrides
-                if mkdocs_config_option_type == Theme and type(lang_override) == dict:
+                if mkdocs_config_option_type == Theme and isinstance(lang_override, dict):
                     config.theme = self.apply_user_theme_overrides(config.theme, lang_override)
                 elif mkdocs_config_option_type in [str, bool, dict, list, type(None)]:
                     self.save_original_config(
