@@ -20,8 +20,8 @@ docs
 │   ├── named_file.en.md
 │   └── named_file.fr.md
 └── topic2
-    ├── index.en.md
-    └── index.md  <-- this file is used here on the default version
+    ├── README.fr.md
+    └── README.md  <-- this file is used here on the default version
 ```
 
 ```

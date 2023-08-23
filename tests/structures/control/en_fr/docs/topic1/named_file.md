@@ -1,4 +1,4 @@
-# Topic 2 (english version + french version)
+# Topic 1 (default version + english version)
 
 !!! tip
     **Use the language switcher in the header** to switch between the localized versions of this demo website. This switcher is part of [mkdocs-material >= 7.1.0](https://squidfunk.github.io/mkdocs-material/setup/changing-the-language/#site-language-selector) and is **automatically configured by this plugin** or can be statically configured from the [mkdocs.yml file](https://github.com/ultrabug/mkdocs-static-i18n/blob/main/mkdocs.yml).
@@ -12,15 +12,15 @@ what you see:
 
 ```
 docs
-├── image.en.png  <-- this image file is used on the /en version
-├── image.fr.png  <-- this image file is used on the /fr version
+├── image.en.png  <-- this image file is used on both the default and /en versions
+├── image.fr.png
 ├── index.fr.md
 ├── index.md
 ├── topic1
-│   ├── named_file.en.md
+│   ├── named_file.en.md  <-- this file is used on both the default and /en versions
 │   └── named_file.fr.md
 └── topic2
-    ├── index.en.md  <-- this file is used for both /en and /fr versions
+    ├── index.en.md
     └── index.md
 ```
 
@@ -31,22 +31,22 @@ site
 │   ├── index.html
 │   ├── topic1
 │   │   └── named_file
-│   │       └── index.html
+│   │       └── index.html  <-- you are here on the /en version
 │   └── topic2
-│       └── index.html  <-- you are here on the /en version
+│       └── index.html
 ├── fr
-│   ├── image.png  <-- you see this image on the /fr version
+│   ├── image.png
 │   ├── index.html
 │   ├── topic1
 │   │   └── named_file
 │   │       └── index.html
 │   └── topic2
-│       └── index.html  <-- you are here on the /fr version
-├── image.png
+│       └── index.html
+├── image.png  <-- you see this image on the default version
 ├── index.html
 ├── topic1
 │   └── named_file
-│       └── index.html
+│       └── index.html  <-- you are here on the default version
 └── topic2
     └── index.html
 ```

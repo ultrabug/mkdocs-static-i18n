@@ -10,8 +10,10 @@ def test_hooks_working():
         docs_dir="docs_suffix_structure/",
         plugins={
             "i18n": {
-                "default_language": "en",
-                "languages": {"fr": "français", "en": "english"},
+                "languages": [
+                    {"locale": "en", "name": "english", "default": True},
+                    {"locale": "fr", "name": "français"},
+                ],
             },
         },
         hooks=["hooks.py"],
@@ -27,8 +29,10 @@ def test_hooks_env_modified():
         docs_dir="docs_suffix_structure/",
         plugins={
             "i18n": {
-                "default_language": "en",
-                "languages": {"fr": "français", "en": "english"},
+                "languages": [
+                    {"locale": "en", "name": "english", "default": True},
+                    {"locale": "fr", "name": "français"},
+                ],
             },
         },
         hooks=["hooks_jinja_on_env.py"],
