@@ -207,6 +207,11 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                         self.original_configs, lang_key, config.data[lang_key]
                     )
                     config.load_dict({lang_key: lang_override})
+                    log.info(
+                        f"Overriding '{self.current_language}' config '{lang_key}' with '{lang_override}'"
+                    )
+                else:
+                    log.warning(f"Unknown '{self.current_language}' config override '{lang_key}'")
         return config
 
     def apply_user_theme_overrides(self, theme: Theme, options: dict) -> Theme:
@@ -226,6 +231,9 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         for key, value in options.items():
             if key in theme._vars and type(theme._vars[key]) == type(value):
                 self.save_original_config(self.original_theme_configs, key, theme._vars[key])
+                log.info(
+                    f"Overriding '{self.current_language}' config 'theme.{key}' with '{value}'"
+                )
                 if isinstance(value, dict):
                     dict_recursive_update(theme._vars[key], value)
                 elif isinstance(value, list):
@@ -239,8 +247,11 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
             elif key == "locale":
                 self.save_original_config(self.original_theme_configs, key, theme._vars[key])
                 theme._vars[key] = localization.parse_locale(value)
+                log.info(
+                    f"Overriding '{self.current_language}' config 'theme.{key}' with '{value}'"
+                )
             else:
-                log.error(f"Failed to override unknown theme.{key}")
+                log.warning(f"Unknown '{self.current_language}' config override 'theme.{key}'")
         return theme
 
     def reconfigure_mkdocs_theme(self, config: MkDocsConfig, locale: str) -> Theme:
