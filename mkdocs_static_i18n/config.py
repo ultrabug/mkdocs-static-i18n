@@ -28,14 +28,19 @@ class I18nPluginLanguage(Config):
     """ """
 
     build = config_options.Type(bool, default=True)
+    copyright = config_options.Optional(config_options.Type(str))
     default = config_options.Type(bool, default=False)
+    extra = config_options.Optional(config_options.Type(dict))
     fixed_link = config_options.Optional(config_options.Type(str))
     link = config_options.Optional(config_options.Type(str))
     locale = Locale(str)
     name = config_options.Type(str)
     nav = config_options.Optional(config_options.Nav())
     nav_translations = config_options.Optional(config_options.Type(dict))
+    site_author = config_options.Optional(config_options.Type(str))
+    site_description = config_options.Optional(config_options.Type(str))
     site_name = config_options.Optional(config_options.Type(str))
+    site_url = config_options.Optional(config_options.Type(str))
     theme = config_options.Optional(config_options.Type(dict))
 
     def validate(self):

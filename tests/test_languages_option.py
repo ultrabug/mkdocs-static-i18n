@@ -80,6 +80,11 @@ def test_plugin_languages_dual_lang():
             "nav_translations": None,
             "theme": None,
             "site_name": None,
+            "copyright": None,
+            "extra": None,
+            "site_author": None,
+            "site_description": None,
+            "site_url": None,
         },
         {
             "locale": "fr",
@@ -92,6 +97,11 @@ def test_plugin_languages_dual_lang():
             "nav_translations": None,
             "theme": None,
             "site_name": None,
+            "copyright": None,
+            "extra": None,
+            "site_author": None,
+            "site_description": None,
+            "site_url": None,
         },
     ]
 
@@ -128,5 +138,10 @@ def test_plugin_languages_one_lang():
             "nav_translations": None,
             "theme": None,
             "site_name": None,
+            "copyright": None,
+            "extra": None,
+            "site_author": None,
+            "site_description": None,
+            "site_url": None,
         },
     ]
