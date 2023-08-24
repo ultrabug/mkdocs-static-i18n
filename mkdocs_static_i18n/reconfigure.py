@@ -196,7 +196,37 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         # altered by a previous build
         config = self.reset_to_original_config(config)
 
+        # some config overrides are forbidden as they make no sense
+        forbidden_config_overrides = [
+            "dev_addr",
+            "docs_dir",
+            "edit_uri_template",
+            "edit_uri",
+            "exclude_docs",
+            "extra_css",
+            "extra_javascript",
+            "extra_templates",
+            "hooks",
+            "markdown_extensions",
+            "mdx_configs",
+            "not_in_nav",
+            "plugins",
+            "remote_branch",
+            "remote_name",
+            "repo_name",
+            "repo_url",
+            "site_dir",
+            "strict",
+            "use_directory_urls",
+            "validation",
+            "watch",
+        ]
         for lang_key, lang_override in self.current_language_config.items():
+            if lang_key in forbidden_config_overrides:
+                log.warning(
+                    f"Ignoring forbidden '{self.current_language}' config override '{lang_key}'"
+                )
+                continue
             if lang_key in config.data and lang_override is not None:
                 mkdocs_config_option_type = type(config.data[lang_key])
                 # support special Theme object overrides
