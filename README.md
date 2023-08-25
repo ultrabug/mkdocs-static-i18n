@@ -12,7 +12,7 @@ The `mkdocs-static-i18n` plugin allows you to support multiple languages of your
 
 Multi language support is just **one `.<language>.md` file away**!
 
-Even better, `mkdocs-static-i18n` also allows you to build and serve [**localized versions of any file extension**](#referencing-localized-content-in-your-markdown-pages) to display localized images, medias and assets.
+Even better, `mkdocs-static-i18n` also allows you to build and serve localized versions of any file extension to display localized images, medias and assets.
 
 Localized images/medias/assets are just **one `.<language>.<extension>` file away**!
 
