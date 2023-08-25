@@ -16,7 +16,7 @@ Even better, `mkdocs-static-i18n` also allows you to build and serve [**localize
 
 Localized images/medias/assets are just **one `.<language>.<extension>` file away**!
 
-If you want to see how it looks, [check out the demo documentation here](https://ultrabug.github.io/mkdocs-static-i18n/).
+Don't like file suffixes? You're more into a folder based structure? We got you covered as well!
 
 ## Documentation
 
@@ -32,6 +32,9 @@ Check it out live:
 
 - [On this repository documentation](https://ultrabug.github.io/mkdocs-static-i18n/)
 - [On my own website: ultrabug.fr](https://ultrabug.fr)
+
+But also in our hall of fame:
+
 - [AWS Copilot CLI](https://aws.github.io/copilot-cli/)
 - [OWASP Top 10](https://github.com/OWASP/Top10)
 - [Spaceship Prompt](https://spaceship-prompt.sh/)
