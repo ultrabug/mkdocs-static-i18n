@@ -1,16 +1,27 @@
-site_name: MkDocs static i18n plugin demo
+site_name: MkDocs static i18n plugin documentation
 site_url: https://ultrabug.github.io/mkdocs-static-i18n
 repo_url: https://github.com/ultrabug/mkdocs-static-i18n
 
-docs_dir: tests/docs_suffix_structure
+docs_dir: docs/
+exclude_docs: overrides/
+
+copyright: Copyright © 2021-2023 Alexys Jacob
 
 theme:
   name: material
   font: false
-  icon:
-    logo: material/file-document-multiple
+  custom_dir: docs/overrides
+  logo:
+    assets/logo_by_maxicons.png
   palette:
     primary: blue
+  features:
+    - navigation.expand
+    - navigation.indexes
+    - navigation.sections
+    - navigation.tabs
+    - toc.follow
+    - toc.integrate
 
 extra:
   social:
@@ -20,11 +31,34 @@ extra:
 
 markdown_extensions:
   - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
 
-# nav:
-#   - Home: index.md
-#   - Topic1: topic1/named_file.md
-#   - Topic2: topic2/README.md
+nav:
+  - Home: index.md
+  - Getting Started:
+    - getting-started/installation.md
+    - getting-started/quick-start.md
+    - getting-started/philosophy.md
+  - Localization Reference:
+    - setup/index.md
+    - setup/choosing-the-structure.md
+    - setup/setting-up-languages.md
+    - setup/translating-content.md
+    - setup/controlling-your-builds.md
+    - setup/localizing-navigation.md
+    - setup/using-i18n-context.md
+    - setup/using-alternates.md
+    - Plugins Compatibility:
+      - setup/setting-up-material.md
+      - setup/setting-up-search.md
+      - setup/plugins-compatibility.md
 
 plugins:
   - search
@@ -38,24 +72,16 @@ plugins:
           default: true
           name: English
           build: true
-          site_name: "MkDocs static i18n plugin demo (en)"
+          site_name: "MkDocs static i18n plugin documentation (en)"
         - locale: fr
           name: Français
           build: true
-          site_name: "Démo du plugin MkDocs static i18n (fr)"
+          site_name: "Documentation du plugin MkDocs static i18n (fr)"
           theme:
             palette:
               primary: red
           nav_translations:
-            Topic1: Sujet1 Traduit
-            Topic2: Sujet2 Traduit
-        - locale: de
-          name: German
-          build: true
-          site_name: "Demo des plugin MkDocs static i18n (de)"
-          theme:
-            palette:
-              primary: yellow
-          nav:
-            - Home: index.md
-            - Das Topic 2: topic2/README.md
+            Home: Accueil
+            Getting Started: Démarrage Rapide
+            Localization Reference: Référence
+            Plugins Compatibility: Compatibilité des plugins

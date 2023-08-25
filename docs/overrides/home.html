@@ -1,0 +1,47 @@
+{% extends "main.html" %}
+{% block tabs %}
+{{ super() }}
+<style>
+    .md-header{position:initial}
+    .md-main__inner{margin:0}
+    .md-content{display:none}
+    .mdx-hero{
+        padding-left: 0.6rem;
+        padding-right: 0.6rem;
+    }
+    @media screen and (min-width: 60em) {
+        .md-sidebar--primary{display:none}
+        .md-sidebar--secondary{display:none}
+        .md-sidebar--secondary:not([hidden]){display:none}
+    }
+    @media screen and (min-width:76.25em){
+        .md-sidebar--primary{display:none}
+        .md-sidebar--secondary{display:none}
+        .md-sidebar--secondary:not([hidden]){display:none}
+    }
+</style>
+<section class="mdx-container">
+    <div class="md-grid md-typeset">
+    <div class="mdx-hero">
+        <div class="mdx-hero__image">
+        <img src="assets/logo_by_maxicons.png" alt="" draggable="false">
+        </div>
+        <div class="mdx-hero__content">
+        <h1>MkDocs site localization made easy</h1>
+        <p>The <code>mkdocs-static-i18n</code> plugin allows you to support <b>multiple languages of your documentation</b> by adding static translation files to your existing documentation pages.</p>
+        <p>This plugin is made to be as simple as possible and will generate a default version of your website + one version per configured language on their corresponding <code>&lt;language&gt;/</code> path.</p>
+        <p>Even better, <code>mkdocs-static-i18n</code> also allows you to build and serve <b>localized versions of any file extension</b> to display localized images, medias and assets with support to automatic fallback to the default language pages and resources.</p>
+        <p style="margin: 0 0 2.25em"><b>Focus on translations</b>, not in assets and resources links updates for each localized language!</p>
+        <a href="{{ 'getting-started/quick-start' | url }}" title="Quick Start" class="md-button md-button--primary">
+            Quick Start
+        </a>
+        <a href="{{ 'setup/' | url }}" title="" class="md-button">
+            Localization Reference
+        </a>
+        </div>
+    </div>
+    </div>
+</section>
+{% endblock %}
+{% block content %}{% endblock %}
+{% block footer %}{% endblock %}
