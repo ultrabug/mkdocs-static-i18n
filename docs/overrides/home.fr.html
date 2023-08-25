@@ -1,0 +1,47 @@
+{% extends "main.html" %}
+{% block tabs %}
+{{ super() }}
+<style>
+    .md-header{position:initial}
+    .md-main__inner{margin:0}
+    .md-content{display:none}
+    .mdx-hero{
+        padding-left: 0.6rem;
+        padding-right: 0.6rem;
+    }
+    @media screen and (min-width: 60em) {
+        .md-sidebar--primary{display:none}
+        .md-sidebar--secondary{display:none}
+        .md-sidebar--secondary:not([hidden]){display:none}
+    }
+    @media screen and (min-width:76.25em){
+        .md-sidebar--primary{display:none}
+        .md-sidebar--secondary{display:none}
+        .md-sidebar--secondary:not([hidden]){display:none}
+    }
+</style>
+<section class="mdx-container">
+    <div class="md-grid md-typeset">
+    <div class="mdx-hero">
+        <div class="mdx-hero__image">
+        <img src="../assets/logo_by_maxicons.png" alt="" draggable="false">
+        </div>
+        <div class="mdx-hero__content">
+        <h1>Localiser un site MkDocs facilement</h1>
+        <p>Le plugin <code>mkdocs-static-i18n</code> vous permet de rendre <b>votre documentation disponible dans plusieurs langues</b> en ajoutant des versions traduites de vos pages et contenus à votre structure actuelle.</p>
+        <p>Ce plugin est pensé pour être le plus simple possible et il va générer une version par défaut de votre site + une version par langue configurée dans leur chemin respectif <code>&lt;langue&gt;/</code>.</p>
+        <p>Si ce n'est pas suffisant, <code>mkdocs-static-i18n</code> va aussi vous permettre de générer et mettre à disposition des <b>versions localisées de n'importe quel type de fichier</b> afin d'afficher des images, médias ou autre ressource dans le contexte de leur langue tout en permttant d'afficher la version par défaut si besoin.</p>
+        <p style="margin: 0 0 2.25em"><b>Concentrez-vous sur les traductions</b>, pas sur le travail rébarbatif de mise à jour de tous les liens et références pour chaque langue!</p>
+        <a href="{{ 'fr/getting-started/quick-start' | url }}" title="Quick Start" class="md-button md-button--primary">
+            Démarrage Rapide
+        </a>
+        <a href="{{ 'fr/setup/' | url }}" title="" class="md-button">
+            Référence
+        </a>
+        </div>
+    </div>
+    </div>
+</section>
+{% endblock %}
+{% block content %}{% endblock %}
+{% block footer %}{% endblock %}
