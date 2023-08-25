@@ -18,6 +18,12 @@ Localized images/medias/assets are just **one `.<language>.<extension>` file awa
 
 If you want to see how it looks, [check out the demo documentation here](https://ultrabug.github.io/mkdocs-static-i18n/).
 
+## Documentation
+
+Check out the [plugins' documentation here](https://ultrabug.github.io/mkdocs-static-i18n/).
+
+TL;DR? There's a [quick start guide](https://ultrabug.github.io/mkdocs-static-i18n/getting-started/quick-start/) for you!
+
 ## See it in action
 
 This plugin is proudly bringing localized content of [hundreds of projects](https://github.com/ultrabug/mkdocs-static-i18n/network/dependents) to their users.
