@@ -48,7 +48,7 @@ nav:
     - getting-started/installation.md
     - getting-started/quick-start.md
     - getting-started/philosophy.md
-  - Localization Reference:
+  - Configuration:
     - setup/index.md
     - setup/choosing-the-structure.md
     - setup/setting-up-languages.md
@@ -86,5 +86,4 @@ plugins:
           nav_translations:
             Home: Accueil
             Getting Started: Démarrage Rapide
-            Localization Reference: Référence
             Plugins Compatibility: Compatibilité des plugins
