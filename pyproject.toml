@@ -52,7 +52,7 @@ include = [
 exclude = ["/tests"]
 
 [project.optional-dependencies]
-material = ["mkdocs-material>=9.2.3"]
+material = ["mkdocs-material>=9.2.5"]
 
 [tool.hatch.envs.default.scripts]
 all = [
@@ -63,7 +63,7 @@ all = [
 [tool.hatch.envs.test]
 dependencies = [
     "pytest",
-    "mkdocs-material>=9.2.3"
+    "mkdocs-material>=9.2.5"
 ]
 
 [tool.hatch.envs.test.scripts]
@@ -74,6 +74,11 @@ test = [
 [[tool.hatch.envs.test.matrix]]
 python = ["3.7", "3.8", "3.9", "3.10", "3.11"]
 type = ["default"]
+
+[tool.hatch.envs.docs]
+dependencies = [
+    "mkdocs-material>=9.2.5"
+]
 
 [tool.hatch.envs.style]
 detached = true

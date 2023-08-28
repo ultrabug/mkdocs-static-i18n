@@ -61,6 +61,10 @@ class I18n(ExtendedPlugin):
         if self.config.docs_structure == "folder":
             nav = folder.reconfigure_navigation(self, nav)
 
+        # reconfigure mkdocs-material blog navigation
+        if self.config.reconfigure_material and "material/blog" in config.plugins:
+            nav = self.reconfigure_material_blog(nav, config, files)
+
         homepage_suffix: str = "" if config.use_directory_urls else "index.html"
 
         class NavHelper:
