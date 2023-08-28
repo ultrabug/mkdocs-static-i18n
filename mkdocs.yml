@@ -34,6 +34,8 @@ markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.emoji:
@@ -55,6 +57,7 @@ nav:
     - setup/localizing-navigation.md
     - setup/using-i18n-context.md
     - setup/using-alternates.md
+    - setup/upgrading-to-1.md
     - Plugins Compatibility:
       - setup/setting-up-material.md
       - setup/setting-up-search.md

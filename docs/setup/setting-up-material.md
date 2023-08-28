@@ -22,3 +22,14 @@ plugins:
   - i18n:
     reconfigure_material: true
 ```
+
+## Features
+
+!!! failure "Incompatibility"
+    The `navigation.instant` feature is **NOT compatible** with the multi-language switcher. The plugin will issue a WARNING log if you try using it.
+
+- [x] Automatic language setup
+- [x] Automatic language switcher setup
+- [x] Automatic language switcher contextual link setup
+- [x] Search plugin localization and result deduplication
+- [x] Blog plugin localization
