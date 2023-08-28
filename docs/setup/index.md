@@ -1,4 +1,4 @@
-# Localization Reference
+# Configuration
 
 The `mkdocs-static-i18n` plugin offers a flexible set of options to help you localize your site as smoothly as possible.
 
