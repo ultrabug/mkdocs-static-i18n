@@ -24,6 +24,10 @@ Check out the [plugins' documentation here](https://ultrabug.github.io/mkdocs-st
 
 TL;DR? There's a [quick start guide](https://ultrabug.github.io/mkdocs-static-i18n/getting-started/quick-start/) for you!
 
+## Upgrading from 0.x versions
+
+:warning: Version 1.0.0 brings **breaking changes** to the configuration format of the plugin. Check out the [upgrade to v1.0.0 guide](https://ultrabug.github.io/mkdocs-static-i18n/setup/upgrading-to-1/) to ease updating your `mkdocs.yml` file!
+
 ## See it in action
 
 This plugin is proudly bringing localized content of [hundreds of projects](https://github.com/ultrabug/mkdocs-static-i18n/network/dependents) to their users.

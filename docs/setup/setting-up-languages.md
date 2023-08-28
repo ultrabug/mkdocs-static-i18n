@@ -21,7 +21,7 @@ plugins:
           default: true
 ```
 
-### Per language build options:
+### Per language build options
 
 |option|required|default|description|
 |---|---|---|---|
@@ -48,7 +48,10 @@ plugins:
           build: true
 ```
 
-### Additional per language overrides options:
+### Additional per language overrides options
+
+!!! warning
+    Any option you override here **MUST** be set (even to its default) on its main `mkdocs.yml` section before being overriden on one or more languages.
 
 |option|required|default|description|
 |---|---|---|---|
