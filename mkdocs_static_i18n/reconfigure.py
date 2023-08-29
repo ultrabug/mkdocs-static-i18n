@@ -320,7 +320,10 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
             # configure the extra.alternate for the user
             # https://squidfunk.github.io/mkdocs-material/setup/changing-the-language/#site-language-selector
             else:
-                base_url = urlsplit(config.site_url).path.rstrip("/")
+                if config.site_url:
+                    base_url = urlsplit(config.site_url).path.rstrip("/")
+                else:
+                    base_url = ""
                 config.extra["alternate"] = []
                 # Add index.html file name when used with
                 # use_directory_urls = True
