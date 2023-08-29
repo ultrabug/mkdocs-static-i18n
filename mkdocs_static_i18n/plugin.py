@@ -125,7 +125,8 @@ class I18n(ExtendedPlugin):
         if isinstance(page, Page) and hasattr(page.file, "locale"):
             # export some useful i18n related variables on page context, see #75
             context["i18n_config"] = self.config
-            context["i18n_page_locale"] = page.file.locale
+            context["i18n_file_locale"] = page.file.locale
+            context["i18n_page_locale"] = self.current_language
             if self.config.reconfigure_material is True:
                 context = self.reconfigure_page_context(context, page, config, nav)
         return context
