@@ -1,5 +1,4 @@
 import logging
-import sys
 from pathlib import PurePath
 from typing import Optional
 
@@ -27,6 +26,13 @@ class I18n(ExtendedPlugin):
         - awesome-pages: this plugin should run before us
         - with-pdf: this plugin is triggerd by us on the appropriate on_* events
     """
+
+    @plugins.event_priority(-100)
+    def on_startup(self, command: str, dirty: bool):
+        """
+        Store dirty flag to propagate it to language builds.
+        """
+        self.dirty = dirty
 
     @plugins.event_priority(-100)
     def on_config(self, config: MkDocsConfig):
@@ -186,8 +192,7 @@ class I18n(ExtendedPlugin):
             self.current_language = locale
             log.info(f"Building '{locale}' documentation to directory: {config.site_dir}")
             # TODO: reconfigure config here? skip on_config?
-            dirty = True if "--dirty" in sys.argv or "--dirtyreload" in sys.argv else False
-            build(config, dirty=dirty)
+            build(config, dirty=self.dirty)
 
             # manually trigger with-pdf for this locale, see #110
             if with_pdf_plugin:
