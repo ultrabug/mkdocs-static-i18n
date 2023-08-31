@@ -214,3 +214,5 @@ class I18n(ExtendedPlugin):
         except UnboundLocalError:
             # tests dont setup a duplicatefilter
             pass
+
+        self.building = False
