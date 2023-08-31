@@ -67,6 +67,7 @@ def test_plugin_languages_dual_lang():
         },
     )
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
+    i18n_plugin.on_startup(command="", dirty=False)
     i18n_plugin.on_config(mkdocs_config)
     assert i18n_plugin.config["languages"] == [
         {
@@ -125,6 +126,7 @@ def test_plugin_languages_one_lang():
         },
     )
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
+    i18n_plugin.on_startup(command="", dirty=False)
     i18n_plugin.on_config(mkdocs_config)
     assert i18n_plugin.config["languages"] == [
         {

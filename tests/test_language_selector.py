@@ -18,6 +18,7 @@ def test_plugin_language_selector_use_directory_urls():
         },
     )
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
+    i18n_plugin.on_startup(command="", dirty=False)
     result = i18n_plugin.on_config(mkdocs_config)
     assert result["extra"]["alternate"] == [
         {"name": "english", "link": "/", "lang": "en"},
@@ -41,6 +42,7 @@ def test_plugin_language_selector_no_use_directory_urls():
         },
     )
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
+    i18n_plugin.on_startup(command="", dirty=False)
     result = i18n_plugin.on_config(mkdocs_config)
     assert result["extra"]["alternate"] == [
         {"name": "english", "link": "/index.html", "lang": "en"},
@@ -74,6 +76,7 @@ def test_plugin_language_selector_fixed_alternate():
         },
     )
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
+    i18n_plugin.on_startup(command="", dirty=False)
     result = i18n_plugin.on_config(mkdocs_config)
     assert result["extra"]["alternate"] == [
         {"name": "english", "link": "/default", "lang": "en"},
@@ -94,6 +97,7 @@ def test_plugin_language_selector_single_default_language():
         },
     )
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
+    i18n_plugin.on_startup(command="", dirty=False)
     result = i18n_plugin.on_config(mkdocs_config)
     assert result["extra"] == {}
 
@@ -118,6 +122,7 @@ def test_plugin_language_selector_fixed_link():
         },
     )
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
+    i18n_plugin.on_startup(command="", dirty=False)
     result = i18n_plugin.on_config(mkdocs_config)
     assert result["extra"]["alternate"] == [
         {"name": "english", "link": "/en", "lang": "en"},
@@ -156,6 +161,7 @@ def test_plugin_language_selector_fixed_link_with_static_alternate():
         },
     )
     i18n_plugin = mkdocs_config["plugins"]["i18n"]
+    i18n_plugin.on_startup(command="", dirty=False)
     result = i18n_plugin.on_config(mkdocs_config)
     assert result["extra"]["alternate"] == [
         {"name": "english", "link": "/", "lang": "en"},

@@ -28,6 +28,20 @@ class I18n(ExtendedPlugin):
     """
 
     @plugins.event_priority(-100)
+    def on_startup(self, command: str, dirty: bool):
+        """
+        Store dirty flag to propagate it to language builds.
+        """
+        self.dirty = dirty
+        self.building = False
+        self.current_language = None
+        self.extra_alternate = {}
+        self.i18n_files_per_language = {}
+        self.original_configs = {}
+        self.original_theme_configs = {}
+        self.search_entries = []
+
+    @plugins.event_priority(-100)
     def on_config(self, config: MkDocsConfig):
         """
         Enrich configuration with language specific knowledge.
@@ -185,7 +199,7 @@ class I18n(ExtendedPlugin):
             self.current_language = locale
             log.info(f"Building '{locale}' documentation to directory: {config.site_dir}")
             # TODO: reconfigure config here? skip on_config?
-            build(config)
+            build(config, dirty=self.dirty)
 
             # manually trigger with-pdf for this locale, see #110
             if with_pdf_plugin:
@@ -207,3 +221,5 @@ class I18n(ExtendedPlugin):
         except UnboundLocalError:
             # tests dont setup a duplicatefilter
             pass
+
+        self.building = False

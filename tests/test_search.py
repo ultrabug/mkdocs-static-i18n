@@ -23,6 +23,7 @@ def test_search_entries():
                 },
             },
         )
+        mkdocs_config["plugins"]["i18n"].on_startup(command="", dirty=False)
         if theme == "material":
             mkdocs_config["plugins"]["material/search"].on_startup(command=None, dirty=False)
         build(mkdocs_config)
@@ -54,6 +55,7 @@ def test_search_entries_no_directory_urls():
             },
         },
     )
+    mkdocs_config["plugins"]["i18n"].on_startup(command="", dirty=False)
     build(mkdocs_config)
     search_plugin = mkdocs_config["plugins"]["search"]
     assert len(search_plugin.search_index._entries) == 34
@@ -80,6 +82,7 @@ def test_search_entries_no_reconfigure():
             },
         },
     )
+    mkdocs_config["plugins"]["i18n"].on_startup(command="", dirty=False)
     build(mkdocs_config)
     search_plugin = mkdocs_config["plugins"]["search"]
     assert len(search_plugin.search_index._entries) == 36
@@ -105,6 +108,7 @@ def test_search_add_lang():
             },
         },
     )
+    mkdocs_config["plugins"]["i18n"].on_startup(command="", dirty=False)
     build(mkdocs_config)
     search_plugin = mkdocs_config["plugins"]["search"]
     assert search_plugin.config["lang"] == ["en", "fr"]
@@ -133,6 +137,7 @@ def test_search_add_missing_lang():
             },
         },
     )
+    mkdocs_config["plugins"]["i18n"].on_startup(command="", dirty=False)
     build(mkdocs_config)
     search_plugin = mkdocs_config["plugins"]["search"]
     assert search_plugin.config["lang"] == ["en", "fr"]
@@ -161,6 +166,7 @@ def test_search_no_add_lang():
             },
         },
     )
+    mkdocs_config["plugins"]["i18n"].on_startup(command="", dirty=False)
     build(mkdocs_config)
     search_plugin = mkdocs_config["plugins"]["search"]
     assert search_plugin.config["lang"] == ["en"]
