@@ -210,4 +210,3 @@ class I18n(ExtendedPlugin):
             # tests dont setup a duplicatefilter
             pass
         self.building = False
-
