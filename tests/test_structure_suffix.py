@@ -129,7 +129,6 @@ def test_plugin_use_directory_urls():
             },
         },
     )
-    mkdocs_config["plugins"]["i18n"].on_startup(command="", dirty=False)
     build(mkdocs_config)
     site_dir = mkdocs_config["site_dir"]
     generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
@@ -162,7 +161,6 @@ def test_plugin_use_directory_urls_static_nav():
             }
         ],
     )
-    mkdocs_config["plugins"]["i18n"].on_startup(command="", dirty=False)
     build(mkdocs_config)
     site_dir = mkdocs_config["site_dir"]
     generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
@@ -190,7 +188,6 @@ def test_plugin_no_use_directory_urls():
             },
         },
     )
-    mkdocs_config["plugins"]["i18n"].on_startup(command="", dirty=False)
     build(mkdocs_config)
     site_dir = mkdocs_config["site_dir"]
     generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
@@ -242,7 +239,6 @@ def test_plugin_use_directory_urls_default_language_only():
             },
         },
     )
-    mkdocs_config["plugins"]["i18n"].on_startup(command="", dirty=False)
     build(mkdocs_config)
     site_dir = mkdocs_config["site_dir"]
     generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]
@@ -270,7 +266,6 @@ def test_plugin_no_use_directory_urls_default_language_only():
             },
         },
     )
-    mkdocs_config["plugins"]["i18n"].on_startup(command="", dirty=False)
     build(mkdocs_config)
     site_dir = mkdocs_config["site_dir"]
     generate_site = [f.relative_to(site_dir) for f in Path(site_dir).glob("**/*.html")]

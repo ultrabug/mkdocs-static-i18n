@@ -87,7 +87,6 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         self.original_configs = {}
         self.original_theme_configs = {}
         self.search_entries = []
-        self.dirty = False
 
     @property
     def all_languages(self):

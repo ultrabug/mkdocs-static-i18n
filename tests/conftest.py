@@ -17,7 +17,6 @@ def make_config():
             use_directory_urls=use_directory_urls,
             plugins=plugins,
         )
-        config.plugins.run_event("startup", config, dirty=False)
         config = config.plugins.run_event("config", config)
         files = get_files(config)
         files = config.plugins.run_event("files", files, config=config)
