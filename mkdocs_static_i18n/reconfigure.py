@@ -611,8 +611,10 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                             log.debug(f"Use localized asset {i18n_file.locale} {i18n_file}")
 
             # theme (and overrides) files
-            elif self.is_default_language_build:
+            elif not file.is_documentation_page():
                 i18n_files.append(file)
+            else:
+                log.warning(f"Unhandled file case - {file.src_uri}")
 
         # populate the resulting Files and keep track of all the alternates
         # that will be used by the sitemap.xml template
