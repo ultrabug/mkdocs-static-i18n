@@ -471,17 +471,17 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         for default_lang_entry in default_lang_entries:
             duplicated_entries = filter(
                 lambda x: x["title"] == default_lang_entry["title"]
-                and x["location"].endswith(x["location"])
+                and x["location"].endswith(default_lang_entry["location"])
                 and x["text"] == default_lang_entry["text"],
                 target_lang_entries,
             )
             for duplicated_entry in duplicated_entries:
-                if duplicated_entry in search_index_entries:
-                    log.debug(
-                        f"removed duplicated search entry: {duplicated_entry['title']} "
-                        f"{duplicated_entry['location']}"
-                    )
-                    search_index_entries.remove(duplicated_entry)
+                log.debug(
+                    f"removed duplicated search entry: {duplicated_entry['title']} "
+                    f"{duplicated_entry['location']}"
+                )
+                search_index_entries.remove(duplicated_entry)
+                target_lang_entries.remove(duplicated_entry)
 
     def reconfigure_search_index(self, config: MkDocsConfig):
         """
