@@ -42,6 +42,9 @@ class I18n(ExtendedPlugin):
         # first execution, setup defaults
         if self.current_language is None:
             self.current_language = self.default_language
+            log.info(
+                f"Building '{self.current_language}' documentation to directory: {config.site_dir}"
+            )
 
         # reconfigure the mkdocs config
         return self.reconfigure_mkdocs_config(config)
@@ -164,9 +167,11 @@ class I18n(ExtendedPlugin):
 
         self.building = True
 
-        # Block time logging for internal builds
+        # Block time logging for internal builds and filter reduntant MkDocs log
         build_logger = logging.getLogger("mkdocs.commands.build")
         i18n_filter = i18nLoggingFilter()
+        i18n_filter.filtered_prefixes.add("Documentation built in")
+        i18n_filter.filtered_prefixes.add("Building documentation to directory")
         build_logger.addFilter(i18n_filter)
 
         # manually trigger with-pdf, see #110
