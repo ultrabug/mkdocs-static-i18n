@@ -34,11 +34,11 @@ class I18n(ExtendedPlugin):
         """
         Enrich configuration with language specific knowledge.
         """
-        
+
         # setup development build
         if self.config.development_locale is not None:
             self.reconfigure_development_build(self.config)
-        
+
         # first execution, setup defaults
         if self.current_language is None:
             self.current_language = self.default_language
@@ -207,5 +207,5 @@ class I18n(ExtendedPlugin):
 
         # Unblock time logging after internal builds
         build_logger.removeFilter(i18n_filter)
-        
+
         self.building = False

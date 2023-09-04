@@ -1,6 +1,6 @@
 """Utility functions and classes that aren't limited to any scenario."""
-from typing import Dict, Optional, TypeVar
 import logging
+from typing import Dict, Optional, TypeVar
 
 from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.plugins import BasePlugin
@@ -34,6 +34,6 @@ class i18nLoggingFilter:
 
     def __init__(self, *_, **__):
         pass
-    
+
     def __call__(self, record: logging.LogRecord) -> bool:
         return not record.msg.startswith("Documentation built in")
