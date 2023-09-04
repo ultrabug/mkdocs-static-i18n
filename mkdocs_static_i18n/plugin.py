@@ -1,4 +1,5 @@
 import logging
+import sys
 from pathlib import PurePath
 from typing import Optional
 
@@ -185,7 +186,8 @@ class I18n(ExtendedPlugin):
             self.current_language = locale
             log.info(f"Building '{locale}' documentation to directory: {config.site_dir}")
             # TODO: reconfigure config here? skip on_config?
-            build(config)
+            dirty = True if "--dirty" in sys.argv or "--dirtyreload" in sys.argv else False
+            build(config, dirty=dirty)
 
             # manually trigger with-pdf for this locale, see #110
             if with_pdf_plugin:
@@ -207,3 +209,4 @@ class I18n(ExtendedPlugin):
         except UnboundLocalError:
             # tests dont setup a duplicatefilter
             pass
+        self.building = False
