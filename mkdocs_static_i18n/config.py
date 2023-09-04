@@ -70,6 +70,7 @@ class I18nPluginConfig(Config):
     """ """
 
     docs_structure = config_options.Choice(["folder", "suffix"], default="suffix")
+    development_locale = config_options.Optional(Locale(str))
     fallback_to_default = config_options.Type(bool, default=True)
     reconfigure_material = config_options.Type(bool, default=True)
     reconfigure_search = config_options.Type(bool, default=True)

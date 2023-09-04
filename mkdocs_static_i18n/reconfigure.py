@@ -82,6 +82,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         super().__init__(*args, **kwargs)
         self.building = False
         self.current_language = None
+        self.development_build = False
         self.extra_alternate = {}
         self.i18n_files_per_language = {}
         self.original_configs = {}
@@ -117,6 +118,19 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
             return lang_config
         raise Exception(f"Could not find language locale '{locale}'")
 
+    def reconfigure_development_build(self, i18n_config: I18nPluginConfig) -> None:
+        
+        if i18n_config.development_locale not in self.all_languages:
+            log.warning("development_locale is set to a locale not present in the config")
+            return
+
+        self.development_build = True
+        
+        for lang in i18n_config.languages:
+            is_development_locale = lang.locale == i18n_config.development_locale
+            lang.default = is_development_locale
+            lang.build = is_development_locale
+    
     def reconfigure_mkdocs_config(self, config: MkDocsConfig) -> MkDocsConfig:
         # MkDocs themes specific reconfiguration
         if config.theme.name in MKDOCS_THEMES:
@@ -525,6 +539,13 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         i18n_files = I18nFiles(self, [])
         i18n_alternate_dest_uris = defaultdict(list)
         for file in files:
+
+            # avoid processing conflicting index.md and index.lang.md files
+            expected_locale_file_ending = f".{self.current_language}.md"
+            if self.development_build and files.src_uris.get(file.src_uri.replace(".md", "") + expected_locale_file_ending) is not None:
+                log.debug(f"Skipping '{file.src_uri}' because the version with {expected_locale_file_ending} exists")
+                continue
+
             # user provided files in docs_dir
             if is_relative_to(file.abs_src_path, mkdocs_config.docs_dir):
                 i18n_file = create_i18n_file(

@@ -33,9 +33,15 @@ class I18n(ExtendedPlugin):
         """
         Enrich configuration with language specific knowledge.
         """
+        
+        # setup development build
+        if self.config.development_locale is not None:
+            self.reconfigure_development_build(self.config)
+        
         # first execution, setup defaults
         if self.current_language is None:
             self.current_language = self.default_language
+
         # reconfigure the mkdocs config
         return self.reconfigure_mkdocs_config(config)
 
