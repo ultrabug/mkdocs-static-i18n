@@ -33,7 +33,11 @@ class i18nLoggingFilter:
     """Avoid logging duplicate build time messages."""
 
     def __init__(self, *_, **__):
-        pass
+        self.filtered_prefixes = set()
 
     def __call__(self, record: logging.LogRecord) -> bool:
-        return not record.msg.startswith("Documentation built in")
+        for prefix in self.filtered_prefixes:
+            if record.msg.startswith(prefix):
+                return False
+
+        return True
