@@ -1,5 +1,6 @@
-"""Utility functions that aren't limited to any scenario."""
+"""Utility functions and classes that aren't limited to any scenario."""
 from typing import Dict, Optional, TypeVar
+import logging
 
 from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.plugins import BasePlugin
@@ -26,3 +27,13 @@ def get_plugin(name: str, config: MkDocsConfig) -> Optional[Plugin]:
             return p
 
     return None
+
+
+class i18nLoggingFilter:
+    """Avoid logging duplicate build time messages."""
+
+    def __init__(self, *_, **__):
+        pass
+    
+    def __call__(self, record: logging.LogRecord) -> bool:
+        return not record.msg.startswith("Documentation built in")
