@@ -62,6 +62,7 @@ nav:
       - setup/setting-up-material.md
       - setup/setting-up-search.md
       - setup/plugins-compatibility.md
+  - Changelog: changelog.md
 
 plugins:
   - search
