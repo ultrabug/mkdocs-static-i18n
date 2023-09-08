@@ -33,6 +33,7 @@ def create_i18n_file(
 
     file_dest_path = Path(file.dest_path)
     file_locale = default_language
+    file_localization = None
     locale_site_dir = current_language if current_language != default_language else ""
 
     try:
@@ -47,12 +48,14 @@ def create_i18n_file(
             file_dest_path = Path(f"{file_dest_path_no_suffix}{file_dest_path.suffix}")
             # file name suffixed by locale, remove it
             file.name = Path(file.name).stem
+            # store file localization
+            file_localization = file_locale
         else:
             file_locale = default_language
     except IndexError:
         pass
 
-    if config.use_directory_urls:
+    if config.use_directory_urls and file_localization:
         if file_dest_path.parent != Path("."):
             parent_dest_path_no_suffix = file_dest_path.parent.with_suffix("")
             file_dest_path = parent_dest_path_no_suffix / file_dest_path.name
@@ -88,6 +91,7 @@ def create_i18n_file(
     file.alternates = {current_language: file}
     file.locale = file_locale
     file.locale_alternate_of = current_language
+    file.localization = file_localization
 
     log.debug(f"reconfigure {file} from locale {file_locale}")
 

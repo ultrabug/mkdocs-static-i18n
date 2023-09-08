@@ -565,6 +565,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                             # files when multiple languages are configured
                             if (
                                 len(self.all_languages) > 1
+                                and i18n_file.localization is not None
                                 and i18n_dest_uris[i18n_file.dest_uri].locale == i18n_file.locale
                             ):
                                 raise Exception(
