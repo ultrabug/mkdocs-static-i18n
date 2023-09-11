@@ -37,9 +37,13 @@ class I18n(ExtendedPlugin):
         # first execution, setup defaults
         if self.current_language is None:
             self.current_language = self.default_language
-            log.info(
-                f"Building '{self.current_language}' documentation to directory: {config.site_dir}"
-            )
+
+        path_suffix = self.current_language if not self.is_default_language_build else ""
+
+        log.info(
+            f"Building '{self.current_language}' documentation to directory: "
+            f"{PurePath(config.site_dir) / path_suffix}"
+        )
 
         # reconfigure the mkdocs config
         return self.reconfigure_mkdocs_config(config)
@@ -186,7 +190,6 @@ class I18n(ExtendedPlugin):
             if locale == self.current_language:
                 continue
             self.current_language = locale
-            log.info(f"Building '{locale}' documentation to directory: {config.site_dir}")
             # TODO: reconfigure config here? skip on_config?
             dirty = True if "--dirty" in sys.argv or "--dirtyreload" in sys.argv else False
             build(config, dirty=dirty)
