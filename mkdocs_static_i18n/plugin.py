@@ -13,7 +13,7 @@ from mkdocs.structure.pages import Page
 
 from mkdocs_static_i18n import folder
 from mkdocs_static_i18n.reconfigure import ExtendedPlugin
-from mkdocs_static_i18n.utils import i18nLoggingFilter
+from mkdocs_static_i18n.utils import I18nLoggingFilter
 
 log = get_plugin_logger(__name__)
 
@@ -164,7 +164,7 @@ class I18n(ExtendedPlugin):
 
         # Block time logging for internal builds and filter reduntant MkDocs log
         build_logger = logging.getLogger("mkdocs.commands.build")
-        i18n_filter = i18nLoggingFilter()
+        i18n_filter = I18nLoggingFilter()
         i18n_filter.filtered_prefixes.add("Documentation built in")
         i18n_filter.filtered_prefixes.add("Building documentation to directory")
         build_logger.addFilter(i18n_filter)

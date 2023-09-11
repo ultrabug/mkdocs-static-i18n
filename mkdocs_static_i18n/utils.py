@@ -29,7 +29,7 @@ def get_plugin(name: str, config: MkDocsConfig) -> Optional[Plugin]:
     return None
 
 
-class i18nLoggingFilter:
+class I18nLoggingFilter:
     """Avoid logging duplicate build time messages."""
 
     def __init__(self, *_, **__):
