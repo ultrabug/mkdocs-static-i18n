@@ -3,13 +3,17 @@
 !!!tip "Reminder"
     We try our best to follow [Semantic Versioning v2](https://semver.org/) starting from 1.0.0.
 
+## 1.0.5 (2023-09-18)
+
+- **plugin**: fix handling of files with dotted suffixes, thx to @gnaegi (#259)
+
 ## 1.0.4 (2023-09-18)
 
-- **assets**: Handle more assets
-- **plugin**: Fix build log info about directory
-- **utils**: Fix logging filter class name
-- **plugin**: Improve logging in general
-- **plugin**: Use new filter to hide log duplicates
+- **assets**: Handle more assets, by Kamil Krzyśków
+- **plugin**: Fix build log info about directory, by Kamil Krzyśków
+- **utils**: Fix logging filter class name, by Kamil Krzyśków
+- **plugin**: Improve logging in general, by Kamil Krzyśków
+- **plugin**: Use new filter to hide log duplicates, by Kamil Krzyśków
 
 ## 1.0.3 (2023-09-07)
 
