@@ -2,7 +2,8 @@ name: Deploy docs
 
 on:
   push:
-  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
