@@ -7,7 +7,7 @@ def test_hooks_working():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
         plugins={
             "i18n": {
                 "languages": [
@@ -26,7 +26,7 @@ def test_hooks_env_modified():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs", "custom_dir": "theme_overrides"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
         plugins={
             "i18n": {
                 "languages": [

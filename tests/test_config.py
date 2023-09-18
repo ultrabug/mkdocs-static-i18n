@@ -10,7 +10,7 @@ def test_plugin_single_language_en():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_one_language/",
     )
     result = plugin.on_config(config)
     assert str(result["theme"]["locale"]) == "en"
@@ -23,7 +23,7 @@ def test_plugin_single_language_fr():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_one_language/",
     )
     result = plugin.on_config(config)
     assert str(result["theme"]["locale"]) == "fr"
@@ -36,7 +36,7 @@ def test_plugin_theme_sitemap():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_one_language/",
     )
     result = plugin.on_config(config)
     assert result["theme"].dirs[0].endswith("custom_i18n_sitemap")

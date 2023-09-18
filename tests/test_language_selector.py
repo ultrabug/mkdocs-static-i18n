@@ -7,7 +7,7 @@ def test_plugin_language_selector_use_directory_urls():
         "tests/mkdocs.yml",
         theme={"name": "material"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
         plugins={
             "i18n": {
                 "languages": [
@@ -30,7 +30,7 @@ def test_plugin_language_selector_no_use_directory_urls():
         "tests/mkdocs.yml",
         theme={"name": "material"},
         use_directory_urls=False,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
         plugins={
             "i18n": {
                 "languages": [
@@ -57,7 +57,7 @@ def test_plugin_language_selector_fixed_alternate():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
         extra={
             "alternate": [
                 {"name": "english", "link": "/default", "lang": "en"},
@@ -86,7 +86,7 @@ def test_plugin_language_selector_single_default_language():
         "tests/mkdocs.yml",
         theme={"name": "material"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_one_language/",
         plugins={
             "i18n": {
                 "languages": [{"locale": "fr", "name": "français", "default": True}],
@@ -102,7 +102,7 @@ def test_plugin_language_selector_fixed_link():
     mkdocs_config = load_config(
         "tests/mkdocs.yml",
         theme={"name": "material"},
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
         plugins={
             "i18n": {
                 "languages": [
@@ -130,7 +130,7 @@ def test_plugin_language_selector_fixed_link_with_static_alternate():
     mkdocs_config = load_config(
         "tests/mkdocs.yml",
         theme={"name": "material"},
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
         extra={
             "alternate": [
                 {"name": "english", "link": "/", "lang": "en"},

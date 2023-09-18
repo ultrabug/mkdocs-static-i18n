@@ -33,10 +33,12 @@ def create_i18n_file(
 
     file_dest_path = Path(file.dest_path)
     file_locale = default_language
+    file_localization = None
 
     for language in all_languages:
         if is_relative_to(file.src_path, language):
             file_locale = language
+            file_localization = language
             break
         else:
             # maybe the language folder is present BUT not configured in the plugin.languages yet
@@ -44,6 +46,7 @@ def create_i18n_file(
             maybe_file_locale = PurePath(file.src_path).parts[0]
             if RE_LOCALE.match(maybe_file_locale):
                 file_locale = maybe_file_locale
+                file_localization = maybe_file_locale
                 break
 
     # README.html should be renamed to index.html
@@ -83,6 +86,7 @@ def create_i18n_file(
     file.alternates = {current_language: file}
     file.locale = file_locale
     file.locale_alternate_of = current_language
+    file.localization = file_localization
 
     log.debug(f"reconfigure {file} from locale {file_locale}")
 
