@@ -9,7 +9,7 @@ def test_plugin_languages_no_default():
             "tests/mkdocs.yml",
             theme={"name": "mkdocs"},
             use_directory_urls=True,
-            docs_dir="docs_suffix_structure/",
+            docs_dir="docs_suffix_structure_one_language/",
             plugins={
                 "i18n": {
                     "languages": [
@@ -30,7 +30,7 @@ def test_plugin_languages_no_build():
             "tests/mkdocs.yml",
             theme={"name": "mkdocs"},
             use_directory_urls=True,
-            docs_dir="docs_suffix_structure/",
+            docs_dir="docs_suffix_structure_two_languages/",
             plugins={
                 "i18n": {
                     "languages": [
@@ -52,7 +52,7 @@ def test_plugin_languages_dual_lang():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
         plugins={
             "i18n": {
                 "languages": [
@@ -111,7 +111,7 @@ def test_plugin_languages_one_lang():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_one_language/",
         plugins={
             "i18n": {
                 "languages": [

@@ -36,6 +36,8 @@ def make_config():
 
 @pytest.fixture
 def make_localized_config(make_config):
+    created_configs = []
+
     def _make_localized_config(config, locale):
         config.plugins["i18n"].current_language = locale
         #
@@ -46,6 +48,11 @@ def make_localized_config(make_config):
         nav = get_navigation(files, config)
         nav = config.plugins.run_event("nav", nav, files=files, config=config)
         #
+        created_configs.append(config)
+        #
         return config, files, env, nav
 
     yield _make_localized_config
+
+    for config in created_configs:
+        utils.clean_directory(config.site_dir)

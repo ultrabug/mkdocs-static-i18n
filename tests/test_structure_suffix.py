@@ -20,6 +20,8 @@ USE_DIRECTORY_URLS = [
     Path("topic2/1.1.filename.html"),
     Path("topic2/index.html"),
     Path("topic2/README.fr/index.html"),
+    Path("topic2/release_notes_17.1/index.html"),
+    Path("topic2/release_notes_17.2/index.html"),
 ]
 NO_USE_DIRECTORY_URLS = [
     Path("english_default/index.en.html"),
@@ -38,6 +40,8 @@ NO_USE_DIRECTORY_URLS = [
     Path("topic2/1.1.filename.html"),
     Path("topic2/index.html"),
     Path("topic2/README.fr.html"),
+    Path("topic2/release_notes_17.1.html"),
+    Path("topic2/release_notes_17.2.html"),
 ]
 
 
@@ -46,7 +50,7 @@ def test_build_use_directory_urls():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
     )
     build(mkdocs_config)
     site_dir = mkdocs_config["site_dir"]
@@ -60,7 +64,7 @@ def test_build_no_use_directory_urls():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
     )
     build(mkdocs_config)
     site_dir = mkdocs_config["site_dir"]
@@ -79,6 +83,8 @@ PLUGIN_USE_DIRECTORY_URLS = [
     Path("topic1/named_file/index.html"),
     Path("topic2/index.html"),
     Path("topic2/1.1.filename.html"),
+    Path("topic2/release_notes_17.1/index.html"),
+    Path("topic2/release_notes_17.2/index.html"),
     Path("fr/index.html"),
     Path("fr/image.png"),
     Path("fr/image.fake"),
@@ -87,6 +93,8 @@ PLUGIN_USE_DIRECTORY_URLS = [
     Path("fr/topic2/index.html"),
     Path("fr/topic2/1.1.filename.html"),
     Path("fr/french_only/index.html"),
+    Path("fr/topic2/release_notes_17.1/index.html"),
+    Path("fr/topic2/release_notes_17.2/index.html"),
 ]
 PLUGIN_NO_USE_DIRECTORY_URLS = [
     Path("english_default/index.html"),
@@ -98,6 +106,8 @@ PLUGIN_NO_USE_DIRECTORY_URLS = [
     Path("topic1/named_file.html"),
     Path("topic2/index.html"),
     Path("topic2/1.1.filename.html"),
+    Path("topic2/release_notes_17.1.html"),
+    Path("topic2/release_notes_17.2.html"),
     Path("fr/index.html"),
     Path("fr/image.png"),
     Path("fr/image.fake"),
@@ -106,6 +116,8 @@ PLUGIN_NO_USE_DIRECTORY_URLS = [
     Path("fr/topic2/index.html"),
     Path("fr/topic2/1.1.filename.html"),
     Path("fr/french_only/index.html"),
+    Path("fr/topic2/release_notes_17.1.html"),
+    Path("fr/topic2/release_notes_17.2.html"),
 ]
 
 
@@ -114,7 +126,7 @@ def test_plugin_use_directory_urls():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
         plugins={
             "search": {},
             "i18n": {
@@ -141,7 +153,7 @@ def test_plugin_use_directory_urls_static_nav():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
         plugins={
             "search": {},
             "i18n": {
@@ -173,7 +185,7 @@ def test_plugin_no_use_directory_urls():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
         plugins={
             "search": {},
             "i18n": {
@@ -205,6 +217,8 @@ PLUGIN_USE_DIRECTORY_URLS_DEFAULT_ONLY = [
     Path("topic1/named_file/index.html"),
     Path("topic2/index.html"),
     Path("topic2/1.1.filename.html"),
+    Path("topic2/release_notes_17.1/index.html"),
+    Path("topic2/release_notes_17.2/index.html"),
 ]
 PLUGIN_NO_USE_DIRECTORY_URLS_DEFAULT_ONLY = [
     Path("404.html"),
@@ -216,6 +230,8 @@ PLUGIN_NO_USE_DIRECTORY_URLS_DEFAULT_ONLY = [
     Path("topic1/named_file.html"),
     Path("topic2/index.html"),
     Path("topic2/1.1.filename.html"),
+    Path("topic2/release_notes_17.1.html"),
+    Path("topic2/release_notes_17.2.html"),
 ]
 
 
@@ -224,7 +240,7 @@ def test_plugin_use_directory_urls_default_language_only():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
         plugins={
             "search": {},
             "i18n": {
@@ -251,7 +267,7 @@ def test_plugin_no_use_directory_urls_default_language_only():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
         plugins={
             "search": {},
             "i18n": {

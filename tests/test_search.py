@@ -8,7 +8,7 @@ def test_search_entries():
             "tests/mkdocs.yml",
             theme={"name": theme},
             use_directory_urls=True,
-            docs_dir="docs_suffix_structure/",
+            docs_dir="docs_suffix_structure_two_languages/",
             plugins={
                 "search": {},
                 "i18n": {
@@ -28,7 +28,7 @@ def test_search_entries():
         build(mkdocs_config)
         if theme == "mkdocs":
             search_plugin = mkdocs_config["plugins"]["search"]
-            assert len(search_plugin.search_index._entries) == 34
+            assert len(search_plugin.search_index._entries) == 36
         else:
             search_plugin = mkdocs_config["plugins"]["material/search"]
             assert len(search_plugin.search_index.entries) == 26
@@ -39,7 +39,7 @@ def test_search_entries_no_directory_urls():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=False,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
         plugins={
             "search": {},
             "i18n": {
@@ -56,7 +56,7 @@ def test_search_entries_no_directory_urls():
     )
     build(mkdocs_config)
     search_plugin = mkdocs_config["plugins"]["search"]
-    assert len(search_plugin.search_index._entries) == 34
+    assert len(search_plugin.search_index._entries) == 36
 
 
 def test_search_entries_no_reconfigure():
@@ -64,7 +64,7 @@ def test_search_entries_no_reconfigure():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
         plugins={
             "search": {},
             "i18n": {
@@ -82,7 +82,7 @@ def test_search_entries_no_reconfigure():
     )
     build(mkdocs_config)
     search_plugin = mkdocs_config["plugins"]["search"]
-    assert len(search_plugin.search_index._entries) == 36
+    assert len(search_plugin.search_index._entries) == 40
 
 
 def test_search_add_lang():
@@ -90,7 +90,7 @@ def test_search_add_lang():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
         plugins={
             "search": {},
             "i18n": {
@@ -115,7 +115,7 @@ def test_search_add_missing_lang():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
         plugins={
             "search": {
                 "lang": ["en"],
@@ -143,7 +143,7 @@ def test_search_no_add_lang():
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
         plugins={
             "search": {
                 "lang": ["en"],

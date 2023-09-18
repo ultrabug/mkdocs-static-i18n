@@ -210,7 +210,7 @@ def test_plugin_navigation(plugin_config, use_directory_urls, control_data):
     mkdocs_config = load_config(
         "tests/mkdocs.yml",
         theme={"name": "mkdocs"},
-        docs_dir=f"docs_{plugin_config['docs_structure']}_structure/",
+        docs_dir=f"docs_{plugin_config['docs_structure']}_structure_two_languages/",
         use_directory_urls=use_directory_urls,
         nav=[
             {"Home": "index.md"},

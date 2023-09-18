@@ -9,14 +9,14 @@ def test_rtd_fontfiles():
         "tests/mkdocs.yml",
         theme={"name": "readthedocs"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
     )
 
     config_plugin_rtd = load_config(
         "tests/mkdocs.yml",
         theme={"name": "readthedocs"},
         use_directory_urls=True,
-        docs_dir="docs_suffix_structure/",
+        docs_dir="docs_suffix_structure_two_languages/",
         plugins={
             "i18n": {
                 "languages": [
