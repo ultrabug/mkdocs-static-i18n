@@ -3,6 +3,14 @@
 !!!tip "Reminder"
     We try our best to follow [Semantic Versioning v2](https://semver.org/) starting from 1.0.0.
 
+## 1.0.4 (2023-09-18)
+
+- **assets**: Handle more assets
+- **plugin**: Fix build log info about directory
+- **utils**: Fix logging filter class name
+- **plugin**: Improve logging in general
+- **plugin**: Use new filter to hide log duplicates
+
 ## 1.0.3 (2023-09-07)
 
 - **plugin**: add support for --dirty and --dirtyreload (#249), by AngryMane
