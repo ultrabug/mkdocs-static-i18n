@@ -5,7 +5,7 @@ from typing import Optional
 
 from jinja2.ext import loopcontrols
 from mkdocs import plugins
-from mkdocs.commands.build import DuplicateFilter, build
+from mkdocs.commands.build import build
 from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.plugins import get_plugin_logger
 from mkdocs.structure.files import Files
@@ -13,6 +13,7 @@ from mkdocs.structure.pages import Page
 
 from mkdocs_static_i18n import folder
 from mkdocs_static_i18n.reconfigure import ExtendedPlugin
+from mkdocs_static_i18n.utils import I18nLoggingFilter
 
 log = get_plugin_logger(__name__)
 
@@ -36,6 +37,14 @@ class I18n(ExtendedPlugin):
         # first execution, setup defaults
         if self.current_language is None:
             self.current_language = self.default_language
+
+        path_suffix = self.current_language if not self.is_default_language_build else ""
+
+        log.info(
+            f"Building '{self.current_language}' documentation to directory: "
+            f"{PurePath(config.site_dir) / path_suffix}"
+        )
+
         # reconfigure the mkdocs config
         return self.reconfigure_mkdocs_config(config)
 
@@ -157,15 +166,12 @@ class I18n(ExtendedPlugin):
 
         self.building = True
 
-        # Block time logging for internal builds
-        try:
-            duplicate_filter: DuplicateFilter = logging.getLogger("mkdocs.commands.build").filters[
-                0
-            ]
-            duplicate_filter.msgs.add("Documentation built in %.2f seconds")
-        except IndexError:
-            # tests dont setup a duplicatefilter
-            pass
+        # Block time logging for internal builds and filter reduntant MkDocs log
+        build_logger = logging.getLogger("mkdocs.commands.build")
+        i18n_filter = I18nLoggingFilter()
+        i18n_filter.filtered_prefixes.add("Documentation built in")
+        i18n_filter.filtered_prefixes.add("Building documentation to directory")
+        build_logger.addFilter(i18n_filter)
 
         # manually trigger with-pdf, see #110
         with_pdf_plugin = config.plugins.get("with-pdf")
@@ -184,7 +190,6 @@ class I18n(ExtendedPlugin):
             if locale == self.current_language:
                 continue
             self.current_language = locale
-            log.info(f"Building '{locale}' documentation to directory: {config.site_dir}")
             # TODO: reconfigure config here? skip on_config?
             dirty = True if "--dirty" in sys.argv or "--dirtyreload" in sys.argv else False
             build(config, dirty=dirty)
@@ -204,9 +209,6 @@ class I18n(ExtendedPlugin):
         utils.clean_directory = mkdocs_utils_clean_directory
 
         # Unblock time logging after internal builds
-        try:
-            duplicate_filter.msgs.remove("Documentation built in %.2f seconds")
-        except UnboundLocalError:
-            # tests dont setup a duplicatefilter
-            pass
+        build_logger.removeFilter(i18n_filter)
+
         self.building = False
