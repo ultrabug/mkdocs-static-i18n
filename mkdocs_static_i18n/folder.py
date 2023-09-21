@@ -112,6 +112,8 @@ class I18nFiles(Files):
         Used by mkdocs.structure.nav.get_navigation to find resources linked in markdown.
         """
         expected_src_uri = PurePath(path)
+        if expected_src_uri == PurePath("."):
+            expected_src_uri = PurePath("index.md")
         expected_src_uris = []
         # non localized paths detection (root)
         if is_relative_to(expected_src_uri, self.plugin.current_language):
