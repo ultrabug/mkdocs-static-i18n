@@ -3,6 +3,10 @@
 !!!tip "Reminder"
     We try our best to follow [Semantic Versioning v2](https://semver.org/) starting from 1.0.0.
 
+## 1.0.6 (2023-09-21)
+
+- **get_file_from_path**: resolving root path '.' should point to 'index.md', thx to @gnaegi
+
 ## 1.0.5 (2023-09-18)
 
 - **plugin**: fix handling of files with dotted suffixes, thx to @gnaegi (#259)
