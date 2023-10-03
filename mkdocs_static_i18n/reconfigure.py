@@ -735,7 +735,8 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                 file.locale_alternate_of = self.current_language
                 file.url = i18n_file._get_url(mkdocs_config.use_directory_urls)
                 #
-                file.page._set_canonical_url(mkdocs_config.get('site_url', None))
+                if file.page:
+                    file.page._set_canonical_url(mkdocs_config.get('site_url', None))
 
         # reconfigure blog files alternates to the best we can
         # since we are past the on_files event and files useless to the current language
