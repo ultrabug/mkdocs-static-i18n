@@ -543,7 +543,9 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                         # use the file since its locale is our current build language
                         if i18n_file.locale == self.current_language:
                             i18n_dest_uris[i18n_file.dest_uri] = i18n_file
-                            log.debug(f"Use {i18n_file.locale} {i18n_file}")
+                            log.debug(
+                                f"Use {i18n_file.locale} {i18n_file.localization} {i18n_file}"
+                            )
                         # if locale is the default language AND default language fallback is enabled
                         # we are using a file that is not really our locale
                         elif (
@@ -551,10 +553,14 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                             and i18n_file.locale == self.default_language
                         ):
                             i18n_dest_uris[i18n_file.dest_uri] = i18n_file
-                            log.debug(f"Use default {i18n_file.locale} {i18n_file}")
+                            log.debug(
+                                f"Use default {i18n_file.locale} {i18n_file.localization} {i18n_file}"
+                            )
                             i18n_alternate_dest_uris[i18n_file.dest_uri].append(file)
                         else:
-                            log.debug(f"Ignore {i18n_file.locale} {i18n_file}")
+                            log.debug(
+                                f"Ignore {i18n_file.locale} {i18n_file.localization} {i18n_file}"
+                            )
                             i18n_alternate_dest_uris[i18n_file.dest_uri].append(file)
 
                     # we've seen that file already
@@ -564,7 +570,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                             # users should not add default non suffixed/folder files + suffixed/folder
                             # files when multiple languages are configured
                             if (
-                                len(self.all_languages) > 1
+                                len(self.build_languages) > 1
                                 and i18n_file.localization is not None
                                 and i18n_dest_uris[i18n_file.dest_uri].locale == i18n_file.locale
                             ):
@@ -574,9 +580,13 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                                     f"'{i18n_dest_uris[i18n_file.dest_uri].src_uri}' but not both"
                                 )
                             i18n_dest_uris[i18n_file.dest_uri] = i18n_file
-                            log.debug(f"Use localized {i18n_file.locale} {i18n_file}")
+                            log.debug(
+                                f"Use localized {i18n_file.locale} {i18n_file.localization} {i18n_file}"
+                            )
                         else:
-                            log.debug(f"Ignore {i18n_file.locale} {i18n_file}")
+                            log.debug(
+                                f"Ignore {i18n_file.locale} {i18n_file.localization} {i18n_file}"
+                            )
                             i18n_alternate_dest_uris[i18n_file.dest_uri].append(file)
 
                 # user provided asset
@@ -587,7 +597,9 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                         # use the file since its locale is our current build language
                         if i18n_file.locale == self.current_language:
                             i18n_dest_uris[i18n_file.dest_uri] = i18n_file
-                            log.debug(f"Use asset {i18n_file.locale} {i18n_file}")
+                            log.debug(
+                                f"Use asset {i18n_file.locale} {i18n_file.localization} {i18n_file}"
+                            )
                         # if locale is the default language AND default language fallback is enabled
                         # we are using a file that is not really our locale
                         elif (
@@ -602,14 +614,18 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                                 mkdocs_config,
                             )
                             i18n_dest_uris[i18n_file.dest_uri] = i18n_asset
-                            log.debug(f"Use default asset {i18n_asset.locale} {i18n_asset}")
+                            log.debug(
+                                f"Use asset default {i18n_asset.locale} {i18n_file.localization} {i18n_asset}"
+                            )
 
                     # we've seen that file already
                     else:
                         # override it only if this is our language
-                        if i18n_file.locale == self.current_language:
+                        if i18n_file.localization == self.current_language:
                             i18n_dest_uris[i18n_file.dest_uri] = i18n_file
-                            log.debug(f"Use localized asset {i18n_file.locale} {i18n_file}")
+                            log.debug(
+                                f"Use asset localized {i18n_file.locale} {i18n_file.localization} {i18n_file}"
+                            )
 
             # theme (and overrides) files
             elif not file.is_documentation_page():
@@ -620,7 +636,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         # populate the resulting Files and keep track of all the alternates
         # that will be used by the sitemap.xml template
         for file in i18n_dest_uris.values():
-            log.debug(f"Selected {file.locale} {file}")
+            log.debug(f"Selected {file.locale} {file.localization} {file}")
             i18n_files.append(file)
 
         # build the alternates for all the Files
