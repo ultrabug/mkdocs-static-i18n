@@ -132,41 +132,41 @@ def test_control_single(make_config, control_data, test_data):
                 },
             },
         ),
-        # (
-        #     {"mkdocs_fp": "tests/structures/control/en_only/mkdocs.yml"},
-        #     {"mkdocs_fp": "tests/structures/control/fr_with_default/mkdocs.yml"},
-        #     {
-        #         "mkdocs_fp": "tests/mkdocs.yml",
-        #         "docs_dir": "docs_folder_structure/",
-        #         "plugins": {
-        #             "i18n": {
-        #                 "docs_structure": "folder",
-        #                 "languages": [
-        #                     {"locale": "en", "name": "test", "default": True},
-        #                     {"locale": "fr", "name": "test"},
-        #                 ],
-        #             }
-        #         },
-        #     },
-        # ),
-        # (
-        #     {"mkdocs_fp": "tests/structures/control/en_only/mkdocs.yml"},
-        #     {"mkdocs_fp": "tests/structures/control/fr_without_default/mkdocs.yml"},
-        #     {
-        #         "mkdocs_fp": "tests/mkdocs.yml",
-        #         "docs_dir": "docs_folder_structure/",
-        #         "plugins": {
-        #             "i18n": {
-        #                 "fallback_to_default": False,
-        #                 "docs_structure": "folder",
-        #                 "languages": [
-        #                     {"locale": "en", "name": "test", "default": True},
-        #                     {"locale": "fr", "name": "test"},
-        #                 ],
-        #             }
-        #         },
-        #     },
-        # ),
+        (
+            {"mkdocs_fp": "tests/structures/control/en_only/mkdocs.yml"},
+            {"mkdocs_fp": "tests/structures/control/fr_with_default/mkdocs.yml"},
+            {
+                "mkdocs_fp": "tests/mkdocs.yml",
+                "docs_dir": "docs_folder_structure_two_languages_with_default/",
+                "plugins": {
+                    "i18n": {
+                        "docs_structure": "folder",
+                        "languages": [
+                            {"locale": "en", "name": "test", "default": True},
+                            {"locale": "fr", "name": "test"},
+                        ],
+                    }
+                },
+            },
+        ),
+        (
+            {"mkdocs_fp": "tests/structures/control/en_only/mkdocs.yml"},
+            {"mkdocs_fp": "tests/structures/control/fr_without_default/mkdocs.yml"},
+            {
+                "mkdocs_fp": "tests/mkdocs.yml",
+                "docs_dir": "docs_folder_structure_two_languages/",
+                "plugins": {
+                    "i18n": {
+                        "fallback_to_default": False,
+                        "docs_structure": "folder",
+                        "languages": [
+                            {"locale": "en", "name": "test", "default": True},
+                            {"locale": "fr", "name": "test"},
+                        ],
+                    }
+                },
+            },
+        ),
     ],
 )
 def test_control_en_fr(
