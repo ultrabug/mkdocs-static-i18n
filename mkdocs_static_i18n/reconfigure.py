@@ -294,7 +294,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         if "language" in config.theme._vars:
             config.theme._vars["language"] = locale
         # configure extra.alternate language switcher
-        if len(self.build_languages) > 1:
+        if len(self.build_languages) > 1 or "null" in self.all_languages:
             # 'on_page_context' overrides the config.extra.alternate
             # so we need to reset it to its initial computed value if present
             if self.extra_alternate:
@@ -303,9 +303,10 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
             # warn if it's poorly configured
             if "alternate" in config.extra:
                 for alternate in config.extra["alternate"]:
-                    if not alternate.get("link", "").startswith("/") or not alternate.get(
-                        "link", ""
-                    ).endswith("/"):
+                    alternate_link = alternate.get("link", "")
+                    if not alternate_link.startswith("http") and (
+                        not alternate_link.startswith("/") or not alternate_link.endswith("/")
+                    ):
                         log.info(
                             "The 'extra.alternate' configuration contains a "
                             "'link' option that should be an absolute path '/' and "
@@ -329,10 +330,10 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                 # use_directory_urls = True
                 link_suffix = "" if config.get("use_directory_urls") else "index.html"
                 # setup language switcher
-                for language in self.build_languages:
+                for language in self.all_languages:
                     lang_config = self.get_language_config(language)
-                    # skip language if not built
-                    if lang_config.build is False:
+                    # skip language if not built unless we are the special "null" locale
+                    if lang_config.build is False and lang_config.locale != "null":
                         continue
                     config.extra["alternate"].append(
                         {
