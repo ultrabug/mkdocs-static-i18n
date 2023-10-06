@@ -3,6 +3,11 @@
 !!!tip "Reminder"
     We try our best to follow [Semantic Versioning v2](https://semver.org/) starting from 1.0.0.
 
+## 1.1.0 (2023-10-06)
+
+- **material**: add a special "null" locale to generated a fixed fixed item in the lang switcher (#270)
+- **reconfigure**: allow the default language to use localized files or not wrt issue #262 (#269)
+
 ## 1.0.6 (2023-09-21)
 
 - **get_file_from_path**: resolving root path '.' should point to 'index.md', thx to @gnaegi
