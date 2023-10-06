@@ -15,7 +15,7 @@ class Locale(config_options.Type):
 
     def run_validation(self, value):
         value = super().run_validation(value)
-        if not RE_LOCALE.match(value):
+        if not RE_LOCALE.match(value) and value.lower() != "null":
             raise ValidationError(
                 "Language code values must be either ISO-639-1 lower case "
                 "or represented with their territory/region/country codes, "
@@ -60,6 +60,19 @@ class I18nPluginLanguage(Config):
                         ValidationError(
                             f"languages[{self.locale}].link should be an absolute link starting "
                             f"with a leading / and ending with a / (like /{self.locale}/)."
+                        ),
+                    )
+                )
+        # special "null" locale can be used to insert an item in the language switcher
+        # so it must never be built
+        if self.locale == "null":
+            self.build = False
+            if self.fixed_link is None:
+                failed.append(
+                    (
+                        "fixed_link",
+                        ValidationError(
+                            f"languages[{self.locale}].fixed_link should be set to a valid URL."
                         ),
                     )
                 )

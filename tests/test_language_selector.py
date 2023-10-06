@@ -162,3 +162,28 @@ def test_plugin_language_selector_fixed_link_with_static_alternate():
         {"name": "français", "link": "/fr/", "lang": "fr"},
     ]
     build(mkdocs_config)
+
+
+def test_plugin_language_selector_with_null():
+    mkdocs_config = load_config(
+        "tests/mkdocs.yml",
+        theme={"name": "material"},
+        use_directory_urls=True,
+        docs_dir="docs_suffix_structure_two_languages/",
+        plugins={
+            "i18n": {
+                "languages": [
+                    {"locale": "en", "name": "english", "default": True},
+                    {"locale": "fr", "name": "français"},
+                    {"locale": "null", "name": "help", "fixed_link": "https://ultrabug.fr"},
+                ],
+            },
+        },
+    )
+    i18n_plugin = mkdocs_config["plugins"]["i18n"]
+    result = i18n_plugin.on_config(mkdocs_config)
+    assert result["extra"]["alternate"] == [
+        {"name": "english", "link": "/", "lang": "en"},
+        {"name": "français", "link": "/fr/", "lang": "fr"},
+        {"name": "help", "link": "https://ultrabug.fr", "lang": "null"}
+    ]

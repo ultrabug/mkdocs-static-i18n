@@ -23,6 +23,29 @@ plugins:
     reconfigure_material: true
 ```
 
+## Adding a special item in the language switcher
+
+If you want to add a special item in the automatically generated language switcher pointing to a fixed link, use the special `null` locale.
+
+``` yaml
+plugins:
+  - i18n:
+    languages:
+        - locale: en
+          name: English
+          build: true
+          default: true
+        - locale: fr
+          name: Français
+          build: true
+        - locale: null
+          name: Help translating
+          build: false
+          fixed_link: https://spaceship-prompt.sh/contribute/?h=trans#Translating
+```
+
+![spaceship prompt help translating](../assets/spaceship_help_translating_item.png){width=450}
+
 ## Features
 
 !!! failure "Incompatibility"
@@ -32,4 +55,4 @@ plugins:
 - [x] Automatic language switcher setup
 - [x] Automatic language switcher contextual link setup
 - [x] Search plugin localization and result deduplication
-- [x] Blog plugin localization
+- [ ] Blog plugin localization
