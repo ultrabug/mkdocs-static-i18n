@@ -64,11 +64,18 @@ plugins:
 |site_url|no|true|Override the `site_url` option of `mkdocs.yml`|
 |theme|no|true|Override the `theme` options of `mkdocs.yml`|
 
-Overriding MkDocs options per language:
+Overriding MkDocs options per language is easy, here are some examples.
+
+This example shows how to make the French (fr) version of the site use the `red` palette instead of the default `blue`:
 
 ``` yaml
 site_name: "MkDocs static i18n plugin documentation (en)"
 site_description: "English description"
+
+theme:
+  name: material
+  palette:
+    primary: blue
 
 plugins:
   - i18n:
@@ -85,4 +92,52 @@ plugins:
         theme:
           palette:
             primary: red
+```
+
+This example shows how to make the French (fr) light version of the site use the `red` palette instead of the default `blue` and the French (fr) dark version use the `pink` palette instead of `blue grey`:
+
+``` yaml
+site_name: "MkDocs static i18n plugin documentation (en)"
+site_description: "English description"
+
+theme:
+  name: material
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      primary: blue
+      scheme: default
+      toggle:
+        icon: material/weather-sunny 
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      primary: blue grey
+      scheme: slate
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+
+plugins:
+  - i18n:
+    languages:
+      - locale: en
+        default: true
+        name: English
+        build: true
+      - locale: fr
+        name: Français
+        build: true
+        site_name: "Documentation du plugin MkDocs static i18n (fr)"
+        site_description: "Description Française"
+        theme:
+          palette:
+            # Palette toggle for light mode
+            - media: "(prefers-color-scheme: light)"
+              primary: red
+              scheme: default
+            # Palette toggle for dark mode
+            - media: "(prefers-color-scheme: dark)"
+              primary: pink
+              scheme: slate
 ```
