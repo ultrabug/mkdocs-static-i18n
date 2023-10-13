@@ -5,6 +5,7 @@ from typing import Union
 from urllib.parse import urlsplit
 
 from mkdocs import localization
+from mkdocs.config.base import LegacyConfig
 from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.plugins import BasePlugin, get_plugin_logger
 from mkdocs.structure.files import File, Files
@@ -185,7 +186,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
 
     def save_original_config(self, store, key, value):
         if key not in store:
-            store[key] = value
+            store[key] = deepcopy(value)
 
     def apply_user_overrides(self, config: MkDocsConfig):
         """
@@ -239,6 +240,15 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                     config.load_dict({lang_key: lang_override})
                     log.info(
                         f"Overriding '{self.current_language}' config '{lang_key}' with '{lang_override}'"
+                    )
+                # extra is a legacy dict config
+                elif mkdocs_config_option_type == LegacyConfig:
+                    self.save_original_config(
+                        self.original_configs, lang_key, config.data[lang_key]
+                    )
+                    config[lang_key].update(lang_override)
+                    log.info(
+                        f"Updating '{self.current_language}' config '{lang_key}' with '{lang_override}'"
                     )
                 else:
                     log.warning(f"Unknown '{self.current_language}' config override '{lang_key}'")
