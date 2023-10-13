@@ -19,3 +19,6 @@ deploy: qa test
 
 test:
 	hatch run all
+
+changelog:
+	cz changelog --file-name docs/changelog.md --incremental

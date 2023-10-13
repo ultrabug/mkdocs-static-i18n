@@ -3,6 +3,11 @@
 !!!tip "Reminder"
     We try our best to follow [Semantic Versioning v2](https://semver.org/) starting from 1.0.0.
 
+## 1.1.1 (2023-10-13)
+
+- **user_overrides**: extra overrides should be applied as legacy dict, thx to @Andygol
+- **docs**: add and correct lang config overrides examples
+
 ## 1.1.0 (2023-10-06)
 
 - **material**: add a special "null" locale to generated a fixed fixed item in the lang switcher (#270)
