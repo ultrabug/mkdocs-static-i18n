@@ -245,3 +245,66 @@ def test_plugin_languages_dual_lang_with_null():
             "site_url": None,
         },
     ]
+
+
+def test_plugin_build_only_locale():
+    mkdocs_config = load_config(
+        "tests/mkdocs.yml",
+        theme={"name": "material"},
+        docs_dir="docs_suffix_structure_two_languages/",
+        plugins={
+            "i18n": {
+                "build_only_locale": "fr",
+                "languages": [
+                    {
+                        "locale": "en",
+                        "name": "english",
+                        "default": True,
+                        "build": True,
+                    },
+                    {
+                        "locale": "fr", 
+                        "name": "français",
+                        "default": False,
+                        "build": False, 
+                    },
+                ],
+            }
+        },
+    )
+    
+    english = mkdocs_config["plugins"]["i18n"].config.languages[0]
+    french = mkdocs_config["plugins"]["i18n"].config.languages[1]
+
+    assert english["default"] == False
+    assert english["build"] == False
+    assert french["default"] == True
+    assert french["build"] == True
+
+
+def test_plugin_build_only_locale_abort():
+    with pytest.raises(Abort):
+        load_config(
+            "tests/mkdocs.yml",
+            theme={"name": "material"},
+            docs_dir="docs_suffix_structure_two_languages/",
+            plugins={
+                "i18n": {
+                    "build_only_locale": "zh",
+                    "languages": [
+                        {
+                            "locale": "en",
+                            "name": "english",
+                            "default": True,
+                            "build": True,
+                        },
+                        {
+                            "locale": "fr", 
+                            "name": "français",
+                            "default": False,
+                            "build": False, 
+                        },
+                    ],
+                }
+            },
+        )
