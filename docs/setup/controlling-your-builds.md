@@ -90,7 +90,7 @@ The localized (non default) language structure can have files which are not pres
 
 You can control whether you want the plugin to use (fallback to) the default language version of a page or resource when its localized version is missing from the docs structure.
 
-## Option: `fallback_to_default`
+### Option: `fallback_to_default`
 
 |required|default|allowed values|
 |---|---|---|
@@ -167,3 +167,36 @@ plugins:
     ├── topic1
     │   └── index.html
     ```
+
+## Building only one specific locale
+
+You can control if the plugin should build only one single locale. This would decrease build time during development. You can do it setting the `default` and `build` options of each language separately, or you can make use of the `build_only_locale` option and [*environment variables*](https://www.mkdocs.org/user-guide/configuration/#environment-variables) to select the built locale without modifying the `mkdocs.yml` file each time you switch languages.
+
+### Option: `build_only_locale`
+
+|required|default|allowed values|
+|---|---|---|
+|no|None|Language Code|
+
+```yaml
+plugins:
+  - i18n:
+    build_only_locale: !ENV [BUILD_ONLY_LOCALE]
+```
+
+Each operating system or terminal variant has a different way of setting and unsetting environmental variables:
+
+```bash title="Linux (bash)"
+export BUILD_ONLY_LOCALE=en
+unset BUILD_ONLY_LOCALE
+```
+
+```powershell title="Windows Powershell"
+$env:BUILD_ONLY_LOCALE="en"
+$env:BUILD_ONLY_LOCALE=""
+```
+
+```batch title="Windows Command Prompt (cmd)"
+set BUILD_ONLY_LOCALE=en
+set BUILD_ONLY_LOCALE=
+```

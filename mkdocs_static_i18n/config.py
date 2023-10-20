@@ -82,6 +82,7 @@ class I18nPluginLanguage(Config):
 class I18nPluginConfig(Config):
     """ """
 
+    build_only_locale = config_options.Optional(Locale(str))
     docs_structure = config_options.Choice(["folder", "suffix"], default="suffix")
     fallback_to_default = config_options.Type(bool, default=True)
     reconfigure_material = config_options.Type(bool, default=True)
@@ -93,6 +94,23 @@ class I18nPluginConfig(Config):
     def validate(self):
         failed, warnings = super().validate()
         if not failed:
+            if self.build_only_locale:
+                # check that the build_only_locale is valid
+                if self.build_only_locale not in [lang.locale for lang in self.languages]:
+                    failed.append(
+                        (
+                            "build_only_locale",
+                            ValidationError(
+                                f"Locale {self.build_only_locale} is not present in languages"
+                            ),
+                        )
+                    )
+                # set other settings to valid values
+                else:
+                    for lang in self.languages:
+                        is_the_only_lang = lang.locale == self.build_only_locale
+                        lang.default = is_the_only_lang
+                        lang.build = is_the_only_lang
             # check that we have at least a default language to build
             if not any(filter(lambda c: c.default and c.build, self.languages)):
                 failed.append(
