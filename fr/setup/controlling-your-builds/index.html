@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.5">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.6">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.6a10b989.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.35e1ed30.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.356b1318.min.css">
@@ -656,12 +656,38 @@
     Fallbacking to default
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
+    <nav class="md-nav" aria-label="Fallbacking to default">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#option-fallback_to_default" class="md-nav__link">
     Option: fallback_to_default
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-only-one-specific-locale" class="md-nav__link">
+    Building only one specific locale
+  </a>
+  
+    <nav class="md-nav" aria-label="Building only one specific locale">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-build_only_locale" class="md-nav__link">
+    Option: build_only_locale
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -995,7 +1021,7 @@
 </div>
 <h2 id="fallbacking-to-default">Fallbacking to default</h2>
 <p>You can control whether you want the plugin to use (fallback to) the default language version of a page or resource when its localized version is missing from the docs structure.</p>
-<h2 id="option-fallback_to_default">Option: <code>fallback_to_default</code></h2>
+<h3 id="option-fallback_to_default">Option: <code>fallback_to_default</code></h3>
 <table>
 <thead>
 <tr>
@@ -1078,6 +1104,39 @@
 </div>
 </div>
 </div>
+<h2 id="building-only-one-specific-locale">Building only one specific locale</h2>
+<p>You can control if the plugin should build only one single locale. This would decrease build time during development. You can do it setting the <code>default</code> and <code>build</code> options of each language separately, or you can make use of the <code>build_only_locale</code> option and <a href="https://www.mkdocs.org/user-guide/configuration/#environment-variables"><em>environment variables</em></a> to select the built locale without modifying the <code>mkdocs.yml</code> file each time you switch languages.</p>
+<h3 id="option-build_only_locale">Option: <code>build_only_locale</code></h3>
+<table>
+<thead>
+<tr>
+<th>required</th>
+<th>default</th>
+<th>allowed values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>no</td>
+<td>None</td>
+<td>Language Code</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nt">plugins</span><span class="p">:</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">i18n</span><span class="p">:</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="nt">build_only_locale</span><span class="p">:</span><span class="w"> </span><span class="kt">!ENV</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">BUILD_ONLY_LOCALE</span><span class="p p-Indicator">]</span>
+</code></pre></div>
+<p>Each operating system or terminal variant has a different way of setting and unsetting environmental variables:</p>
+<div class="highlight"><span class="filename">Linux (bash)</span><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">BUILD_ONLY_LOCALE</span><span class="o">=</span>en
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nb">unset</span><span class="w"> </span>BUILD_ONLY_LOCALE
+</code></pre></div>
+<div class="highlight"><span class="filename">Windows Powershell</span><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nv">$env:BUILD_ONLY_LOCALE</span><span class="p">=</span><span class="s2">&quot;en&quot;</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nv">$env:BUILD_ONLY_LOCALE</span><span class="p">=</span><span class="s2">&quot;&quot;</span>
+</code></pre></div>
+<div class="highlight"><span class="filename">Windows Command Prompt (cmd)</span><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">set</span> <span class="nv">BUILD_ONLY_LOCALE</span><span class="p">=</span>en
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">set</span> <span class="nv">BUILD_ONLY_LOCALE</span><span class="p">=</span>
+</code></pre></div>
 
 
 
