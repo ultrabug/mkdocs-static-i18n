@@ -3,6 +3,10 @@
 !!!tip "Reminder"
     We try our best to follow [Semantic Versioning v2](https://semver.org/) starting from 1.0.0.
 
+## 1.2.0 (2023-10-25)
+
+- **config**: Add build_only_locale option, by Kamil Krzyśków
+
 ## 1.1.1 (2023-10-13)
 
 - **user_overrides**: extra overrides should be applied as legacy dict, thx to @Andygol
