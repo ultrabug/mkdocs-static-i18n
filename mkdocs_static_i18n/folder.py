@@ -138,7 +138,7 @@ class I18nFiles(Files):
             expected_src_uris.append(PurePath(self.plugin.default_language) / expected_src_uri)
         expected_src_uris.append(expected_src_uri)
 
-        for src_uri in expected_src_uris:
+        for src_uri in reversed(expected_src_uris):
             file = self.src_uris.get(src_uri.as_posix())
             if file:
                 return file
