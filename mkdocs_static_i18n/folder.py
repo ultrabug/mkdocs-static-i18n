@@ -118,6 +118,11 @@ class I18nFiles(Files):
         # non localized paths detection (root)
         if is_relative_to(expected_src_uri, self.plugin.current_language):
             expected_src_uris.append(expected_src_uri.relative_to(self.plugin.current_language))
+            # default language path detection
+            if self.plugin.config.fallback_to_default is True:
+                expected_src_uris.append(
+                    PurePath(self.plugin.default_language) / expected_src_uris[-1]
+                )
         elif is_relative_to(expected_src_uri, self.plugin.default_language):
             expected_src_uris.append(expected_src_uri.relative_to(self.plugin.default_language))
             if self.plugin.config.fallback_to_default is True:
