@@ -532,9 +532,9 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         else:
             create_i18n_file = folder.create_i18n_file
             I18nFiles = folder.I18nFiles
-        i18n_dest_uris = {}
+        i18n_src_uris = {}
         i18n_files = I18nFiles(self, [])
-        i18n_alternate_dest_uris = defaultdict(list)
+        i18n_alternate_src_uris = defaultdict(list)
         for file in files:
             # user provided files in docs_dir
             if is_relative_to(file.abs_src_path, mkdocs_config.docs_dir):
@@ -549,11 +549,11 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                 # user provided documentation page
                 if i18n_file.is_documentation_page():
                     # never seen that file?
-                    if i18n_file.dest_uri not in i18n_dest_uris:
+                    if i18n_file.norm_src_uri not in i18n_src_uris:
                         # best case scenario
                         # use the file since its locale is our current build language
                         if i18n_file.locale == self.current_language:
-                            i18n_dest_uris[i18n_file.dest_uri] = i18n_file
+                            i18n_src_uris[i18n_file.norm_src_uri] = i18n_file
                             log.debug(
                                 f"Use {i18n_file.locale} {i18n_file.localization} {i18n_file}"
                             )
@@ -563,16 +563,16 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                             self.config.fallback_to_default is True
                             and i18n_file.locale == self.default_language
                         ):
-                            i18n_dest_uris[i18n_file.dest_uri] = i18n_file
+                            i18n_src_uris[i18n_file.norm_src_uri] = i18n_file
                             log.debug(
                                 f"Use default {i18n_file.locale} {i18n_file.localization} {i18n_file}"
                             )
-                            i18n_alternate_dest_uris[i18n_file.dest_uri].append(file)
+                            i18n_alternate_src_uris[i18n_file.norm_src_uri].append(file)
                         else:
                             log.debug(
                                 f"Ignore {i18n_file.locale} {i18n_file.localization} {i18n_file}"
                             )
-                            i18n_alternate_dest_uris[i18n_file.dest_uri].append(file)
+                            i18n_alternate_src_uris[i18n_file.norm_src_uri].append(file)
 
                     # we've seen that file already
                     else:
@@ -583,14 +583,14 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                             if (
                                 len(self.build_languages) > 1
                                 and i18n_file.localization is not None
-                                and i18n_dest_uris[i18n_file.dest_uri].locale == i18n_file.locale
+                                and i18n_src_uris[i18n_file.norm_src_uri].locale == i18n_file.locale
                             ):
                                 raise Exception(
                                     f"Conflicting files for the default language '{self.default_language}': "
-                                    f"choose either '{i18n_file.src_uri}' or "
-                                    f"'{i18n_dest_uris[i18n_file.dest_uri].src_uri}' but not both"
+                                    f"choose either '{i18n_file.norm_src_uri}' or "
+                                    f"'{i18n_src_uris[i18n_file.norm_src_uri].src_uri}' but not both"
                                 )
-                            i18n_dest_uris[i18n_file.dest_uri] = i18n_file
+                            i18n_src_uris[i18n_file.norm_src_uri] = i18n_file
                             log.debug(
                                 f"Use localized {i18n_file.locale} {i18n_file.localization} {i18n_file}"
                             )
@@ -598,16 +598,16 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                             log.debug(
                                 f"Ignore {i18n_file.locale} {i18n_file.localization} {i18n_file}"
                             )
-                            i18n_alternate_dest_uris[i18n_file.dest_uri].append(file)
+                            i18n_alternate_src_uris[i18n_file.norm_src_uri].append(file)
 
                 # user provided asset
                 else:
                     # never seen that file?
-                    if i18n_file.dest_uri not in i18n_dest_uris:
+                    if i18n_file.norm_src_uri not in i18n_src_uris:
                         # best case scenario
                         # use the file since its locale is our current build language
                         if i18n_file.locale == self.current_language:
-                            i18n_dest_uris[i18n_file.dest_uri] = i18n_file
+                            i18n_src_uris[i18n_file.norm_src_uri] = i18n_file
                             log.debug(
                                 f"Use asset {i18n_file.locale} {i18n_file.localization} {i18n_file}"
                             )
@@ -624,7 +624,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                                 self.all_languages,
                                 mkdocs_config,
                             )
-                            i18n_dest_uris[i18n_file.dest_uri] = i18n_asset
+                            i18n_src_uris[i18n_file.norm_src_uri] = i18n_asset
                             log.debug(
                                 f"Use asset default {i18n_asset.locale} {i18n_file.localization} {i18n_asset}"
                             )
@@ -633,7 +633,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                     else:
                         # override it only if this is our language
                         if i18n_file.localization == self.current_language:
-                            i18n_dest_uris[i18n_file.dest_uri] = i18n_file
+                            i18n_src_uris[i18n_file.norm_src_uri] = i18n_file
                             log.debug(
                                 f"Use asset localized {i18n_file.locale} {i18n_file.localization} {i18n_file}"
                             )
@@ -646,21 +646,22 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
 
         # populate the resulting Files and keep track of all the alternates
         # that will be used by the sitemap.xml template
-        for file in i18n_dest_uris.values():
-            log.debug(f"Selected {file.locale} {file.localization} {file}")
+        for file in i18n_src_uris.values():
+            if "index" in file.src_uri:
+                log.info(f"Selected {file.locale} {file.localization} {file}")
             i18n_files.append(file)
 
         # build the alternates for all the Files
         self.reconfigure_files_alternates(
-            i18n_dest_uris, i18n_alternate_dest_uris, mkdocs_config, create_i18n_file
+            i18n_src_uris, i18n_alternate_src_uris, mkdocs_config, create_i18n_file
         )
 
         return i18n_files
 
     def reconfigure_files_alternates(
         self,
-        i18n_dest_uris,
-        i18n_alternate_dest_uris,
+        i18n_src_uris,
+        i18n_alternate_src_uris,
         mkdocs_config: MkDocsConfig,
         create_i18n_file: Union[suffix.create_i18n_file, folder.create_i18n_file],
     ):
@@ -668,9 +669,9 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         Find and update the alternates of each file.
         """
         for build_lang in sorted(self.build_languages):
-            for i18n_dest_uri, i18n_file in i18n_dest_uris.items():
+            for i18n_src_uri, i18n_file in i18n_src_uris.items():
                 if build_lang not in i18n_file.alternates:
-                    for alternate_file in i18n_alternate_dest_uris.get(i18n_dest_uri, []):
+                    for alternate_file in i18n_alternate_src_uris.get(i18n_src_uri, []):
                         alternate_file = create_i18n_file(
                             alternate_file,
                             build_lang,
@@ -685,7 +686,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                         # if fallbacking to default language is configured and we did not find
                         # an alternate for the build language, look for the default version of the file
                         if self.config.fallback_to_default is True:
-                            for alternate_file in i18n_alternate_dest_uris.get(i18n_dest_uri, []):
+                            for alternate_file in i18n_alternate_src_uris.get(i18n_src_uri, []):
                                 alternate_file = create_i18n_file(
                                     alternate_file,
                                     build_lang,
@@ -707,12 +708,12 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                                 if alternate_file.locale == self.default_language:
                                     i18n_file.alternates[build_lang] = alternate_file
         # uncomment to debug alternate selection
-        # for i18n_dest_uri, i18n_file in i18n_dest_uris.items():
+        # for i18n_src_uri, i18n_file in i18n_src_uris.items():
         #     print(" ")
-        #     print(f"{i18n_dest_uri=}")
+        #     print(f"{i18n_src_uri=}")
         #     for build_lang, alternate_file in i18n_file.alternates.items():
         #         print(
-        #             f"    {build_lang=} {alternate_file.src_uri=} {alternate_file.locale_alternate_of=} {alternate_file.dest_uri=}"
+        #             f"    {build_lang=} {alternate_file.src_uri=} {alternate_file.locale_alternate_of=} {alternate_file.src_uri=}"
         #         )
 
     def reconfigure_material_blog(self, nav: Navigation, mkdocs_config: MkDocsConfig, files: Files):
@@ -727,8 +728,8 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         else:
             create_i18n_file = folder.create_i18n_file
 
-        i18n_dest_uris = {}
-        i18n_alternate_dest_uris = defaultdict(list)
+        i18n_src_uris = {}
+        i18n_alternate_src_uris = defaultdict(list)
 
         # at this point, the files have been cleaned up contrary to the
         # initial on_files run so it's harder to build the alternates
@@ -743,8 +744,8 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                     mkdocs_config,
                 )
                 # used to rebuild blog alternates for the sitemap.xml and language switcher
-                i18n_dest_uris[i18n_file.dest_uri] = file
-                i18n_alternate_dest_uris[i18n_file.dest_uri].append(
+                i18n_src_uris[i18n_file.norm_src_uri] = file
+                i18n_alternate_src_uris[i18n_file.norm_src_uri].append(
                     File(
                         file.src_path,
                         mkdocs_config.docs_dir,
@@ -760,6 +761,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                 file.dest_uri = i18n_file.dest_uri
                 file.locale = i18n_file.locale
                 file.locale_alternate_of = self.current_language
+                file.norm_src_uri = i18n_file.norm_src_uri
                 file.url = i18n_file._get_url(mkdocs_config.use_directory_urls)
                 #
                 file.page._set_canonical_url(mkdocs_config.get('site_url', None))
@@ -769,7 +771,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         # have been filtered out and new ones got generated by the blog plugin,
         # we can't get the complete view of the alternates
         self.reconfigure_files_alternates(
-            i18n_dest_uris, i18n_alternate_dest_uris, mkdocs_config, create_i18n_file
+            i18n_src_uris, i18n_alternate_src_uris, mkdocs_config, create_i18n_file
         )
 
         # update the per-language files store for template alternates
