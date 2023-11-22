@@ -88,6 +88,11 @@ def create_i18n_file(
     file.locale_alternate_of = current_language
     file.localization = file_localization
 
+    # compute the normalized (non localized) src_uri
+    file.norm_src_uri = file.src_uri
+    if file.localization:
+        file.norm_src_uri = PurePath(file.src_uri).relative_to(file.localization).as_posix()
+
     log.debug(f"reconfigure {file} from locale {file_locale}")
 
     return file
