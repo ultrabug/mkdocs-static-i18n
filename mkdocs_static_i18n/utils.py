@@ -1,4 +1,5 @@
 """Utility functions and classes that aren't limited to any scenario."""
+
 import logging
 from typing import Dict, Optional, TypeVar
 
