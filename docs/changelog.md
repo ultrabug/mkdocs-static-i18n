@@ -3,6 +3,11 @@
 !!!tip "Reminder"
     We try our best to follow [Semantic Versioning v2](https://semver.org/) starting from 1.0.0.
 
+## 1.2.1 (2024-01-28)
+
+- **folder**: fix path lookup order, by Kamil Krzyśków
+- **on_files**: switch the file localization logic to use src_uri instead of dest_uri (#279)
+
 ## 1.2.0 (2023-10-25)
 
 - **config**: Add build_only_locale option, by Kamil Krzyśków
