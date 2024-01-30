@@ -126,3 +126,5 @@ site
 └── topic2
     └── index.html
 ```
+
+[Test fallback to default](english_default/index.md)
