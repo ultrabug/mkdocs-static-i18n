@@ -85,6 +85,11 @@ class I18n(ExtendedPlugin):
                 f"/{self.current_language}/{homepage_suffix}",
             ]
 
+        # MkDocs resolves default/index.html, which isn't toplevel,
+        # however the resolved path in the plugin is index.html
+        if not config.use_directory_urls:
+            NavHelper.expected_homepage_urls.append("index.html")
+
         i18n_nav = self.reconfigure_navigation(nav, config, files, NavHelper)
         i18n_nav.homepage = NavHelper.homepage
 
