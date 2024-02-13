@@ -119,31 +119,39 @@ class I18nFiles(Files):
         expected_src_uri = PurePath(path)
         if expected_src_uri == PurePath("."):
             expected_src_uri = PurePath("index.md")
-        expected_src_uris = []
+
+        expected_src_uris: list[PurePath] = []
+
         # non localized paths detection (root)
         if is_relative_to(expected_src_uri, self.plugin.current_language):
-            expected_src_uris.append(expected_src_uri.relative_to(self.plugin.current_language))
-            # default language path detection
+            # First add current_code/path
+            # Second add default_code/path (fallback)
+            # Last add path without prefix
+            resolved_path = expected_src_uri.relative_to(self.plugin.current_language)
+            expected_src_uris.append(expected_src_uri)
             if self.plugin.config.fallback_to_default is True:
-                expected_src_uris.append(
-                    PurePath(self.plugin.default_language) / expected_src_uris[-1]
-                )
+                expected_src_uris.append(PurePath(self.plugin.default_language) / resolved_path)
+            expected_src_uris.append(resolved_path)
         elif is_relative_to(expected_src_uri, self.plugin.default_language):
-            expected_src_uris.append(expected_src_uri.relative_to(self.plugin.default_language))
+            # First add default_code/path
+            # Second add current_code/path (fallback)
+            # Last add path without prefix
+            resolved_path = expected_src_uri.relative_to(self.plugin.default_language)
+            expected_src_uris.append(expected_src_uri)
             if self.plugin.config.fallback_to_default is True:
-                expected_src_uris.append(
-                    PurePath(self.plugin.current_language)
-                    / expected_src_uri.relative_to(self.plugin.default_language)
-                )
+                expected_src_uris.append(PurePath(self.plugin.current_language) / resolved_path)
+            expected_src_uris.append(resolved_path)
         # localized paths detection
         else:
+            # First add current_code/path
+            # Second add default_code/path (fallback)
+            # Last add path without modification
             expected_src_uris.append(PurePath(self.plugin.current_language) / expected_src_uri)
-        # default language path detection
-        if self.plugin.config.fallback_to_default is True:
-            expected_src_uris.append(PurePath(self.plugin.default_language) / expected_src_uri)
-        expected_src_uris.append(expected_src_uri)
+            if self.plugin.config.fallback_to_default is True:
+                expected_src_uris.append(PurePath(self.plugin.default_language) / expected_src_uri)
+            expected_src_uris.append(expected_src_uri)
 
-        for src_uri in reversed(expected_src_uris):
+        for src_uri in expected_src_uris:
             file = self.src_uris.get(src_uri.as_posix())
             if file:
                 return file
