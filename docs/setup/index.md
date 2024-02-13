@@ -29,6 +29,7 @@ This plugin uses MkDocs event priority in order to reconfigure each of the build
 |on_nav|-100|
 |on_env|0|
 |on_template_context|50|
+|on_page_markdown|50|
 |on_page_context|50|
 |on_post_page|-100|
 |on_post_build|-100|

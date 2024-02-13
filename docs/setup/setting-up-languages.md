@@ -32,6 +32,7 @@ plugins:
 |link|no|`/<locale>/`|Used for the `mkdocs-material` language switcher. Absolute path used as the base of the language switcher|
 |fixed_link|no||Used for the `mkdocs-material` language switcher. Fixed URL link used in the language switcher for this language|
 |nav_translations|no||Key/value mapping used to [translate navigation items](localizing-navigation.md)|
+|admonition_translations|no||Key/value mapping used to [translate admonitions](translating-content.md)|
 
 Minimal example with two languages:
 
