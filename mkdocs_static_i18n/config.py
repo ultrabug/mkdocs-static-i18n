@@ -37,6 +37,7 @@ class I18nPluginLanguage(Config):
     name = config_options.Type(str)
     nav = config_options.Optional(config_options.Nav())
     nav_translations = config_options.Optional(config_options.Type(dict))
+    admonition_translations = config_options.Optional(config_options.Type(dict))
     site_author = config_options.Optional(config_options.Type(str))
     site_description = config_options.Optional(config_options.Type(str))
     site_name = config_options.Optional(config_options.Type(str))

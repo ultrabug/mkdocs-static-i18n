@@ -1,4 +1,5 @@
 import logging
+import re
 import sys
 from pathlib import PurePath
 from typing import Optional
@@ -44,6 +45,14 @@ class I18n(ExtendedPlugin):
             f"Building '{self.current_language}' documentation to directory: "
             f"{PurePath(config.site_dir) / path_suffix}"
         )
+
+        admonition_translations = self.current_language_config.admonition_translations or {}
+        if len(admonition_translations) > 0 and (
+            "markdown_extensions" not in config or "admonition" not in config["markdown_extensions"]
+        ):
+            log.warning(
+                "admonition_translations used, but admonitions won't be rendered properly without 'admonition' in mkdocs.yml's markdown_extensions."
+            )
 
         # reconfigure the mkdocs config
         return self.reconfigure_mkdocs_config(config)
@@ -123,6 +132,32 @@ class I18n(ExtendedPlugin):
         # used by sitemap.xml template
         context["i18n_alternates"] = self.i18n_files_per_language
         return context
+
+    @plugins.event_priority(50)
+    def on_page_markdown(self, markdown, page, config, files):
+        """
+        The page_markdown event is called after the page's markdown is loaded from file
+        and can be used to alter the Markdown source text.
+
+        Here we translate admonition types
+        """
+        admonition_translations = self.current_language_config.admonition_translations or {}
+        RE = re.compile(
+            r'^(!!! ?)([\w\-]+(?: +[\w\-]+)*)(?: +"(.*?)")? *$'
+        )  # Copied from https://github.com/Python-Markdown/markdown/blob/master/markdown/extensions/admonition.py and modified for a single-line processing
+        out = []
+        for line in markdown.splitlines():
+            m = RE.match(line)
+            if m:
+                type = m.group(2)
+                if (
+                    m.group(3) is None or m.group(3).strip() == ''
+                ) and type in admonition_translations:
+                    title = admonition_translations[type]
+                    line = m.group(1) + m.group(2) + f' "{title}"'
+            out.append(line)
+        markdown = "\n".join(out)
+        return markdown
 
     @plugins.event_priority(50)
     def on_page_context(self, context, page, config, nav):
