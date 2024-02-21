@@ -46,7 +46,16 @@ class I18n(ExtendedPlugin):
         )
 
         # reconfigure the mkdocs config
-        return self.reconfigure_mkdocs_config(config)
+        config = self.reconfigure_mkdocs_config(config)
+        
+        # manually trigger with-pdf, to apply language specific overrides
+        with_pdf_plugin = config.plugins.get("with-pdf")
+        if with_pdf_plugin:
+            config = with_pdf_plugin.on_config(config)
+        
+        return config
+    
+    
 
     @plugins.event_priority(-100)
     def on_files(self, files: Files, config: MkDocsConfig):
