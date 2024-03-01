@@ -3,6 +3,15 @@
 !!!tip "Reminder"
     We try our best to follow [Semantic Versioning v2](https://semver.org/) starting from 1.0.0.
 
+## 1.2.2 (2024-03-01)
+
+- **build**: drop eol 3.7, add 3.12 compat and tests
+- **chore**: fix deprecation warning, by Kamil Krzyśków
+- **config**: new option "admonition_translations" to allow translating of admonitions by Michal Fapso (#293)
+- **folder**: correct file lookup, by Kamil Krzyśków
+- **plugin** fix homepage detection, by Kamil Krzyśków
+- **test**: add tests for folder structure, by Kamil Krzyśków
+
 ## 1.2.1 (2024-01-28)
 
 - **folder**: fix path lookup order, by Kamil Krzyśków
