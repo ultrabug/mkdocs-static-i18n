@@ -31,6 +31,8 @@ Which means that the `image.png` and its `fr/image.png` localized counterpart ca
 
 It works the same for the `folder` structure!
 
+!!! tip
+    You may find useful to inform users that some pages are not translated (yet) by [injecting content on an announcement block](https://github.com/ultrabug/mkdocs-static-i18n/issues/276#issuecomment-1785900709) when a page is displayed using its fallback language and thus missing a translation.
 
 ## Translating admonitions
 
