@@ -964,6 +964,10 @@
 </code></pre></div>
 <p>Which means that the <code>image.png</code> and its <code>fr/image.png</code> localized counterpart can be referenced the same way as <code>![my image](image.png)</code> on both <code>index.md</code> and <code>index.fr.md</code> when using the <code>suffix</code> docs structure.</p>
 <p>It works the same for the <code>folder</code> structure!</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You may find useful to inform users that some pages are not translated (yet) by <a href="https://github.com/ultrabug/mkdocs-static-i18n/issues/276#issuecomment-1785900709">injecting content on an announcement block</a> when a page is displayed using its fallback language and thus missing a translation.</p>
+</div>
 <h2 id="translating-admonitions">Translating admonitions</h2>
 <p>This sub-option is a key/value mapping set per language and allows you to translate <a href="https://python-markdown.github.io/extensions/admonition/">admonition</a> titles which don't have an explicit title defined.</p>
 <h3 id="language-sub-option-admonition_translations">Language Sub-Option: <code>admonition_translations</code></h3>
