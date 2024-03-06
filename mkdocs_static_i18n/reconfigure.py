@@ -1,9 +1,11 @@
 from collections import defaultdict
 from copy import deepcopy
+from os import path
 from pathlib import Path, PurePath
 from typing import Union
 from urllib.parse import urlsplit
 
+from babel.messages import pofile
 from mkdocs import localization
 from mkdocs.config.base import LegacyConfig
 from mkdocs.config.defaults import MkDocsConfig
@@ -76,6 +78,32 @@ except Exception:
     ]
     log.warning("Unable to detect lunr languages from mkdocs distribution")
 MKDOCS_THEMES = ["mkdocs", "readthedocs"]
+
+# some config overrides are forbidden as they make no sense
+FORBIDDEN_CONFIG_OVERRIDES = [
+    "dev_addr",
+    "docs_dir",
+    "edit_uri_template",
+    "edit_uri",
+    "exclude_docs",
+    "extra_css",
+    "extra_javascript",
+    "extra_templates",
+    "hooks",
+    "markdown_extensions",
+    "mdx_configs",
+    "not_in_nav",
+    "plugins",
+    "remote_branch",
+    "remote_name",
+    "repo_name",
+    "repo_url",
+    "site_dir",
+    "strict",
+    "use_directory_urls",
+    "validation",
+    "watch",
+]
 
 
 class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
@@ -197,37 +225,42 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         # altered by a previous build
         config = self.reset_to_original_config(config)
 
-        # some config overrides are forbidden as they make no sense
-        forbidden_config_overrides = [
-            "dev_addr",
-            "docs_dir",
-            "edit_uri_template",
-            "edit_uri",
-            "exclude_docs",
-            "extra_css",
-            "extra_javascript",
-            "extra_templates",
-            "hooks",
-            "markdown_extensions",
-            "mdx_configs",
-            "not_in_nav",
-            "plugins",
-            "remote_branch",
-            "remote_name",
-            "repo_name",
-            "repo_url",
-            "site_dir",
-            "strict",
-            "use_directory_urls",
-            "validation",
-            "watch",
-        ]
+        overrides = dict()
+        # read po file if configured and override array is not empty
+        if self.config.po_overrides is not None and self.config.po_overrides.override:
+            po_file = path.join(self.config.po_overrides, self.current_language + ".po")
+            if path.exists(po_file):
+                with open(po_file, "r") as fs:
+                    catalog = pofile.read_po(fs)
+
+                for key in self.config.po_overrides.override:
+                    if key in FORBIDDEN_CONFIG_OVERRIDES:
+                        log.warning(
+                            f"Ignoring forbidden '{self.current_language}' po override '{key}'"
+                        )
+                        continue
+                    translation = catalog.get(key)
+                    if translation:
+                        overrides[key] = translation
+                    else:
+                        log.warning(f"translation for \"'{key}'\" not found in catalog '{po_file}'")
+            else:
+                log.warning(f"translation catalog '{po_file}' not found")
+
+        # read explicitly configured overrides
         for lang_key, lang_override in self.current_language_config.items():
-            if lang_key in forbidden_config_overrides:
+            if lang_key in FORBIDDEN_CONFIG_OVERRIDES:
                 log.warning(
                     f"Ignoring forbidden '{self.current_language}' config override '{lang_key}'"
                 )
                 continue
+            if lang_key in overrides:
+                log.warning(
+                    f"Overwriting po override '{lang_key}' with explicitly configured version"
+                )
+            overrides[lang_key] = lang_override
+
+        for lang_key, lang_override in overrides.items():
             if lang_key in config.data and lang_override is not None:
                 mkdocs_config_option_type = type(config.data[lang_key])
                 # support special Theme object overrides
