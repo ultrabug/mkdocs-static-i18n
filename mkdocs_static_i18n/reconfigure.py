@@ -1,6 +1,6 @@
 from collections import defaultdict
 from copy import deepcopy
-from os import path
+import os.path
 from pathlib import Path, PurePath
 from typing import Union
 from urllib.parse import urlsplit
@@ -228,8 +228,10 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         overrides = dict()
         # read po file if configured and override array is not empty
         if self.config.po_overrides is not None and self.config.po_overrides.override:
-            po_file = path.join(self.config.po_overrides, self.current_language + ".po")
-            if path.exists(po_file):
+            po_file = os.path.normpath(
+                os.path.join(config.config_file_path, self.config.po_overrides, self.current_language + ".po")
+            )
+            if os.path.exists(po_file):
                 with open(po_file, "r") as fs:
                     catalog = pofile.read_po(fs)
 
