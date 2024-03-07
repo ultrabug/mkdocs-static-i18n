@@ -250,7 +250,12 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                         msgid = config[key]
                         translation = catalog.get(msgid)
                         if translation is not None:
-                            overrides[key] = translation.string
+                            if translation.string:
+                                overrides[key] = translation.string
+                            else:
+                                log.warning(
+                                    f"MsgId '{msgid}' is not translated, discarding override"
+                                )
                         else:
                             log.warning(
                                 f"MsgId '{msgid}' for config '{key}' not found in catalog '{po_file}'"
