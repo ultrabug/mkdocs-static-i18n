@@ -1,6 +1,6 @@
+import os.path
 from collections import defaultdict
 from copy import deepcopy
-import os.path
 from pathlib import Path, PurePath
 from typing import Union
 from urllib.parse import urlsplit
@@ -229,10 +229,14 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         # read po file if configured and override array is not empty
         if self.config.po_overrides is not None and self.config.po_overrides.override:
             po_file = os.path.normpath(
-                os.path.join(config.config_file_path, self.config.po_overrides.po_dir, self.current_language + ".po")
+                os.path.join(
+                    os.path.dirname(config.config_file_path),
+                    self.config.po_overrides.po_dir,
+                    self.current_language + ".po",
+                )
             )
             if os.path.exists(po_file):
-                with open(po_file, "r") as fs:
+                with open(po_file, "r", encoding="utf-8") as fs:
                     catalog = pofile.read_po(fs)
 
                 for key in self.config.po_overrides.override:
@@ -241,11 +245,20 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                             f"Ignoring forbidden '{self.current_language}' po override '{key}'"
                         )
                         continue
-                    translation = catalog.get(key)
-                    if translation:
-                        overrides[key] = translation
+                    # get original value
+                    if config.__contains__(key) and config[key]:
+                        msgid = config[key]
+                        translation = catalog.get(msgid)
+                        if translation is not None:
+                            overrides[key] = translation.string
+                        else:
+                            log.warning(
+                                f"MsgId '{msgid}' for config '{key}' not found in catalog '{po_file}'"
+                            )
                     else:
-                        log.warning(f"translation for \"'{key}'\" not found in catalog '{po_file}'")
+                        log.warning(
+                            f"no original value set for config '{key}', cannot look up translation"
+                        )
             else:
                 log.warning(f"translation catalog '{po_file}' not found")
 
@@ -256,11 +269,12 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                     f"Ignoring forbidden '{self.current_language}' config override '{lang_key}'"
                 )
                 continue
-            if lang_key in overrides:
-                log.warning(
-                    f"Overwriting po override '{lang_key}' with explicitly configured version"
-                )
-            overrides[lang_key] = lang_override
+            if lang_override is not None:
+                if lang_key in overrides:
+                    log.warning(
+                        f"Overwriting override '{lang_key}' from PO file with explicitly configured string '{lang_override}'"
+                    )
+                overrides[lang_key] = lang_override
 
         for lang_key, lang_override in overrides.items():
             if lang_key in config.data and lang_override is not None:

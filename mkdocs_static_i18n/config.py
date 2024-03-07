@@ -84,9 +84,7 @@ class I18nPoOverridesConfig(Config):
     """configure the user overrides which should be read from a po file"""
 
     po_dir = config_options.Type(str, default="")
-    override = config_options.Optional(
-        config_options.ListOfItems(config_options.Type(str))
-    )
+    override = config_options.Optional(config_options.ListOfItems(config_options.Type(str)))
 
 
 class I18nPluginConfig(Config):
