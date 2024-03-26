@@ -89,3 +89,16 @@ plugins:
             Home: Accueil
             Getting Started: Démarrage Rapide
             Plugins Compatibility: Compatibilité des plugins
+        - locale: zh
+          name: 汉语
+          build: true
+          site_name: "MkDocs static i18n 插件文档 (汉语)"
+          theme:
+            palette:
+              primary: teal
+          nav_translations:
+            Home: 首页
+            Getting Started: 快速开始
+            Configuration: 配置选项
+            Plugins Compatibility: 插件兼容性
+            Changelog: 更新日志
