@@ -11,7 +11,8 @@ theme:
   name: material
   font: false
   custom_dir: docs/overrides
-  logo: assets/logo_by_maxicons.png
+  logo:
+    assets/logo_by_maxicons.png
   palette:
     primary: blue
   features:
@@ -45,23 +46,23 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Getting Started:
-      - getting-started/installation.md
-      - getting-started/quick-start.md
-      - getting-started/philosophy.md
+    - getting-started/installation.md
+    - getting-started/quick-start.md
+    - getting-started/philosophy.md
   - Configuration:
-      - setup/index.md
-      - setup/choosing-the-structure.md
-      - setup/setting-up-languages.md
-      - setup/translating-content.md
-      - setup/controlling-your-builds.md
-      - setup/localizing-navigation.md
-      - setup/using-i18n-context.md
-      - setup/using-alternates.md
-      - setup/upgrading-to-1.md
-      - Plugins Compatibility:
-          - setup/setting-up-material.md
-          - setup/setting-up-search.md
-          - setup/plugins-compatibility.md
+    - setup/index.md
+    - setup/choosing-the-structure.md
+    - setup/setting-up-languages.md
+    - setup/translating-content.md
+    - setup/controlling-your-builds.md
+    - setup/localizing-navigation.md
+    - setup/using-i18n-context.md
+    - setup/using-alternates.md
+    - setup/upgrading-to-1.md
+    - Plugins Compatibility:
+      - setup/setting-up-material.md
+      - setup/setting-up-search.md
+      - setup/plugins-compatibility.md
   - Changelog: changelog.md
 
 plugins:
