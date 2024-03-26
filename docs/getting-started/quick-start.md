@@ -1,7 +1,7 @@
 # Quick Start
 
 !!! warning
-    This documentation applies from `mkdocs-static-i18n` **version 1.0.0**.
+    This documentation applies from `mkdocs-static-i18n` **above version 1.0.0**.
     Users of older versions should check the [previous version 0.56 documentation](https://github.com/ultrabug/mkdocs-static-i18n/tree/0.56#readme).
 
 After you [installed](installation.md) the plugin there are a few steps to get started.
