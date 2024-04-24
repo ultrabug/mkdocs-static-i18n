@@ -50,6 +50,22 @@ But also in our hall of fame:
 
 Feel free to ask questions, enhancements and to contribute to this project!
 
+## Development
+
+The project is managed with `hatch`. [Install `hatch`](https://hatch.pypa.io/1.9/install/#gui-installer) first.
+
+Run the tests:
+
+```
+hatch test
+```
+
+Serve the documentation:
+
+```
+hatch -e docs run mkdocs serve
+```
+
 ## Credits
 
 - Logo by [max.icons](https://www.flaticon.com/authors/maxicons)
