@@ -3,6 +3,11 @@
 !!!tip "Reminder"
     We try our best to follow [Semantic Versioning v2](https://semver.org/) starting from 1.0.0.
 
+## 1.2.3 (2024-05-02)
+
+- **reconfigure**: drop incorrect log level from info to debug
+- **reconfigure**: file.page can be None and make plugin crash
+
 ## 1.2.2 (2024-03-01)
 
 - **build**: drop eol 3.7, add 3.12 compat and tests
