@@ -648,7 +648,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         # that will be used by the sitemap.xml template
         for file in i18n_src_uris.values():
             if "index" in file.src_uri:
-                log.info(f"Selected {file.locale} {file.localization} {file}")
+                log.debug(f"Selected {file.locale} {file.localization} {file}")
             i18n_files.append(file)
 
         # build the alternates for all the Files
