@@ -75,9 +75,14 @@ test = [
 python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
 type = ["default"]
 
-[tool.hatch.envs.docs]
+[tool.hatch.envs.doc]
 dependencies = [
     "mkdocs-material>=9.2.5"
+]
+
+[tool.hatch.envs.doc.scripts]
+serve = [
+    "mkdocs serve",
 ]
 
 [tool.hatch.envs.style]
