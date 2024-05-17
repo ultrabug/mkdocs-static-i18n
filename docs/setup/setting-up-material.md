@@ -25,7 +25,7 @@ plugins:
 
 ## Adding a special item in the language switcher
 
-If you want to add a special item in the automatically generated language switcher pointing to a fixed link, use the special `null` locale.
+If you want to add a special item in the automatically generated language switcher pointing to a fixed link, use the special `"null"` (quotes intended) locale.
 
 ``` yaml
 plugins:
@@ -38,7 +38,7 @@ plugins:
         - locale: fr
           name: Français
           build: true
-        - locale: null
+        - locale: "null"
           name: Help translating
           build: false
           fixed_link: https://spaceship-prompt.sh/contribute/?h=trans#Translating
