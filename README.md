@@ -63,7 +63,7 @@ hatch test
 Serve the documentation:
 
 ```
-hatch -e docs run mkdocs serve
+hatch run doc:serve
 ```
 
 ## Credits
