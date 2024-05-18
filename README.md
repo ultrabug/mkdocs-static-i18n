@@ -58,6 +58,7 @@ Run the tests:
 
 ```
 hatch run test:test
+hatch run style:check
 ```
 
 Serve the documentation:
