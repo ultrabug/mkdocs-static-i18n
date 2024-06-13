@@ -80,6 +80,13 @@ class I18nPluginLanguage(Config):
         return failed, warnings
 
 
+class I18nPoOverridesConfig(Config):
+    """configure the user overrides which should be read from a po file"""
+
+    po_dir = config_options.Type(str, default="")
+    override = config_options.Optional(config_options.ListOfItems(config_options.Type(str)))
+
+
 class I18nPluginConfig(Config):
     """ """
 
@@ -91,6 +98,7 @@ class I18nPluginConfig(Config):
     languages = config_options.ListOfItems(
         config_options.SubConfig(I18nPluginLanguage, validate=True)
     )
+    po_overrides = config_options.SubConfig(I18nPoOverridesConfig, validate=True)
 
     def validate(self):
         failed, warnings = super().validate()
