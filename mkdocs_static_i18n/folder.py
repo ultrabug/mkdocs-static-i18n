@@ -159,6 +159,27 @@ class I18nFiles(Files):
             return None
 
 
+def merge_structure_items(structure_items):
+    merged_structure_items = []
+    for structure_item in structure_items:
+        if not structure_item.is_section:
+            merged_structure_items.append(structure_item)
+            continue
+        existing_item = next(
+            filter(
+                lambda x: x.is_section and x.title == structure_item.title, merged_structure_items
+            ),
+            None,
+        )
+        if existing_item:
+            existing_item.children.extend(structure_item.children)
+        else:
+            merged_structure_items.append(structure_item)
+    for item in filter(lambda x: x.is_section, merged_structure_items):
+        item.children = merge_structure_items(item.children)
+    return merged_structure_items
+
+
 def reconfigure_navigation(i18n_plugin, nav):
     """
     Remove the Section(title='En') language sections.
@@ -170,6 +191,7 @@ def reconfigure_navigation(i18n_plugin, nav):
             or section.title == i18n_plugin.default_language.capitalize()
         ):
             items.extend(section.children)
+    items = merge_structure_items(items)
     if items:
         nav.items = items
         # [Page(title=[blank], url='/mkdocs-static-i18n/fr/'), Section(title='Topic1'), Section(title='Topic2'), Section(title='French only'), Section(title='English default')]
