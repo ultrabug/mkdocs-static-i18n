@@ -269,7 +269,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
             return source
 
         for key, value in options.items():
-            if key in theme and type(theme[key]) == type(value):
+            if key in theme and type(theme[key]) is type(value):
                 self.save_original_config(self.original_theme_configs, key, theme[key])
                 log.info(
                     f"Overriding '{self.current_language}' config 'theme.{key}' with '{value}'"
