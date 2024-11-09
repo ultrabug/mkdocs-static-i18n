@@ -157,7 +157,7 @@ class I18n(ExtendedPlugin):
 
         marker = r"!{3}"  # Admonition marker
         if "pymdownx.details" in config["markdown_extensions"]:
-            marker = r"(?:\?{3}|!{3})"  # Admonition or Details marker
+            marker = r"(?:\?{3}\+?|!{3})"  # Admonition or Details marker
 
         RE = re.compile(
             r'^('

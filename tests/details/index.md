@@ -6,6 +6,12 @@
 ???tip
     Same without space
 
+???+ tip
+    Same but opened by default
+
+???+tip
+    Same without space
+
 ??? warning
     Implicit title derived from admonition type, can be overriden by setting `admonition_translations`
 
