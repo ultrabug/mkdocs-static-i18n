@@ -155,25 +155,19 @@ class I18n(ExtendedPlugin):
         """
         admonition_translations = self.current_language_config.admonition_translations or {}
 
-        RE_ADMONITION = re.compile(
-            r'^(!!! ?)([\w\-]+(?: +[\w\-]+)*)(?: +"(.*?)")? *$'
-        )  # Copied from https://github.com/Python-Markdown/markdown/blob/master/markdown/extensions/admonition.py and modified for a single-line processing
-        def handle_admonition_translations(line):
-            m = RE_ADMONITION.match(line)
-            if m:
-                type = m.group(2)
-                if (
-                    m.group(3) is None or m.group(3).strip() == ''
-                ) and type in admonition_translations:
-                    title = admonition_translations[type]
-                    line = m.group(1) + m.group(2) + f' "{title}"'
-            return line
+        marker = r"!{3}"  # Admonition marker
+        if "pymdownx.details" in config["markdown_extensions"]:
+            marker = r"(?:\?{3}|!{3})"  # Admonition or Details marker
 
-        RE_DETAILS = re.compile(
-            r'^(\?\?\? ?)([\w\-]+(?: +[\w\-]+)*)(?: +"(.*?)")? *$'
-        )  # Copied from https://github.com/Python-Markdown/markdown/blob/master/markdown/extensions/admonition.py and modified for a single-line processing
-        def handle_details_translations(line):
-            m = RE_DETAILS.match(line)
+        RE = re.compile(
+            r'^('
+            + marker
+            + r' ?)([\w\-]+(?: +[\w\-]+)*)(?: +"(.*?)")? *$'
+        )   # Copied from https://github.com/Python-Markdown/markdown/blob/master/markdown/extensions/admonition.py and modified for a single-line processing
+            # Adapted to match the details extension as well
+
+        def handle_admonition_translations(line):
+            m = RE.match(line)
             if m:
                 type = m.group(2)
                 if (
@@ -186,8 +180,6 @@ class I18n(ExtendedPlugin):
         out = []
         for line in markdown.splitlines():
             line = handle_admonition_translations(line)
-            if "pymdownx.details" in config["markdown_extensions"]:
-                line = handle_details_translations(line)
             out.append(line)
 
         markdown = "\n".join(out)
