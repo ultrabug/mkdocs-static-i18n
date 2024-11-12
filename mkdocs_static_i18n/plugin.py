@@ -151,14 +151,19 @@ class I18n(ExtendedPlugin):
         The page_markdown event is called after the page's markdown is loaded from file
         and can be used to alter the Markdown source text.
 
-        Here we translate admonition types
+        Here we translate admonition and details titles.
         """
         admonition_translations = self.current_language_config.admonition_translations or {}
-        RE = re.compile(
-            r'^(!!! ?)([\w\-]+(?: +[\w\-]+)*)(?: +"(.*?)")? *$'
-        )  # Copied from https://github.com/Python-Markdown/markdown/blob/master/markdown/extensions/admonition.py and modified for a single-line processing
-        out = []
-        for line in markdown.splitlines():
+
+        marker = r"!{3}"  # Admonition marker
+        if "pymdownx.details" in config["markdown_extensions"]:
+            marker = r"(?:\?{3}\+?|!{3})"  # Admonition or Details marker
+
+        # Copied from https://github.com/Python-Markdown/markdown/blob/master/markdown/extensions/admonition.py and modified for a single-line processing
+        # Adapted to match the details extension as well
+        RE = re.compile('^(' + marker + r' ?)([\w\-]+(?: +[\w\-]+)*)(?: +"(.*?)")? *$')
+
+        def handle_admonition_translations(line):
             m = RE.match(line)
             if m:
                 type = m.group(2)
@@ -167,7 +172,13 @@ class I18n(ExtendedPlugin):
                 ) and type in admonition_translations:
                     title = admonition_translations[type]
                     line = m.group(1) + m.group(2) + f' "{title}"'
+            return line
+
+        out = []
+        for line in markdown.splitlines():
+            line = handle_admonition_translations(line)
             out.append(line)
+
         markdown = "\n".join(out)
         return markdown
 
