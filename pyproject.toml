@@ -97,7 +97,7 @@ dependencies = [
 check = [
     "isort --check-only --diff mkdocs_static_i18n",
     "black -q --check --diff mkdocs_static_i18n",
-    "ruff mkdocs_static_i18n",
+    "ruff check mkdocs_static_i18n",
 ]
 format = [
     "isort -q mkdocs_static_i18n",
@@ -115,4 +115,6 @@ line_length = 100
 
 [tool.ruff]
 line-length = 100
+
+[tool.ruff.lint]
 ignore = ["E501"]
