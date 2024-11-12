@@ -133,7 +133,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
             else:
                 config = self.reconfigure_material_theme(config, self.current_language)
                 # warn about navigation.instant incompatibility
-                if "navigation.instant" in config.theme._vars.get("features", []):
+                if "navigation.instant" in config.theme.get("features", []):
                     log.warning(
                         "mkdocs-material language switcher contextual link is not "
                         "compatible with theme.features = navigation.instant"
@@ -154,7 +154,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
 
         # Install a i18n aware version of sitemap.xml if not provided by the user
         if not Path(
-            PurePath(config.theme._vars.get("custom_dir", ".")) / PurePath("sitemap.xml")
+            PurePath(config.theme.get("custom_dir", ".")) / PurePath("sitemap.xml")
         ).exists():
             custom_i18n_sitemap_dir = Path(
                 PurePath(installation_path).parent / PurePath("custom_i18n_sitemap")
@@ -180,7 +180,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         for config_key, config_value in self.original_configs.items():
             config[config_key] = config_value
         for config_key, config_value in self.original_theme_configs.items():
-            config.theme._vars[config_key] = config_value
+            config.theme[config_key] = config_value
 
         return config
 
@@ -269,24 +269,24 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
             return source
 
         for key, value in options.items():
-            if key in theme._vars and type(theme._vars[key]) == type(value):
-                self.save_original_config(self.original_theme_configs, key, theme._vars[key])
+            if key in theme and type(theme[key]) is type(value):
+                self.save_original_config(self.original_theme_configs, key, theme[key])
                 log.info(
                     f"Overriding '{self.current_language}' config 'theme.{key}' with '{value}'"
                 )
                 if isinstance(value, dict):
-                    dict_recursive_update(theme._vars[key], value)
+                    dict_recursive_update(theme[key], value)
                 elif isinstance(value, list):
                     for idx, item in enumerate(value):
                         if isinstance(item, dict):
-                            dict_recursive_update(theme._vars[key][idx], item)
+                            dict_recursive_update(theme[key][idx], item)
                         else:
-                            theme._vars[key][idx] = item
+                            theme[key][idx] = item
                 else:
-                    theme._vars[key] = value
+                    theme[key] = value
             elif key == "locale":
-                self.save_original_config(self.original_theme_configs, key, theme._vars[key])
-                theme._vars[key] = localization.parse_locale(value)
+                self.save_original_config(self.original_theme_configs, key, theme[key])
+                theme[key] = localization.parse_locale(value)
                 log.info(
                     f"Overriding '{self.current_language}' config 'theme.{key}' with '{value}'"
                 )
@@ -296,13 +296,13 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
 
     def reconfigure_mkdocs_theme(self, config: MkDocsConfig, locale: str) -> Theme:
         # set theme locale
-        if "locale" in config.theme._vars:
-            config.theme._vars["locale"] = localization.parse_locale(locale)
+        if "locale" in config.theme:
+            config.theme["locale"] = localization.parse_locale(locale)
 
     def reconfigure_material_theme(self, config: MkDocsConfig, locale: str) -> MkDocsConfig:
         # set theme language
-        if "language" in config.theme._vars:
-            config.theme._vars["language"] = locale
+        if "language" in config.theme:
+            config.theme["language"] = locale
         # configure extra.alternate language switcher
         if len(self.build_languages) > 1 or "null" in self.all_languages:
             # 'on_page_context' overrides the config.extra.alternate
