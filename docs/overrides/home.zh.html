@@ -1,0 +1,47 @@
+{% extends "main.html" %}
+{% block tabs %}
+{{ super() }}
+<style>
+    .md-header{position:initial}
+    .md-main__inner{margin:0}
+    .md-content{display:none}
+    .mdx-hero{
+        padding-left: 0.6rem;
+        padding-right: 0.6rem;
+    }
+    @media screen and (min-width: 60em) {
+        .md-sidebar--primary{display:none}
+        .md-sidebar--secondary{display:none}
+        .md-sidebar--secondary:not([hidden]){display:none}
+    }
+    @media screen and (min-width:76.25em){
+        .md-sidebar--primary{display:none}
+        .md-sidebar--secondary{display:none}
+        .md-sidebar--secondary:not([hidden]){display:none}
+    }
+</style>
+<section class="mdx-container">
+    <div class="md-grid md-typeset">
+    <div class="mdx-hero">
+        <div class="mdx-hero__image">
+        <img src="../assets/logo_by_maxicons.png" alt="" draggable="false">
+        </div>
+        <div class="mdx-hero__content">
+        <h1>让MkDocs本地化变得更简单</h1>
+        <p>通过 <code>mkdocs-static-i18n</code> 插件, 您可以在现有文档页面中添加静态翻译文件，从而支持<b>多语言文档</b>。</p>
+        <p>MkDocs static i18n插件尽可能地简单易用，它会生成网站的默认语言版本 + 其他语言的版本，每个版本对应一种配置语言，对应语言的版本将放置在<code>&lt;language&gt;/</code>路径下。</p>
+        <p>更棒的是，<code>mkdocs-static-i18n</code>还允许您构建和提供<b>任何文件的本地化版本</b>，以显示多语言版本的图片、媒体和资源，并支持自动回退到默认语言的页面和资源。</p>
+        <p style="margin: 0 0 2.25em"><b>注重于翻译本身</b>,而不是花费太多精力和时间去更新与每种本地化语言相关的资源和链接。</p>
+        <a href="{{ 'zh/getting-started/quick-start' | url }}" title="Quick Start" class="md-button md-button--primary">
+            快速开始
+        </a>
+        <a href="{{ 'zh/setup/' | url }}" title="" class="md-button">
+            配置选项
+        </a>
+        </div>
+    </div>
+    </div>
+</section>
+{% endblock %}
+{% block content %}{% endblock %}
+{% block footer %}{% endblock %}
