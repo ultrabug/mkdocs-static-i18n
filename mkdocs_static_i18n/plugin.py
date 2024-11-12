@@ -159,12 +159,9 @@ class I18n(ExtendedPlugin):
         if "pymdownx.details" in config["markdown_extensions"]:
             marker = r"(?:\?{3}\+?|!{3})"  # Admonition or Details marker
 
-        RE = re.compile(
-            r'^('
-            + marker
-            + r' ?)([\w\-]+(?: +[\w\-]+)*)(?: +"(.*?)")? *$'
-        )   # Copied from https://github.com/Python-Markdown/markdown/blob/master/markdown/extensions/admonition.py and modified for a single-line processing
-            # Adapted to match the details extension as well
+        # Copied from https://github.com/Python-Markdown/markdown/blob/master/markdown/extensions/admonition.py and modified for a single-line processing
+        # Adapted to match the details extension as well
+        RE = re.compile('^(' + marker + r' ?)([\w\-]+(?: +[\w\-]+)*)(?: +"(.*?)")? *$')
 
         def handle_admonition_translations(line):
             m = RE.match(line)
