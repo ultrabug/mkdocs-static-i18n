@@ -58,6 +58,10 @@ plugins:
         admonition_translations:
           - tip: Conseil
           - warning: Avertissement
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
 ```
 
 and translates French markdowns:
