@@ -23,6 +23,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
@@ -72,7 +73,7 @@ test = [
 ]
 
 [[tool.hatch.envs.test.matrix]]
-python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
+python = ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
 type = ["default"]
 
 [tool.hatch.envs.doc]
@@ -106,7 +107,7 @@ format = [
 
 [tool.black]
 line-length = 100
-target-version = ["py311"]
+target-version = ["py313"]
 skip-string-normalization = true
 
 [tool.isort]
