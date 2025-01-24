@@ -3,6 +3,16 @@
 !!!tip "Reminder"
     We try our best to follow [Semantic Versioning v2](https://semver.org/) starting from 1.0.0.
 
+## 1.3.0 (2025-01-24)
+
+- **build**: test and declare support for python 3.13 (#319)
+- **docs**: add documentation on how to build and run the project, by Nicco Kunzmann
+- **docs**: add style:check to documentation, by Nicco Kunzmann
+- **docs**: fix-bad-example-for-lang-switcher-external-link-feature thx to @niccokunzmann
+- **plugin**: add admonitions translations to `pymdownx.details` (#317), by Joan Puigcerver
+- **plugin**: drop deprecated theme._vars and access keys directly (#315), by Joan Puigcerver
+- **pyproject**: fix the doc environment used to locally serve the plugin documentation
+
 ## 1.2.3 (2024-05-02)
 
 - **reconfigure**: drop incorrect log level from info to debug
