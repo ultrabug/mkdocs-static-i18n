@@ -38,6 +38,10 @@ It works the same for the `folder` structure!
 
 This sub-option is a key/value mapping set per language and allows you to translate [admonition](https://python-markdown.github.io/extensions/admonition/) titles which don't have an explicit title defined.
 
+Also, this configuration will apply to [PyMdown Details Extension][details], if the extension is enabled.
+
+[details]: https://facelessuser.github.io/pymdown-extensions/extensions/details/
+
 ### Language Sub-Option: `admonition_translations`
 
 This example overrides admonition titles of the French version of the site.
@@ -54,20 +58,61 @@ plugins:
         admonition_translations:
           - tip: Conseil
           - warning: Avertissement
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
 ```
 
-and translates French markdowns from:
+and translates French markdowns:
 
-```
-!!! tip
+=== "admonitions"
+    From:
 
-    Bonjour le monde
-```
+    ```
+    !!! tip
 
-to:
+        Bonjour le monde
+    ```
 
-```
-!!! tip "Conseil"
+    to:
 
-    Bonjour le monde
-```
+    ```
+    !!! tip "Conseil"
+
+        Bonjour le monde
+    ```
+
+=== "details"
+    From:
+
+    ```
+    ??? tip
+
+        Bonjour le monde
+    ```
+
+    to:
+
+    ```
+    ??? tip "Conseil"
+
+        Bonjour le monde
+    ```
+
+=== "details (open)"
+    From:
+
+    ```
+    ???+ tip
+
+        Bonjour le monde
+    ```
+
+    to:
+
+    ```
+    ???+ tip "Conseil"
+
+        Bonjour le monde
+    ```
