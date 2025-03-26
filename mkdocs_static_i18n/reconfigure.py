@@ -544,6 +544,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                     self.default_language,
                     self.all_languages,
                     mkdocs_config,
+                    self.config.force_default_in_subdirectory,
                 )
 
                 # user provided documentation page
@@ -623,6 +624,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                                 self.default_language,
                                 self.all_languages,
                                 mkdocs_config,
+                                self.config.force_default_in_subdirectory,
                             )
                             i18n_src_uris[i18n_file.norm_src_uri] = i18n_asset
                             log.debug(
@@ -678,6 +680,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                             self.default_language,
                             self.all_languages,
                             mkdocs_config,
+                            self.config.force_default_in_subdirectory,
                         )
                         if alternate_file.locale == build_lang:
                             i18n_file.alternates[alternate_file.locale] = alternate_file
@@ -693,6 +696,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                                     self.default_language,
                                     self.all_languages,
                                     mkdocs_config,
+                                    self.config.force_default_in_subdirectory,
                                 )
                                 if alternate_file.locale == self.default_language:
                                     i18n_file.alternates[build_lang] = alternate_file
@@ -704,6 +708,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                                     self.default_language,
                                     self.all_languages,
                                     mkdocs_config,
+                                    self.config.force_default_in_subdirectory,
                                 )
                                 if alternate_file.locale == self.default_language:
                                     i18n_file.alternates[build_lang] = alternate_file
@@ -742,6 +747,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                     self.default_language,
                     self.all_languages,
                     mkdocs_config,
+                    self.config.force_default_in_subdirectory,
                 )
                 # used to rebuild blog alternates for the sitemap.xml and language switcher
                 i18n_src_uris[i18n_file.norm_src_uri] = file

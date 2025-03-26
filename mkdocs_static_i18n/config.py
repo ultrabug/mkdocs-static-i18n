@@ -46,9 +46,13 @@ class I18nPluginLanguage(Config):
 
     def validate(self):
         failed, warnings = super().validate()
+        # get parent config if available
+        parent_config = getattr(self, '_parent', None)
+        force_subdirectory = parent_config and getattr(parent_config, 'force_default_in_subdirectory', False)
+        
         # set defaults
         if self.link is None:
-            if self.default:
+            if self.default and not force_subdirectory:
                 self.link = "/"
             else:
                 self.link = f"/{self.locale}/"
@@ -86,6 +90,7 @@ class I18nPluginConfig(Config):
     build_only_locale = config_options.Optional(Locale(str))
     docs_structure = config_options.Choice(["folder", "suffix"], default="suffix")
     fallback_to_default = config_options.Type(bool, default=True)
+    force_default_in_subdirectory = config_options.Type(bool, default=False)
     reconfigure_material = config_options.Type(bool, default=True)
     reconfigure_search = config_options.Type(bool, default=True)
     languages = config_options.ListOfItems(

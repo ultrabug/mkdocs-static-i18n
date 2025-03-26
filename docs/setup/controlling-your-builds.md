@@ -200,3 +200,54 @@ $env:BUILD_ONLY_LOCALE=""
 set BUILD_ONLY_LOCALE=en
 set BUILD_ONLY_LOCALE=
 ```
+
+## Forcing default language into a subdirectory
+
+By default, the default language is built at the root of the site (`/`), while other languages are built in their own subdirectories (e.g. `/en/`, `/fr/`). 
+
+If you want to keep a consistent structure and have all languages, including the default one, in their own subdirectories, you can use the `force_default_in_subdirectory` option.
+
+### Option: `force_default_in_subdirectory`
+
+|required|default|allowed values|
+|---|---|---|
+|no|false| true \| false|
+
+``` yaml
+plugins:
+  - i18n:
+    force_default_in_subdirectory: true
+```
+
+===  "force_default_in_subdirectory: false (default)"
+    ```
+    docs_dir
+    ├── index.fr.md
+    ├── index.en.md (default language)
+    ```
+
+    will build:
+
+    ```
+    site
+    ├── fr
+    │   └── index.html
+    └── index.html  # from the default language
+    ```
+
+=== "force_default_in_subdirectory: true"
+    ```
+    docs_dir
+    ├── index.fr.md
+    ├── index.en.md (default language)
+    ```
+
+    will build:
+
+    ```
+    site
+    ├── fr
+    │   └── index.html
+    ├── en           # default language is now in subdirectory
+    │   └── index.html
+    ```

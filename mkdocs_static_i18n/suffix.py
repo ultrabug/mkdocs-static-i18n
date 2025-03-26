@@ -18,6 +18,7 @@ def create_i18n_file(
     default_language: str,
     all_languages: list,
     config: MkDocsConfig,
+    force_default_in_subdirectory: bool = False,
 ) -> File:
     log.debug(f"reconfigure {file}")
 
@@ -34,7 +35,7 @@ def create_i18n_file(
     file_dest_path = Path(file.dest_path)
     file_locale = default_language
     file_localization = None
-    locale_site_dir = current_language if current_language != default_language else ""
+    locale_site_dir = current_language if current_language != default_language or force_default_in_subdirectory else ""
 
     try:
         file_locale = Path(file.name).suffixes.pop(-1).replace(".", "")
