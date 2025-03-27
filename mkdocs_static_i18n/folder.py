@@ -18,6 +18,7 @@ def create_i18n_file(
     default_language: str,
     all_languages: list,
     config: MkDocsConfig,
+    force_default_in_subdirectory: bool = False,
 ) -> File:
     log.debug(f"reconfigure {file}")
 
@@ -53,7 +54,7 @@ def create_i18n_file(
     if file_dest_path.name.endswith("README.html"):
         file_dest_path = file_dest_path.with_name("index.html")
 
-    if file_locale != current_language:
+    if file_locale != current_language or force_default_in_subdirectory:
         if is_relative_to(file_dest_path, file_locale):
             # we have to change the output folder
             file.dest_path = PurePath(
