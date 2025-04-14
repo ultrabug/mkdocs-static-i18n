@@ -56,14 +56,14 @@ The project is managed with `hatch`. [Install `hatch`](https://hatch.pypa.io/1.9
 
 Run the tests:
 
-```
+```shell
 hatch run test:test
 hatch run style:check
 ```
 
 Serve the documentation:
 
-```
+```shell
 hatch run doc:serve
 ```
 

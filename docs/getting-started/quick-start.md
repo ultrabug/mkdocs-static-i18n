@@ -17,7 +17,7 @@ Below is an example of both structures, whichever you choose is up to you, they 
 
 ### The suffix docs structure (default)
 
-```
+```text
 ./docs_suffix_structure
 ├── assets
 │   └── image_non_localized.png
@@ -35,7 +35,7 @@ Below is an example of both structures, whichever you choose is up to you, they 
 
 ### The folder docs structure
 
-```
+```text
 ./docs_folder_structure
 ├── assets
 │   └── image_non_localized.png
@@ -83,12 +83,12 @@ Congratulations, you're ready to watch your localized site live as the plugin wi
 - The French localized (`fr`) language will reside in the `fr` URL `/fr/`
 
 ```bash
-$ mkdocs serve
+mkdocs serve
 ```
 
 The plugin will generate the following `site` structure:
 
-```
+```text
 site
 ├── 404.html
 ├── assets
