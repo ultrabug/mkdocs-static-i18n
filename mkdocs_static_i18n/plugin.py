@@ -27,7 +27,7 @@ class I18n(ExtendedPlugin):
 
     Current plugins we heard of and require that we control their order:
         - awesome-pages: this plugin should run before us
-        - with-pdf: this plugin is triggerd by us on the appropriate on_* events
+        - with-pdf: this plugin is triggered by us on the appropriate on_* events
     """
 
     @plugins.event_priority(-100)
@@ -188,7 +188,7 @@ class I18n(ExtendedPlugin):
         Page context only applies to Page() objects.
         We add some metadata for users as well as some neat reconfiguration features.
 
-        Overriden templates such as the sitemap.xml are not impacted by this method!
+        Overridden templates such as the sitemap.xml are not impacted by this method!
         """
         if isinstance(page, Page) and hasattr(page.file, "locale"):
             # export some useful i18n related variables on page context, see #75
@@ -224,7 +224,7 @@ class I18n(ExtendedPlugin):
 
         self.building = True
 
-        # Block time logging for internal builds and filter reduntant MkDocs log
+        # Block time logging for internal builds and filter redundant MkDocs log
         build_logger = logging.getLogger("mkdocs.commands.build")
         i18n_filter = I18nLoggingFilter()
         i18n_filter.filtered_prefixes.add("Documentation built in")

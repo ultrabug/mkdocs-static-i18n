@@ -28,7 +28,7 @@ plugins:
 |locale|yes||A 2-letter [ISO-639-1](https://en.wikipedia.org/wiki/ISO_639-1) language code (`en`) or [5-letter language code with added territory/region/country](https://www.mkdocs.org/user-guide/localizing-your-theme/#supported-locales) (`en_US`)|
 |name|yes||The display name of the language|
 |default|no|false|Specify that this locale is the default one, you **must** set it as `true` to at least one language!|
-|build|no|true|Control whether to build or not the given language verion (useful when using the ENV! feature and speed up build testing)|
+|build|no|true|Control whether to build or not the given language version (useful when using the ENV! feature and speed up build testing)|
 |link|no|`/<locale>/`|Used for the `mkdocs-material` language switcher. Absolute path used as the base of the language switcher|
 |fixed_link|no||Used for the `mkdocs-material` language switcher. Fixed URL link used in the language switcher for this language|
 |nav_translations|no||Key/value mapping used to [translate navigation items](localizing-navigation.md)|
@@ -52,7 +52,7 @@ plugins:
 ### Additional per language overrides options
 
 !!! warning
-    Any option you override here **MUST** be set (even to its default) on its main `mkdocs.yml` section before being overriden on one or more languages.
+    Any option you override here **MUST** be set (even to its default) on its main `mkdocs.yml` section before being overridden on one or more languages.
 
 |option|required|default|description|
 |---|---|---|---|

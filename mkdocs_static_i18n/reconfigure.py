@@ -190,10 +190,10 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
 
     def apply_user_overrides(self, config: MkDocsConfig):
         """
-        The i18n configuration structure allows users to set abitrary configuration
-        that will be overriden if they match valid MkDocsConfig or Theme options.
+        The i18n configuration structure allows users to set arbitrary configuration
+        that will be overridden if they match valid MkDocsConfig or Theme options.
         """
-        # reset config to its orginal values since the config might have been
+        # reset config to its original values since the config might have been
         # altered by a previous build
         config = self.reset_to_original_config(config)
 
