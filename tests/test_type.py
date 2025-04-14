@@ -10,10 +10,12 @@ def test_locale_valid_values():
         "en",
         "en-US",
         "en_US",
+        "en-GB",
+        "en-UK",  # valid pattern, but the territory code is not a valid ISO-3166-1 alpha-2 code
         "fr",
         "fr-FR",
         "fr_FR",
-        "ga",
+        "ga-IE",
         "sr-Latn",
         "th",
         "zh-Hans",
@@ -30,13 +32,13 @@ def test_locale_valid_values():
 def test_locale_invalid_values():
     locale = Locale(str)
     invalid_locales = [
-        "english",
-        "EN",
-        "en-us",
-        "123",
-        "en-US-",
-        "en_",
-        "zh-Hans-sg",
+        "123",  # language code must be two-letter ISO-639-1
+        "english",  # language code must be two-letter ISO-639-1
+        "EN",  # language code must be lower case
+        "en-us",  # territory code must be upper case
+        "en-US-",  # there must be no trailing dash
+        "en_",  # there must be no trailing underscore
+        "zh-Hans-sg",  # territory code must be upper case
     ]
     for value in invalid_locales:
         with pytest.raises(ValidationError):
