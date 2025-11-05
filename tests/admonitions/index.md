@@ -14,3 +14,9 @@
 
     !!! tip
         Titre implicite imbriqué
+
+!!! Tip
+    Implicit title with capitalized type
+
+!!!Tip
+    Implicit title with capitalized type, without space

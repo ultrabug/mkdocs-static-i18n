@@ -96,8 +96,24 @@ def test_plugin_no_use_directory_urls_default_language_only():
 
     with open(site_dir+'/index.html') as f:
         admonition_titles = re.findall(r"<p class=[\"']admonition-title[\"']>([^<]*)", f.read())
-        assert(admonition_titles == ['Tip', 'Tip', 'Warning', 'Heey', 'Tip'])
+        assert(admonition_titles == [
+            'Tip', # !!! tip
+            'Tip', # !!!tip
+            'Warning', # !!! warning (overrided)
+            'Heey', # !!! warning "Heey"
+            'Tip', # Indented !!! tip
+            'Tip', # !!! Tip (uppercase)
+            'Tip', # !!!Tip
+        ])
 
     with open(site_dir+'/fr/index.html') as f:
         admonition_titles = re.findall(r"<p class=[\"']admonition-title[\"']>([^<]*)", f.read())
-        assert(admonition_titles == ['Conseil', 'Conseil', 'Avertissement', 'Heey', 'Conseil'])
+        assert(admonition_titles == [
+            'Conseil', # !!! tip
+            'Conseil', # !!!tip
+            'Avertissement', # !!! warning (overrided)
+            'Heey', # !!! warning "Heey"
+            'Conseil', # Indented !!! tip
+            'Conseil', # !!! Tip (uppercase)
+            'Conseil', # !!!Tip
+        ])

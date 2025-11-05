@@ -178,8 +178,8 @@ class I18n(ExtendedPlugin):
                 title = m.group("title")
                 if (
                     not title or title.strip() == ""
-                ) and admonition_type in admonition_translations:
-                    new_title = admonition_translations[admonition_type]
+                ) and admonition_type.lower() in admonition_translations:
+                    new_title = admonition_translations[admonition_type.lower()]
                     line = f'{indent}{marker}{admonition_type} "{new_title}"'
 
             return line

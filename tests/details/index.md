@@ -23,3 +23,15 @@
 
     ???+ tip
         Nested implicit title, opened by default
+
+??? Tip
+    Implicit title with capitalized type
+
+???+ Tip
+    Implicit title with capitalized type, opened by default
+
+???Tip
+    Implicit title with capitalized type, without space
+
+???+Tip
+    Implicit title with capitalized type, without space, opened by default
