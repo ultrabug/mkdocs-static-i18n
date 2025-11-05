@@ -161,7 +161,6 @@ class I18n(ExtendedPlugin):
 
         # Copied from https://github.com/Python-Markdown/markdown/blob/master/markdown/extensions/admonition.py and modified for a single-line processing
         # Adapted to match the details extension as well
-        # RE = re.compile('^(' + marker + r' ?)([\w\-]+(?: +[\w\-]+)*)(?: +"(.*?)")? *$')
         RE = re.compile(
             r'^(?P<indent>[ \t]*)'  # leading spaces/tabs
             r'(?P<marker>' + marker + r' ?)'  # marker (!!!, ???, ???+)
