@@ -96,8 +96,8 @@ def test_plugin_no_use_directory_urls_default_language_only():
 
     with open(site_dir+'/index.html') as f:
         admonition_titles = re.findall(r"<p class=[\"']admonition-title[\"']>([^<]*)", f.read())
-        assert(admonition_titles == ['Tip', 'Tip', 'Warning', 'Heey'])
+        assert(admonition_titles == ['Tip', 'Tip', 'Warning', 'Heey', 'Tip'])
 
     with open(site_dir+'/fr/index.html') as f:
         admonition_titles = re.findall(r"<p class=[\"']admonition-title[\"']>([^<]*)", f.read())
-        assert(admonition_titles == ['Conseil', 'Conseil', 'Avertissement', 'Heey'])
+        assert(admonition_titles == ['Conseil', 'Conseil', 'Avertissement', 'Heey', 'Conseil'])

@@ -17,3 +17,9 @@
 
 ??? warning "Heey"
     Titre explicite, n'est pas traduit par `admonition_translations`
+
+    ??? tip
+        Titre implicite imbriqué
+
+    ???+ tip
+        Titre implicite imbriqué, ouvert par défaut

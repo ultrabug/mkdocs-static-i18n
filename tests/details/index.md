@@ -17,3 +17,9 @@
 
 ??? warning "Heey"
     Explicit title, isn't translated by `admonition_translations`
+
+    ??? tip
+        Nested implicit title
+
+    ???+ tip
+        Nested implicit title, opened by default

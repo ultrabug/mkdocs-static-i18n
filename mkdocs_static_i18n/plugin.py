@@ -161,17 +161,26 @@ class I18n(ExtendedPlugin):
 
         # Copied from https://github.com/Python-Markdown/markdown/blob/master/markdown/extensions/admonition.py and modified for a single-line processing
         # Adapted to match the details extension as well
-        RE = re.compile('^(' + marker + r' ?)([\w\-]+(?: +[\w\-]+)*)(?: +"(.*?)")? *$')
+        # RE = re.compile('^(' + marker + r' ?)([\w\-]+(?: +[\w\-]+)*)(?: +"(.*?)")? *$')
+        RE = re.compile(
+            r'^(?P<indent>[ \t]*)'              # leading spaces/tabs
+            r'(?P<marker>' + marker + r' ?)'    # marker (!!!, ???, ???+)
+            r'(?P<type>[\w\-]+(?: +[\w\-]+)*)'  # type (info, warning, etc.)
+            r'(?: +"(?P<title>.*?)")?'          # optional title in quotes
+            r' *$'                              # optional trailing spaces/tabs
+        )
 
         def handle_admonition_translations(line):
             m = RE.match(line)
             if m:
-                type = m.group(2)
-                if (
-                    m.group(3) is None or m.group(3).strip() == ''
-                ) and type in admonition_translations:
-                    title = admonition_translations[type]
-                    line = m.group(1) + m.group(2) + f' "{title}"'
+                indent = m.group("indent")
+                marker = m.group("marker")
+                admonition_type = m.group("type")
+                title = m.group("title")
+                if (not title or title.strip() == "") and admonition_type in admonition_translations:
+                    new_title = admonition_translations[admonition_type]
+                    line = f'{indent}{marker}{admonition_type} "{new_title}"'
+
             return line
 
         out = []

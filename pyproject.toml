@@ -69,7 +69,7 @@ dependencies = [
 
 [tool.hatch.envs.test.scripts]
 test = [
-    "pytest -xs",
+    "pytest -xs {args:tests}",
 ]
 
 [[tool.hatch.envs.test.matrix]]

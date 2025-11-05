@@ -11,3 +11,6 @@
 
 !!! warning "Heey"
     Titre explicite, n'est pas traduit par `admonition_translations`
+
+    !!! tip
+        Nested implicit title
