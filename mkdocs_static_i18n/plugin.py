@@ -163,11 +163,11 @@ class I18n(ExtendedPlugin):
         # Adapted to match the details extension as well
         # RE = re.compile('^(' + marker + r' ?)([\w\-]+(?: +[\w\-]+)*)(?: +"(.*?)")? *$')
         RE = re.compile(
-            r'^(?P<indent>[ \t]*)'              # leading spaces/tabs
-            r'(?P<marker>' + marker + r' ?)'    # marker (!!!, ???, ???+)
+            r'^(?P<indent>[ \t]*)'  # leading spaces/tabs
+            r'(?P<marker>' + marker + r' ?)'  # marker (!!!, ???, ???+)
             r'(?P<type>[\w\-]+(?: +[\w\-]+)*)'  # type (info, warning, etc.)
-            r'(?: +"(?P<title>.*?)")?'          # optional title in quotes
-            r' *$'                              # optional trailing spaces/tabs
+            r'(?: +"(?P<title>.*?)")?'  # optional title in quotes
+            r' *$'  # optional trailing spaces/tabs
         )
 
         def handle_admonition_translations(line):
@@ -177,7 +177,9 @@ class I18n(ExtendedPlugin):
                 marker = m.group("marker")
                 admonition_type = m.group("type")
                 title = m.group("title")
-                if (not title or title.strip() == "") and admonition_type in admonition_translations:
+                if (
+                    not title or title.strip() == ""
+                ) and admonition_type in admonition_translations:
                     new_title = admonition_translations[admonition_type]
                     line = f'{indent}{marker}{admonition_type} "{new_title}"'
 
