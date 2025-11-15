@@ -177,6 +177,14 @@ def merge_structure_items(structure_items):
             merged_structure_items.append(structure_item)
     for item in filter(lambda x: x.is_section, merged_structure_items):
         item.children = merge_structure_items(item.children)
+        # NOTE:
+        # After merging items, child nodes keep their old `parent` reference.
+        # MkDocs relies on a correct parent chain to mark ancestor Sections as active,
+        # which Material uses to set aria-expanded="true".
+        # Without resetting `child.parent = item`, ancestor detection breaks and
+        # navigation sections collapse incorrectly.
+        for child in item.children:
+            child.parent = item
     return merged_structure_items
 
 
