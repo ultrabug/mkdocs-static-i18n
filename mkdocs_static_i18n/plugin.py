@@ -155,6 +155,9 @@ class I18n(ExtendedPlugin):
         """
         admonition_translations = self.current_language_config.admonition_translations or {}
 
+        # Force lowercase keys for case insensitive matching
+        admonition_translations = {k.lower(): v for k, v in admonition_translations.items()}
+
         marker = r"!{3}"  # Admonition marker
         if "pymdownx.details" in config["markdown_extensions"]:
             marker = r"(?:\?{3}\+?|!{3})"  # Admonition or Details marker
