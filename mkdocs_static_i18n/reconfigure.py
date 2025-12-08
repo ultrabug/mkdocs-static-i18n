@@ -154,7 +154,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
 
         # Install a i18n aware version of sitemap.xml if not provided by the user
         if not Path(
-            PurePath(config.theme.get("custom_dir", ".")) / PurePath("sitemap.xml")
+            PurePath(config.theme.custom_dir or ".") / PurePath("sitemap.xml")
         ).exists():
             custom_i18n_sitemap_dir = Path(
                 PurePath(installation_path).parent / PurePath("custom_i18n_sitemap")
