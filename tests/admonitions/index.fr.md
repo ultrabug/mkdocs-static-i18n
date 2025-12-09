@@ -11,3 +11,11 @@
 
 !!! warning "Heey"
     Titre explicite, n'est pas traduit par `admonition_translations`
+
+    !!! tip
+        Nested implicit title
+!!! Tip
+    Titre implicite avec type en majuscule
+
+!!!Tip
+    Titre implicite avec type en majuscule, sans espace
