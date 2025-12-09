@@ -2,238 +2,238 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/changelog/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/changelog/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/changelog/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/getting-started/installation/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/getting-started/installation/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/getting-started/installation/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/getting-started/philosophy/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/getting-started/philosophy/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/getting-started/philosophy/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/getting-started/quick-start/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/getting-started/quick-start/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/getting-started/quick-start/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/setup/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/setup/choosing-the-structure/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/choosing-the-structure/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/choosing-the-structure/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/setup/controlling-your-builds/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/controlling-your-builds/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/controlling-your-builds/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/setup/localizing-navigation/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/localizing-navigation/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/localizing-navigation/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/setup/plugins-compatibility/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/plugins-compatibility/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/plugins-compatibility/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/setup/setting-up-languages/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/setting-up-languages/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/setting-up-languages/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/setup/setting-up-material/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/setting-up-material/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/setting-up-material/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/setup/setting-up-search/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/setting-up-search/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/setting-up-search/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/setup/translating-content/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/translating-content/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/translating-content/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/setup/upgrading-to-1/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/upgrading-to-1/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/upgrading-to-1/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/setup/using-alternates/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/using-alternates/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/using-alternates/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/setup/using-i18n-context/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/using-i18n-context/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/using-i18n-context/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/changelog/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/changelog/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/changelog/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/getting-started/installation/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/getting-started/installation/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/getting-started/installation/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/getting-started/philosophy/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/getting-started/philosophy/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/getting-started/philosophy/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/getting-started/quick-start/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/getting-started/quick-start/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/getting-started/quick-start/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/choosing-the-structure/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/choosing-the-structure/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/choosing-the-structure/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/controlling-your-builds/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/controlling-your-builds/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/controlling-your-builds/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/localizing-navigation/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/localizing-navigation/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/localizing-navigation/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/plugins-compatibility/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/plugins-compatibility/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/plugins-compatibility/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/setting-up-languages/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/setting-up-languages/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/setting-up-languages/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/setting-up-material/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/setting-up-material/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/setting-up-material/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/setting-up-search/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/setting-up-search/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/setting-up-search/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/translating-content/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/translating-content/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/translating-content/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/upgrading-to-1/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/upgrading-to-1/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/upgrading-to-1/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/using-alternates/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/using-alternates/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/using-alternates/"/>
     </url>
     <url>
         <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/using-i18n-context/</loc>
-        <lastmod>2025-04-14</lastmod>
+        <lastmod>2025-12-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/setup/using-i18n-context/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/setup/using-i18n-context/"/>
