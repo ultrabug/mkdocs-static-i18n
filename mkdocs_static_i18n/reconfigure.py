@@ -174,7 +174,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                 # search plugin reconfiguration can be disabled
                 if self.config.reconfigure_search:
                     config = self.reconfigure_search_plugin(config, name, plugin)
-            if name == "with-pdf":
+            if name == "with-pdf" or name == "to-pdf":
                 config = self.reconfigure_with_pdf_plugin(config)
 
         # apply localized user config overrides
@@ -437,7 +437,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         for events in config.plugins.events.values():
             for idx, event in enumerate(list(events)):
                 try:
-                    if str(event.__module__) == "mkdocs_with_pdf.plugin":
+                    if str(event.__module__) == "mkdocs_with_pdf.plugin" or str(event.__module__) == "mkdocs_to_pdf.plugin":
                         events.pop(idx)
                 except AttributeError:
                     # partials don't have a module
