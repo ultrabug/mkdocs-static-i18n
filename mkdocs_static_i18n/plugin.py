@@ -60,8 +60,8 @@ class I18n(ExtendedPlugin):
         # manually trigger with-pdf, to apply language specific overrides
         with_pdf_plugin = config.plugins.get("with-pdf")
         if with_pdf_plugin:
-                config = with_pdf_plugin.on_config(config)
-                
+            config = with_pdf_plugin.on_config(config)
+
         # manually trigger to-pdf, to apply language specific overrides
         to_pdf_plugin = config.plugins.get("to-pdf")
         if to_pdf_plugin:
@@ -129,7 +129,7 @@ class I18n(ExtendedPlugin):
         with_pdf_plugin = config.plugins.get("with-pdf")
         if with_pdf_plugin:
             with_pdf_plugin.on_nav(i18n_nav, config, files)
-        
+
         # manually trigger to-pdf, see #110
         to_pdf_plugin = config.plugins.get("to-pdf")
         if to_pdf_plugin:
@@ -231,12 +231,12 @@ class I18n(ExtendedPlugin):
         with_pdf_plugin = config.plugins.get("with-pdf")
         if with_pdf_plugin:
             with_pdf_plugin.on_post_page(output, page, config)
-        
+
         # manually trigger to-pdf
         to_pdf_plugin = config.plugins.get("to-pdf")
         if to_pdf_plugin:
             to_pdf_plugin.on_post_page(output, page, config)
-            
+
         return output
 
     @plugins.event_priority(-100)
@@ -265,7 +265,7 @@ class I18n(ExtendedPlugin):
         if with_pdf_plugin:
             with_pdf_output_path = with_pdf_plugin.config["output_path"]
             with_pdf_plugin.on_post_build(config)
-        
+
         # manually trigger to-pdf, see #110
         to_pdf_plugin = config.plugins.get("to-pdf")
         if to_pdf_plugin:
@@ -293,7 +293,7 @@ class I18n(ExtendedPlugin):
                     f"{locale}/{with_pdf_output_path}"
                 ).as_posix()
                 with_pdf_plugin.on_post_build(config)
-                
+
             # manually trigger to-pdf for this locale
             if to_pdf_plugin:
                 to_pdf_plugin.config["output_path"] = PurePath(

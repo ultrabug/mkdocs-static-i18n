@@ -438,8 +438,8 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
             for idx, event in enumerate(list(events)):
                 try:
                     if (
-                        str(event.__module__) == "mkdocs_with_pdf.plugin" or 
-                        str(event.__module__) == "mkdocs_to_pdf.plugin"
+                        str(event.__module__) == "mkdocs_with_pdf.plugin"
+                        or str(event.__module__) == "mkdocs_to_pdf.plugin"
                     ):
                         events.pop(idx)
                 except AttributeError:
