@@ -437,7 +437,10 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         for events in config.plugins.events.values():
             for idx, event in enumerate(list(events)):
                 try:
-                    if str(event.__module__) == "mkdocs_with_pdf.plugin" or str(event.__module__) == "mkdocs_to_pdf.plugin":
+                    if (
+                        str(event.__module__) == "mkdocs_with_pdf.plugin" or 
+                        str(event.__module__) == "mkdocs_to_pdf.plugin"
+                    ):
                         events.pop(idx)
                 except AttributeError:
                     # partials don't have a module
