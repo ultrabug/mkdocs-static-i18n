@@ -432,7 +432,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
 
     def reconfigure_with_pdf_plugin(self, config: MkDocsConfig):
         """
-        Support plugin mkdocs-with-pdf, see #110.
+        Support plugin mkdocs-with-pdf and its fork mkdocs-to-pdf, see #110.
         """
         for events in config.plugins.events.values():
             for idx, event in enumerate(list(events)):
