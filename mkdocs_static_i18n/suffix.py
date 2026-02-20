@@ -24,7 +24,7 @@ def create_i18n_file(
     # create a new File instance that we can turn into an i18n file
     file = File(
         file.src_path,
-        config.docs_dir,
+        file.src_dir,
         file.dest_path,
         config.use_directory_urls,
         dest_uri=file.dest_uri,

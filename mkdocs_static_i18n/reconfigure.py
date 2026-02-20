@@ -535,7 +535,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         i18n_alternate_src_uris = defaultdict(list)
         for file in files:
             # user provided files in docs_dir
-            if is_relative_to(file.abs_src_path, mkdocs_config.docs_dir):
+            if is_relative_to(file.abs_src_path, mkdocs_config.docs_dir, self.config.multirepo_dir):
                 i18n_file = create_i18n_file(
                     file,
                     self.current_language,
