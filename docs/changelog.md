@@ -3,6 +3,13 @@
 !!!tip "Reminder"
     We try our best to follow [Semantic Versioning v2](https://semver.org/) starting from 1.0.0.
 
+## Unreleased
+
+### Fix
+
+- fixed sitemap not being resolved from theme.custom_dir (#336)
+- translate indented admonitions with case insensitivity (#332)
+
 ## 1.3.0 (2025-01-24)
 
 - **build**: test and declare support for python 3.13 (#319)
