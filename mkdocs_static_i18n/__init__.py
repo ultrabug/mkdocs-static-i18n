@@ -1,6 +1,6 @@
 from pathlib import PurePath
 
-version = "1.3.0"
+version = "1.3.1"
 
 
 def is_relative_to(src_path, dest_path):
