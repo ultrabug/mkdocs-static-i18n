@@ -54,7 +54,7 @@ include = [
 exclude = ["/tests"]
 
 [project.optional-dependencies]
-material = ["mkdocs-material<9.7.2"]
+material = ["mkdocs-material<9.7.3"]
 
 [tool.hatch.envs.default.scripts]
 all = [
@@ -65,7 +65,7 @@ all = [
 [tool.hatch.envs.test]
 dependencies = [
     "pytest",
-    "mkdocs-material<9.7.2"
+    "mkdocs-material<9.7.3"
 ]
 
 [tool.hatch.envs.test.scripts]
@@ -79,7 +79,7 @@ type = ["default"]
 
 [tool.hatch.envs.doc]
 dependencies = [
-    "mkdocs-material<9.7.2"
+    "mkdocs-material<9.7.3"
 ]
 
 [tool.hatch.envs.doc.scripts]
