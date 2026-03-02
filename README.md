@@ -6,6 +6,14 @@
 
 *The MkDocs plugin that helps you support multiple language versions of your site / documentation.*
 
+---
+
+:warning: Due to the core [MkDocs upstream being unmaintained and uncertain](https://squidfunk.github.io/mkdocs-material/blog/2026/02/18/mkdocs-2.0/) **this project is frozen as-is**.
+
+You can find a more [detailed explanation of the situation here](https://github.com/ultrabug/mkdocs-static-i18n/issues/342), especially if you're interested in Zensical's plans about i18n support.
+
+---
+
 *Like what you :eyes:? Using this plugin? Give it a :star:!*
 
 The `mkdocs-static-i18n` plugin allows you to support multiple languages of your documentation by adding static translation files to your existing documentation pages.
