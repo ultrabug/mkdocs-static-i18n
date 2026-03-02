@@ -88,6 +88,7 @@ class I18nPluginConfig(Config):
     fallback_to_default = config_options.Type(bool, default=True)
     reconfigure_material = config_options.Type(bool, default=True)
     reconfigure_search = config_options.Type(bool, default=True)
+    multirepo_dir = config_options.Type(str, default='')
     languages = config_options.ListOfItems(
         config_options.SubConfig(I18nPluginLanguage, validate=True)
     )
