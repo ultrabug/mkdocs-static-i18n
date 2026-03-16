@@ -11,6 +11,7 @@ This is a list of plugins known to work with `mkdocs-static-i18n`:
 |mkdocs-redirects|>=1.2.1|
 |mkdocs-rss-plugin|>=1.8.0|
 |mkdocs-with-pdf|>=0.9.3|
+|mkdocs-to-pdf|>=0.10.0|
 
 If the list is not correct or that you would like another plugin to be made compatible:
 

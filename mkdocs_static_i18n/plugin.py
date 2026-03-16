@@ -27,7 +27,7 @@ class I18n(ExtendedPlugin):
 
     Current plugins we heard of and require that we control their order:
         - awesome-pages: this plugin should run before us
-        - with-pdf: this plugin is triggered by us on the appropriate on_* events
+        - with-pdf / to-pdf: this plugin is triggered by us on the appropriate on_* events
     """
 
     @plugins.event_priority(-100)
@@ -61,6 +61,11 @@ class I18n(ExtendedPlugin):
         with_pdf_plugin = config.plugins.get("with-pdf")
         if with_pdf_plugin:
             config = with_pdf_plugin.on_config(config)
+
+        # manually trigger to-pdf, to apply language specific overrides
+        to_pdf_plugin = config.plugins.get("to-pdf")
+        if to_pdf_plugin:
+            config = to_pdf_plugin.on_config(config)
 
         return config
 
@@ -124,6 +129,11 @@ class I18n(ExtendedPlugin):
         with_pdf_plugin = config.plugins.get("with-pdf")
         if with_pdf_plugin:
             with_pdf_plugin.on_nav(i18n_nav, config, files)
+
+        # manually trigger to-pdf, see #110
+        to_pdf_plugin = config.plugins.get("to-pdf")
+        if to_pdf_plugin:
+            to_pdf_plugin.on_nav(i18n_nav, config, files)
 
         return i18n_nav
 
@@ -221,6 +231,12 @@ class I18n(ExtendedPlugin):
         with_pdf_plugin = config.plugins.get("with-pdf")
         if with_pdf_plugin:
             with_pdf_plugin.on_post_page(output, page, config)
+
+        # manually trigger to-pdf
+        to_pdf_plugin = config.plugins.get("to-pdf")
+        if to_pdf_plugin:
+            to_pdf_plugin.on_post_page(output, page, config)
+
         return output
 
     @plugins.event_priority(-100)
@@ -250,6 +266,12 @@ class I18n(ExtendedPlugin):
             with_pdf_output_path = with_pdf_plugin.config["output_path"]
             with_pdf_plugin.on_post_build(config)
 
+        # manually trigger to-pdf, see #110
+        to_pdf_plugin = config.plugins.get("to-pdf")
+        if to_pdf_plugin:
+            to_pdf_output_path = to_pdf_plugin.config["output_path"]
+            to_pdf_plugin.on_post_build(config)
+
         # monkey patching mkdocs.utils.clean_directory to avoid
         # the site_dir to be cleaned up on each build() call
         from mkdocs import utils
@@ -271,6 +293,13 @@ class I18n(ExtendedPlugin):
                     f"{locale}/{with_pdf_output_path}"
                 ).as_posix()
                 with_pdf_plugin.on_post_build(config)
+
+            # manually trigger to-pdf for this locale
+            if to_pdf_plugin:
+                to_pdf_plugin.config["output_path"] = PurePath(
+                    f"{locale}/{to_pdf_output_path}"
+                ).as_posix()
+                to_pdf_plugin.on_post_build(config)
 
         # rebuild and deduplicate the search index
         self.reconfigure_search_index(config)
