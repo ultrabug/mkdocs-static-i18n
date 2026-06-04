@@ -3,7 +3,23 @@ from re import compile
 from mkdocs.config import config_options
 from mkdocs.config.base import Config, ValidationError
 
-RE_LOCALE = compile(r"(^[a-z]{2}(-[A-Za-z]{4})?(-[A-Z]{2})?$)|(^[a-z]{2}_[A-Z]{2}$)")
+# Language part: ISO 639-1 (2-letter) or 639-2/3 (3-letter)
+RE_LANG = r"[a-z]{2,3}"
+
+# Optional script part (e.g., -Latn)
+RE_SCRIPT = r"(-[A-Za-z]{4})?"
+
+# Optional region part (e.g., -US)
+RE_REGION = r"(-[A-Z]{2})?"
+
+# BCP 47-style pattern: lang-script-region (e.g., 'en', 'en-US', 'gsw', 'sr-Latn-RS')
+RE_BCP_47_STYLE = f"^{RE_LANG}{RE_SCRIPT}{RE_REGION}$"
+
+# Legacy-style pattern: lang_REGION (e.g., 'en_US', 'ast_ES')
+RE_LEGACY_STYLE = f"^{RE_LANG}_[A-Z]{{2}}$"
+
+# Valid locale pattern.
+RE_LOCALE = compile(f"({RE_BCP_47_STYLE})|({RE_LEGACY_STYLE})")
 
 
 class Locale(config_options.Type):
