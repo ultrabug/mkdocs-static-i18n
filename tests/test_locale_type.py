@@ -7,11 +7,16 @@ from mkdocs_static_i18n.config import Locale
 def test_locale_valid_values():
     locale = Locale(str)
     valid_locales = [
-        "en",
+        "en",  # ISO 639-1
         "en-US",
         "en_US",
         "en-GB",
         "en-UK",  # valid pattern, but the territory code is not a valid ISO-3166-1 alpha-2 code
+        "ast",  # ISO 639-2 / 639-3
+        "ast-ES",
+        "ast_ES",
+        "ast-Latn",
+        "ast-Latn-ES",
         "fr",
         "fr-FR",
         "fr_FR",
